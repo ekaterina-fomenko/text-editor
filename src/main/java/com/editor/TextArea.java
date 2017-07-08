@@ -40,8 +40,8 @@ public class TextArea implements ActionListener {
     }
 
     @Override
-    public void actionPerformed(ActionEvent e) {
-        JMenuItem item = (JMenuItem) e.getSource();
+    public void actionPerformed(ActionEvent event) {
+        JMenuItem item = (JMenuItem) event.getSource();
         switch (item.getText()){
             case JAVASCRIPT_ITEM:
             case ERLANG_ITEM:
