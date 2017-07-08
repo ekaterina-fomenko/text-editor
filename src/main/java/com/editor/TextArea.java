@@ -1,7 +1,8 @@
 package main.java.com.editor;
 
+import main.java.com.editor.parser.JavaScriptSyntax;
+
 import javax.swing.*;
-import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -11,21 +12,21 @@ public class TextArea implements ActionListener {
     public static final String ERLANG_ITEM = "Erlang";
     public static final String HASKELL_ITEM = "Haskell";
 
-    public JTextArea jTextArea;
     public JMenuBar menuBar;
     public JMenu syntax;
     public JMenuItem javaScript;
     public JMenuItem erlang;
     public JMenuItem haskell;
     public JScrollPane jScrollPane;
+    public JComponent jComponent;
+    public StringBuilder stringBuilder;
 
     public TextArea() {
-        jTextArea = new JTextArea();
-        jTextArea.setLineWrap(true);
-        jTextArea.setWrapStyleWord(true);
-        jTextArea.setBackground(new Color(99, 74, 68));
-        jTextArea.setForeground(Color.WHITE);
-        jScrollPane = new JScrollPane(jTextArea);
+        stringBuilder = new StringBuilder();
+        jComponent = new DrawComponent(stringBuilder);
+        jComponent.setActionMap(new TextActionMap(this));
+        jComponent.setInputMap(JComponent.WHEN_FOCUSED,new TextInputMap());
+        jScrollPane = new JScrollPane(jComponent);
 
         menuBar = new JMenuBar();
         syntax = new JMenu(SYNTAX_MENU);
@@ -41,6 +42,8 @@ public class TextArea implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent event) {
+        JavaScriptSyntax js = new JavaScriptSyntax();
+
         JMenuItem item = (JMenuItem) event.getSource();
         switch (item.getText()){
             case JAVASCRIPT_ITEM:

@@ -13,7 +13,7 @@ public class EditorFrame extends JFrame {
 
     public TextArea textArea;
 
-    public EditorFrame(){
+    public EditorFrame() {
         super(TITLE);
         setBounds(X_COORDINATE, Y_COORDINATE, WIDTH, HEIGHT);
         setResizable(true);
