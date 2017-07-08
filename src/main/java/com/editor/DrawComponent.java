@@ -16,7 +16,11 @@ public DrawComponent(StringBuilder stringBuilder){
         graphics2D.setFont(Font.getFont(Font.MONOSPACED));
         //graphics2D.setColor(new Color(99, 74, 68));
         graphics2D.setTransform(new AffineTransform());
-        graphics2D.drawString(stringBuilder.toString(),5,15);
+        for(int i = 0; i< stringBuilder.length(); i++){
+            char currentChar = stringBuilder.charAt(i);
+           graphics2D.drawString(Character.toString(currentChar),5,15);
+           graphics2D.translate(graphics2D.getFontMetrics().charWidth(currentChar), 0);
+        }
+       // graphics2D.drawString(stringBuilder.toString(),5,15);
     }
-
 }

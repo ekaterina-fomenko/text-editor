@@ -1,7 +1,5 @@
 package main.java.com.editor;
 
-import main.java.com.editor.parser.JavaScriptSyntax;
-
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -42,8 +40,6 @@ public class TextArea implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent event) {
-        JavaScriptSyntax js = new JavaScriptSyntax();
-
         JMenuItem item = (JMenuItem) event.getSource();
         switch (item.getText()){
             case JAVASCRIPT_ITEM:
