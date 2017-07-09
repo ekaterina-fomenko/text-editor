@@ -20,5 +20,24 @@ public class TextActionMap extends ActionMap {
                 }
             });
         }
+        //ToDo: Move to string constant
+        put("delete", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int length = textArea.stringBuilder.length();
+                textArea.stringBuilder.deleteCharAt(length - 1);
+                textArea.jComponent.repaint();
+            }
+        });
+        //Doesn't work for now
+        put("newLine", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                textArea.stringBuilder.append(e.getActionCommand());
+                textArea.jComponent.repaint();
+            }
+        });
+
+
     }
 }
