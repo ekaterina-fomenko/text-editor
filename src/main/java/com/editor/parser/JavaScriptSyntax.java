@@ -3,6 +3,8 @@ package main.java.com.editor.parser;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -15,16 +17,16 @@ public class JavaScriptSyntax {
 
     public List<CommonSyntaxHighlight> makeHighlights(String input) {
         List<CommonSyntaxHighlight> highlights = new ArrayList<>();
-        highlights.addAll(getReservedWordsHighlight(input));
+       // highlights.addAll(getReservedWordsHighlight(input));
         return highlights;
     }
 
-    public List<CommonSyntaxHighlight> getReservedWordsHighlight(String input) {
-        List<CommonSyntaxHighlight> reservedWordsHighlights = new ArrayList<>();
+    public Map<Integer,CommonSyntaxHighlight> getReservedWordsHighlight(String input) {
+        Map<Integer, CommonSyntaxHighlight> reservedWordsHighlights = new TreeMap<>();
         Matcher matcher = Pattern.compile(CommonRegex.BEFORE_REGEX + RESERVED_WORDS + CommonRegex.AFTER_REGEX).matcher(input);
-        if(matcher.find()){
-            reservedWordsHighlights.add(new CommonSyntaxHighlight(matcher.start(), Color.PINK));
-            reservedWordsHighlights.add(new CommonSyntaxHighlight(matcher.end(), Color.WHITE));
+        while(matcher.find()){
+            int startIndex = matcher.start();
+            reservedWordsHighlights.put(startIndex, new CommonSyntaxHighlight(matcher.start(), Color.PINK,matcher.end()));
 
         }
         return reservedWordsHighlights;

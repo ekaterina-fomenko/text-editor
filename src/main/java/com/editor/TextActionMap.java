@@ -11,11 +11,11 @@ public class TextActionMap extends ActionMap {
     }
 
     {
-        for (char i = ' '; i<='~';i++){
+        for (char i = ' '; i <= '~'; i++) {
             put(Character.toString(i), new AbstractAction() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                 textArea.stringBuilder = textArea.stringBuilder.append(e.getActionCommand());
+                    textArea.stringBuilder.append(e.getActionCommand());
                     textArea.jComponent.repaint();
                 }
             });
