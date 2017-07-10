@@ -18,10 +18,12 @@ public class TextArea implements ActionListener {
     public JScrollPane jScrollPane;
     public JComponent jComponent;
     public StringBuilder stringBuilder;
+    public Pointer pointer;
 
     public TextArea() {
+        pointer = new Pointer(0,0);
         stringBuilder = new StringBuilder();
-        jComponent = new DrawComponent(stringBuilder);
+        jComponent = new DrawComponent(stringBuilder, pointer);
         jComponent.setActionMap(new TextActionMap(this));
         jComponent.setInputMap(JComponent.WHEN_FOCUSED,new TextInputMap());
         jScrollPane = new JScrollPane(jComponent);

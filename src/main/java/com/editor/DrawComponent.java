@@ -9,31 +9,41 @@ import java.util.Map;
 
 public class DrawComponent extends JComponent {
     private StringBuilder stringBuilder;
+    private Pointer pointer;
     public static final Color DEFAULT_COLOR = Color.black;
     public static final int DEFAULT_X_COORDINATE = 5;
     public static final int DEFAULT_Y_COORDINATE = 15;
 
-    public DrawComponent(StringBuilder stringBuilder) {
+    public DrawComponent(StringBuilder stringBuilder, Pointer pointer) {
         this.stringBuilder = stringBuilder;
+        this.pointer = pointer;
     }
 
     @Override
     protected void paintComponent(Graphics graphics) {
         Graphics2D graphics2D = (Graphics2D) graphics;
-        graphics2D.setFont(Font.getFont(Font.MONOSPACED));
+        graphics2D.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
         //graphics2D.setColor(new Color(99, 74, 68));
         JavaScriptSyntax js = new JavaScriptSyntax();
         Map<Integer, CommonSyntaxHighlight> map = js.getReservedWordsHighlight(stringBuilder.toString());
         for (int i = 0; i < stringBuilder.length(); i++) {
+            char currentChar = stringBuilder.charAt(i);
             int endIndex = i;
             if (map.containsKey(i)) {
                 endIndex = drawSyntax(graphics2D, map, i);
             }
             i = endIndex;
             if (i < stringBuilder.length()) {
-                char currentChar = stringBuilder.charAt(i);
+                currentChar = stringBuilder.charAt(i);
                 drawChar(graphics2D, currentChar, DEFAULT_COLOR);
             }
+        }
+        if (pointer.printChars) {
+            int length = stringBuilder.length();
+            pointer.column = stringBuilder.length();
+            drawPointer(graphics2D, pointer.column, length == 0 ? null : stringBuilder.charAt(length - 1));
+        } else {
+            drawPointer(graphics2D, pointer.column, pointer.prevChar);
         }
     }
 
@@ -52,5 +62,11 @@ public class DrawComponent extends JComponent {
         graphics2D.setColor(color);
         graphics2D.drawString(Character.toString(currentChar), DEFAULT_X_COORDINATE, DEFAULT_Y_COORDINATE);
         graphics2D.translate(graphics2D.getFontMetrics().charWidth(currentChar), 0);
+    }
+
+    private void drawPointer(Graphics2D graphics2D, int x, Character currentChar) {
+        graphics2D.setColor(Color.DARK_GRAY);
+        //ToDo: Fix for left and right actions
+        graphics2D.fillRect(x == 0 ? DEFAULT_X_COORDINATE : graphics2D.getFontMetrics().charWidth(currentChar), 3, 2, graphics2D.getFontMetrics().getHeight());
     }
 }

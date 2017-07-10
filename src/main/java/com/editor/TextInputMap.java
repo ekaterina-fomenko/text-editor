@@ -9,5 +9,7 @@ public class TextInputMap extends InputMap{
         }
         put(KeyStroke.getKeyStroke("BACK_SPACE"), "delete");
         put(KeyStroke.getKeyStroke("ENTER"), "newLine");
+        put(KeyStroke.getKeyStroke("RIGHT"),"right");
+        put(KeyStroke.getKeyStroke("LEFT"),"left");
     }
 }

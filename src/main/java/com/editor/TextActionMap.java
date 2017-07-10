@@ -38,6 +38,32 @@ public class TextActionMap extends ActionMap {
             }
         });
 
+        put("right", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (textArea.pointer.column < textArea.stringBuilder.length()) {
+                    textArea.pointer.printChars = false;
+                    textArea.pointer.prevChar = textArea.stringBuilder.charAt(textArea.pointer.column);
+                    textArea.pointer.column++;
+                    textArea.jComponent.repaint();
+                    textArea.pointer.printChars = true;
+                }
+            }
+        });
+
+        put("left", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (textArea.pointer.column > 0) {
+                    textArea.pointer.printChars = false;
+                    textArea.pointer.column--;
+                    textArea.pointer.prevChar = textArea.stringBuilder.charAt(textArea.pointer.column);
+                    textArea.jComponent.repaint();
+                    textArea.pointer.printChars = true;
+                }
+            }
+        });
+
 
     }
 }
