@@ -15,7 +15,7 @@ public class TextActionMap extends ActionMap {
             put(Character.toString(i), new AbstractAction() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    textArea.stringBuilder.insert(textArea.pointer.column,e.getActionCommand());
+                    textArea.stringBuilder.insert(textArea.pointer.column, e.getActionCommand());
                     textArea.pointer.column++;
                     textArea.jComponent.repaint();
                 }
@@ -25,17 +25,19 @@ public class TextActionMap extends ActionMap {
         put("delete", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                int length = textArea.stringBuilder.length();
-                textArea.stringBuilder.deleteCharAt(length - 1);
-                textArea.pointer.column--;
-                textArea.jComponent.repaint();
+                if (textArea.pointer.column != 0) {
+                    textArea.stringBuilder.deleteCharAt(textArea.pointer.column - 1);
+                    textArea.pointer.column--;
+                    textArea.jComponent.repaint();
+                }
             }
         });
         //ToDo: fix - Doesn't work for now
         put("newLine", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                textArea.stringBuilder.append(e.getActionCommand());
+                textArea.stringBuilder.insert(textArea.pointer.column, e.getActionCommand());
+                textArea.pointer.column++;
                 textArea.jComponent.repaint();
             }
         });

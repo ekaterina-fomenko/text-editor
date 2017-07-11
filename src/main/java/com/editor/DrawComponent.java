@@ -5,6 +5,7 @@ import main.java.com.editor.parser.JavaScriptSyntax;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.geom.AffineTransform;
 
 public class DrawComponent extends JComponent {
     private StringBuilder stringBuilder;
@@ -27,12 +28,21 @@ public class DrawComponent extends JComponent {
         java.util.List<CommonSyntaxHighlight> reservedWordsList = js.getReservedWordsHighlight2(stringBuilder.toString());
         char currentReservedWordIndex = 0;
         Color currentCharColor = DEFAULT_CHAR_COLOR;
+        AffineTransform affineTransform = graphics2D.getTransform();
         for (int i = 0; i < stringBuilder.length(); i++) {
+            char currentChar = stringBuilder.charAt(i);
+
             if (pointer.column == i) {
                 drawPointer(graphics2D);
             }
 
-            char currentChar = stringBuilder.charAt(i);
+            if (currentChar == '\n') {
+                graphics2D.setTransform(affineTransform);
+                graphics2D.translate(0, graphics2D.getFontMetrics().getHeight());
+                affineTransform = graphics2D.getTransform();
+                continue;
+            }
+
             if (currentReservedWordIndex < reservedWordsList.size()) {
                 CommonSyntaxHighlight currentReservedWord = reservedWordsList.get(currentReservedWordIndex);
                 if (currentReservedWord.getStartIndex() <= i && i <= currentReservedWord.getEndIndex()) {
@@ -48,7 +58,6 @@ public class DrawComponent extends JComponent {
             //    setBackgroundColor(Blue);
             //}
             drawChar(graphics2D, currentChar, currentCharColor);
-            System.out.println(pointer.column);
         }
 
         if (pointer.column == stringBuilder.length()) {
