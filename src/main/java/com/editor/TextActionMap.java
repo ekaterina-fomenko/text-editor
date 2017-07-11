@@ -15,7 +15,8 @@ public class TextActionMap extends ActionMap {
             put(Character.toString(i), new AbstractAction() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    textArea.stringBuilder.append(e.getActionCommand());
+                    textArea.stringBuilder.insert(textArea.pointer.column,e.getActionCommand());
+                    textArea.pointer.column++;
                     textArea.jComponent.repaint();
                 }
             });
@@ -26,10 +27,11 @@ public class TextActionMap extends ActionMap {
             public void actionPerformed(ActionEvent e) {
                 int length = textArea.stringBuilder.length();
                 textArea.stringBuilder.deleteCharAt(length - 1);
+                textArea.pointer.column--;
                 textArea.jComponent.repaint();
             }
         });
-        //Doesn't work for now
+        //ToDo: fix - Doesn't work for now
         put("newLine", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -46,7 +48,6 @@ public class TextActionMap extends ActionMap {
                     textArea.pointer.prevChar = textArea.stringBuilder.charAt(textArea.pointer.column);
                     textArea.pointer.column++;
                     textArea.jComponent.repaint();
-                    textArea.pointer.printChars = true;
                 }
             }
         });
@@ -59,7 +60,6 @@ public class TextActionMap extends ActionMap {
                     textArea.pointer.column--;
                     textArea.pointer.prevChar = textArea.stringBuilder.charAt(textArea.pointer.column);
                     textArea.jComponent.repaint();
-                    textArea.pointer.printChars = true;
                 }
             }
         });

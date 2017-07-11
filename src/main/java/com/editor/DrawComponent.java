@@ -5,13 +5,12 @@ import main.java.com.editor.parser.JavaScriptSyntax;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.Map;
 
 public class DrawComponent extends JComponent {
     private StringBuilder stringBuilder;
     private Pointer pointer;
-    public static final Color DEFAULT_COLOR = Color.black;
-    public static final int DEFAULT_X_COORDINATE = 5;
+    public static final Color DEFAULT_CHAR_COLOR = Color.black;
+    //public static final int DEFAULT_X_COORDINATE = 5;
     public static final int DEFAULT_Y_COORDINATE = 15;
 
     public DrawComponent(StringBuilder stringBuilder, Pointer pointer) {
@@ -25,48 +24,46 @@ public class DrawComponent extends JComponent {
         graphics2D.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
         //graphics2D.setColor(new Color(99, 74, 68));
         JavaScriptSyntax js = new JavaScriptSyntax();
-        Map<Integer, CommonSyntaxHighlight> map = js.getReservedWordsHighlight(stringBuilder.toString());
+        java.util.List<CommonSyntaxHighlight> reservedWordsList = js.getReservedWordsHighlight2(stringBuilder.toString());
+        char currentReservedWordIndex = 0;
+        Color currentCharColor = DEFAULT_CHAR_COLOR;
         for (int i = 0; i < stringBuilder.length(); i++) {
-            char currentChar = stringBuilder.charAt(i);
-            int endIndex = i;
-            if (map.containsKey(i)) {
-                endIndex = drawSyntax(graphics2D, map, i);
+            if (pointer.column == i) {
+                drawPointer(graphics2D);
             }
-            i = endIndex;
-            if (i < stringBuilder.length()) {
-                currentChar = stringBuilder.charAt(i);
-                drawChar(graphics2D, currentChar, DEFAULT_COLOR);
-            }
-        }
-        if (pointer.printChars) {
-            int length = stringBuilder.length();
-            pointer.column = stringBuilder.length();
-            drawPointer(graphics2D, pointer.column, length == 0 ? null : stringBuilder.charAt(length - 1));
-        } else {
-            drawPointer(graphics2D, pointer.column, pointer.prevChar);
-        }
-    }
 
-    private int drawSyntax(Graphics2D graphics2D, Map<Integer, CommonSyntaxHighlight> map, int i) {
-        int endIndex;
-        CommonSyntaxHighlight commonSyntaxHighlight = map.get(i);
-        for (int k = commonSyntaxHighlight.getStartIndex(); k < commonSyntaxHighlight.getEndIndex(); k++) {
-            char currentChar = stringBuilder.charAt(k);
-            drawChar(graphics2D, currentChar, commonSyntaxHighlight.getStartColor());
+            char currentChar = stringBuilder.charAt(i);
+            if (currentReservedWordIndex < reservedWordsList.size()) {
+                CommonSyntaxHighlight currentReservedWord = reservedWordsList.get(currentReservedWordIndex);
+                if (currentReservedWord.getStartIndex() <= i && i <= currentReservedWord.getEndIndex()) {
+                    currentCharColor = Color.PINK;
+                    if (i == currentReservedWord.getEndIndex()) {
+                        currentReservedWordIndex++;
+                    }
+                }
+            }
+
+            //ToDo: When add selector - implement here
+            //if(selected){
+            //    setBackgroundColor(Blue);
+            //}
+            drawChar(graphics2D, currentChar, currentCharColor);
+            System.out.println(pointer.column);
         }
-        endIndex = commonSyntaxHighlight.getEndIndex();
-        return endIndex;
+
+        if (pointer.column == stringBuilder.length()) {
+            drawPointer(graphics2D);
+        }
     }
 
     private void drawChar(Graphics2D graphics2D, char currentChar, Color color) {
         graphics2D.setColor(color);
-        graphics2D.drawString(Character.toString(currentChar), DEFAULT_X_COORDINATE, DEFAULT_Y_COORDINATE);
+        graphics2D.drawString(Character.toString(currentChar), 0, DEFAULT_Y_COORDINATE);
         graphics2D.translate(graphics2D.getFontMetrics().charWidth(currentChar), 0);
     }
 
-    private void drawPointer(Graphics2D graphics2D, int x, Character currentChar) {
+    private void drawPointer(Graphics2D graphics2D) {
         graphics2D.setColor(Color.DARK_GRAY);
-        //ToDo: Fix for left and right actions
-        graphics2D.fillRect(x == 0 ? DEFAULT_X_COORDINATE : graphics2D.getFontMetrics().charWidth(currentChar), 3, 2, graphics2D.getFontMetrics().getHeight());
+        graphics2D.fillRect(0, 3, 2, graphics2D.getFontMetrics().getHeight());
     }
 }
