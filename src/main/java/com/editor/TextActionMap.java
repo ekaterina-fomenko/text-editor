@@ -38,6 +38,7 @@ public class TextActionMap extends ActionMap {
             public void actionPerformed(ActionEvent e) {
                 textArea.stringBuilder.insert(textArea.pointer.column, e.getActionCommand());
                 textArea.pointer.column++;
+                //textArea.pointer.row++;
                 textArea.jComponent.repaint();
             }
         });
@@ -53,7 +54,6 @@ public class TextActionMap extends ActionMap {
                 }
             }
         });
-
         put("left", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -66,6 +66,17 @@ public class TextActionMap extends ActionMap {
             }
         });
 
+        put("up", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
 
+            }
+        });
+        put("down", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        });
     }
 }

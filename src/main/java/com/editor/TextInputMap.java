@@ -11,5 +11,7 @@ public class TextInputMap extends InputMap{
         put(KeyStroke.getKeyStroke("ENTER"), "newLine");
         put(KeyStroke.getKeyStroke("RIGHT"),"right");
         put(KeyStroke.getKeyStroke("LEFT"),"left");
+        put(KeyStroke.getKeyStroke("UP"),"up");
+        put(KeyStroke.getKeyStroke("DOWN"),"down");
     }
 }
