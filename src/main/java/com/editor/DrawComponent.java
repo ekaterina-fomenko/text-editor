@@ -27,9 +27,10 @@ public class DrawComponent extends JComponent {
         JavaScriptSyntax js = new JavaScriptSyntax();
         java.util.List<CommonSyntaxHighlight> reservedWordsList = js.getReservedWordsHighlight2(stringBuilder.toString());
         char currentReservedWordIndex = 0;
-        Color currentCharColor = DEFAULT_CHAR_COLOR;
+        Color currentCharColor;
         AffineTransform affineTransform = graphics2D.getTransform();
         for (int i = 0; i < stringBuilder.length(); i++) {
+            currentCharColor = DEFAULT_CHAR_COLOR;
             char currentChar = stringBuilder.charAt(i);
 
             if (pointer.column == i) {
