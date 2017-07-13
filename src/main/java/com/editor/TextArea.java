@@ -3,6 +3,7 @@ package main.java.com.editor;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.*;
 
 public class TextArea implements ActionListener {
     public static final String SYNTAX_MENU = "Syntax";
@@ -19,9 +20,11 @@ public class TextArea implements ActionListener {
     public JComponent jComponent;
     public StringBuilder stringBuilder;
     public Pointer pointer;
+    Map<Integer,Integer> newLineIndexesMap;
 
     public TextArea() {
-        pointer = new Pointer(0,0);
+        newLineIndexesMap = new TreeMap<>();
+        pointer = new Pointer(0,0,0);
         stringBuilder = new StringBuilder();
         jComponent = new DrawComponent(stringBuilder, pointer);
         jComponent.setActionMap(new TextActionMap(this));

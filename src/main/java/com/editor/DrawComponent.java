@@ -33,7 +33,7 @@ public class DrawComponent extends JComponent {
             currentCharColor = DEFAULT_CHAR_COLOR;
             char currentChar = stringBuilder.charAt(i);
 
-            if (pointer.column == i) {
+            if (pointer.index == i) {
                 drawPointer(graphics2D);
             }
 
@@ -61,7 +61,7 @@ public class DrawComponent extends JComponent {
             drawChar(graphics2D, currentChar, currentCharColor);
         }
 
-        if (pointer.column == stringBuilder.length()) {
+        if (pointer.index == stringBuilder.length()) {
             drawPointer(graphics2D);
         }
     }

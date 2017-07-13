@@ -1,15 +1,13 @@
 package main.java.com.editor;
 
 public class Pointer {
-    public int column;
+    public int index;
     public int row;
-    public Character prevChar;
-    public boolean printChars;
+    public int column;
 
-    public Pointer(int column, int row){
-        this.column = column;
+    public Pointer(int index, int row, int column){
+        this.index = index;
         this.row = row;
-        this.prevChar = null;
-        this.printChars =true;
+        this.column = column;
     }
 }
