@@ -1,6 +1,6 @@
-package main.java.com.editor;
+package com.editor;
 
-import main.java.com.editor.model.TextEditorModel;
+import com.editor.model.TextEditorModel;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;

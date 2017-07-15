@@ -1,15 +1,16 @@
-package main.java.com.editor.model;
+package com.editor.model;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class TextEditorModel {
-    private Pointer pointer;
+    private Pointer cursorPosition;
+    private Pointer selectionEnd;
     private ArrayList<StringBuilder> lineBuilders;
     private List<Integer> lineLengthsList;
 
     public TextEditorModel() {
-        this.pointer = new Pointer();
+        this.cursorPosition = new Pointer();
         this.lineBuilders = new ArrayList<>();
         this.lineBuilders.add(new StringBuilder());
 
@@ -18,106 +19,158 @@ public class TextEditorModel {
     }
 
     public void addText(String text) {
-        this.lineBuilders.get(pointer.row).insert(pointer.column, text);
-        pointer.column += text.length();
+        this.lineBuilders.get(cursorPosition.row).insert(cursorPosition.column, text);
+        cursorPosition.column += text.length();
     }
 
     public void addNewLine() {
-        StringBuilder currentRow = this.lineBuilders.get(pointer.row);
-        String restOfCurrentLine = currentRow.substring(pointer.column);
+        if (isSelectionInProgress()) {
+            onBackspace();
 
-        currentRow.delete(pointer.column, currentRow.length());
-        lineBuilders.add(pointer.row + 1, new StringBuilder(restOfCurrentLine));
-        pointer.row++;
-        pointer.column = 0;
+        }
+        StringBuilder currentRow = this.lineBuilders.get(cursorPosition.row);
+        String restOfCurrentLine = currentRow.substring(cursorPosition.column);
+
+        currentRow.delete(cursorPosition.column, currentRow.length());
+        lineBuilders.add(cursorPosition.row + 1, new StringBuilder(restOfCurrentLine));
+        cursorPosition.row++;
+        cursorPosition.column = 0;
     }
 
-    public void deleteText(Pointer from, Pointer to) {
-        // TODO: selection + escape
+    public void onBackspace() {
+        if (isSelectionInProgress()) {
+            removeAll(cursorPosition, selectionEnd);
+        } else {
+            startOrContinueSelection();
+            movePointerLeft(false);
+            removeAll(cursorPosition, selectionEnd);
+            dropSelection();
+        }
     }
 
-    public void deleteChar() {
-        if (pointer.isStart()) {
+    private void removeAll(Pointer cursorPosition, Pointer selectionEnd) {
+        int comparison = cursorPosition.compareTo(selectionEnd);
+        if (comparison == 0) {
             return;
         }
 
-        if (pointer.column > 0) {
-            pointer.column--;
+        Pointer from = comparison < 0 ? cursorPosition : selectionEnd;
+        Pointer to = comparison > 0 ? cursorPosition : selectionEnd;
 
-            getCurrentRow().deleteCharAt(pointer.column);
+        StringBuilder startingRow = lineBuilders.get(from.row);
+        StringBuilder endingRow = lineBuilders.get(to.row);
+
+        if (from.row == to.row) {
+            startingRow.delete(from.column, to.column);
         } else {
-            StringBuilder oldRow = getCurrentRow();
+            startingRow.delete(from.column, Math.max(from.column, startingRow.length() - 1));
 
-            lineBuilders.remove(pointer.row);
-
-            if (pointer.row > 0) {
-                pointer.row--;
+            for (int i = from.row + 1; i < to.row; i++) {
+                lineBuilders.remove(i);
             }
 
-            StringBuilder newRow = getCurrentRow();
-
-            newRow.append(oldRow);
-
-            pointer.column = newRow.length() - oldRow.length();
+            endingRow.delete(0, to.column);
+            startingRow.append(endingRow);
+            lineBuilders.remove(to.row);
         }
-
     }
 
-    public Pointer getPointer() {
-        return pointer;
+    public Pointer getCursorPosition() {
+        return cursorPosition;
     }
 
     public ArrayList<StringBuilder> getLineBuilders() {
         return lineBuilders;
     }
 
-    public void movePointerRight() {
-        pointer.column++;
+    public void movePointerRight(boolean dropSelection) {
+        if (dropSelection) {
+            dropSelection();
+        }
+
+        cursorPosition.column++;
 
         int currentRowLength = getCurrentRowLength();
-        if (pointer.column > currentRowLength) {
-            if (pointer.row == lineBuilders.size() - 1) {
-                pointer.column = currentRowLength;
+        if (cursorPosition.column > currentRowLength) {
+            if (cursorPosition.row == lineBuilders.size() - 1) {
+                cursorPosition.column = currentRowLength;
             } else {
-                pointer.column = 0;
-                pointer.row++;
+                cursorPosition.column = 0;
+                cursorPosition.row++;
             }
         }
     }
 
-    public void movePointerLeft() {
-        pointer.column--;
-        if (pointer.column < 0) {
-            if (pointer.row != 0) {
-                pointer.row--;
-                pointer.column = getCurrentRowLength();
+    public void movePointerLeft(boolean dropSelection) {
+        if (dropSelection) {
+            dropSelection();
+        }
+
+        cursorPosition.column--;
+        if (cursorPosition.column < 0) {
+            if (cursorPosition.row != 0) {
+                cursorPosition.row--;
+                cursorPosition.column = getCurrentRowLength();
             } else {
-                pointer.column = 0;
+                cursorPosition.column = 0;
             }
         }
     }
 
-    public void movePointerUp() {
-        if (pointer.row == 0) {
+    public void movePointerUp(boolean dropSelection) {
+        if (dropSelection) {
+            dropSelection();
+        }
+
+        if (cursorPosition.row == 0) {
             return;
         }
 
-        pointer.row--;
-        pointer.column = Math.min(pointer.column, getCurrentRowLength());
+        cursorPosition.row--;
+        cursorPosition.column = Math.min(cursorPosition.column, getCurrentRowLength());
     }
 
+    public void movePointerDown(boolean dropSelection) {
+        if (dropSelection) {
+            dropSelection();
+        }
 
-    public void movePointerDown() {
-        if (pointer.row == lineBuilders.size() - 1) {
+        if (cursorPosition.row == lineBuilders.size() - 1) {
             return;
         }
 
-        pointer.row++;
-        pointer.column = Math.min(pointer.column, getCurrentRowLength());
+        cursorPosition.row++;
+        cursorPosition.column = Math.min(cursorPosition.column, getCurrentRowLength());
+    }
+
+    public void dropSelection() {
+        selectionEnd = null;
+    }
+
+    public void startOrContinueSelection() {
+        if (!isSelectionInProgress()) {
+            selectionEnd = new Pointer(cursorPosition.row, cursorPosition.column);
+        }
+    }
+
+    public boolean isSelectionInProgress() {
+        return selectionEnd != null;
+    }
+
+    public Pointer getSelectionFrom() {
+        int comparison = cursorPosition.compareTo(selectionEnd);
+
+        return comparison < 0 ? cursorPosition : selectionEnd;
+    }
+
+    public Pointer getSelectionTo() {
+        int comparison = cursorPosition.compareTo(selectionEnd);
+
+        return comparison > 0 ? cursorPosition : selectionEnd;
     }
 
     private StringBuilder getCurrentRow() {
-        return lineBuilders.get(pointer.row);
+        return lineBuilders.get(cursorPosition.row);
     }
 
     private int getCurrentRowLength() {

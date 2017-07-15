@@ -1,4 +1,4 @@
-package main.java.com.editor;
+package com.editor;
 
 public class Main {
 

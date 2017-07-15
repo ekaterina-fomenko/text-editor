@@ -1,6 +1,6 @@
-package main.java.com.editor;
+package com.editor;
 
-import main.java.com.editor.model.TextEditorModel;
+import com.editor.model.TextEditorModel;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -24,15 +24,16 @@ public class TextActionMap extends ActionMap {
                 }
             });
         }
-        //ToDo: Move to string constant
-        put("delete", new AbstractAction() {
+
+        put(TextInputMap.DELETE, new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                model.deleteChar();
+                model.onBackspace();
                 textArea.jComponent.repaint();
             }
         });
-        put("newLine", new AbstractAction() {
+
+        put(TextInputMap.NEW_LINE, new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 model.addNewLine();
@@ -40,18 +41,38 @@ public class TextActionMap extends ActionMap {
             }
         });
 
-        put("right", new AbstractAction() {
+        put(TextInputMap.RIGHT, new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                model.movePointerRight();
+                model.movePointerRight(true);
                 textArea.jComponent.repaint();
             }
         });
-        put("left", new AbstractAction() {
+
+        put(TextInputMap.RIGHT_SHIFT, new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                model.startOrContinueSelection();
+                model.movePointerRight(false);
+                textArea.jComponent.repaint();
+            }
+        });
+//
+        put(TextInputMap.LEFT, new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.println("inside left");
-                model.movePointerLeft();
+                model.movePointerLeft(true);
+                textArea.jComponent.repaint();
+            }
+        });
+
+        put(TextInputMap.LEFT_SHIFT, new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("inside left");
+                model.startOrContinueSelection();
+                model.movePointerLeft(false);
                 textArea.jComponent.repaint();
             }
         });
@@ -60,15 +81,36 @@ public class TextActionMap extends ActionMap {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.println("up");
-                model.movePointerUp();
+                model.movePointerUp(true);
                 textArea.jComponent.repaint();
             }
         });
+
+        put(TextInputMap.UP_SHIFT, new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("up");
+                model.startOrContinueSelection();
+                model.movePointerUp(false);
+                textArea.jComponent.repaint();
+            }
+        });
+
         put("down", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.println("down");
-                model.movePointerDown();
+                model.movePointerDown(true);
+                textArea.jComponent.repaint();
+            }
+        });
+
+        put(TextInputMap.DOWN_SHIFT, new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("down");
+                model.startOrContinueSelection();
+                model.movePointerDown(false);
                 textArea.jComponent.repaint();
             }
         });

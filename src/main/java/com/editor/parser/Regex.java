@@ -1,4 +1,4 @@
-package main.java.com.editor.parser;
+package com.editor.parser;
 /**
  * This class includes all regex templates
  */

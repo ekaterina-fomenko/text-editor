@@ -1,6 +1,6 @@
-package main.java.com.editor.parser;
+package com.editor.parser;
 
-import main.java.com.editor.model.TextEditorModel;
+import com.editor.model.TextEditorModel;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,9 +1,9 @@
-package main.java.com.editor;
+package com.editor;
 
-import main.java.com.editor.model.Pointer;
-import main.java.com.editor.model.TextEditorModel;
-import main.java.com.editor.parser.CommonSyntaxHighlight;
-import main.java.com.editor.parser.JavaScriptSyntax;
+import com.editor.model.Pointer;
+import com.editor.model.TextEditorModel;
+import com.editor.parser.CommonSyntaxHighlight;
+import com.editor.parser.JavaScriptSyntax;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,7 +17,7 @@ public class DrawComponent extends JComponent {
 
     public DrawComponent(TextEditorModel model) {
         this.model = model;
-        this.pointer = model.getPointer();
+        this.pointer = model.getCursorPosition();
     }
 
     @Override
@@ -35,11 +35,12 @@ public class DrawComponent extends JComponent {
             for (int column = 0; column < lineBuilder.length(); column++) {
                 char ch = lineBuilder.charAt(column);
 
-                if (model.getPointer().row == row && model.getPointer().column == column) {
+                if (model.getCursorPosition().row == row && model.getCursorPosition().column == column) {
                     drawPointer(graphics2D);
                 }
 
                 Color charColor = DEFAULT_CHAR_COLOR;
+                Color charBackground = null;
 
                 if (currentReservedWordIndex < reservedWordsList.size()) {
                     CommonSyntaxHighlight currentReservedWord = reservedWordsList.get(currentReservedWordIndex);
@@ -51,7 +52,17 @@ public class DrawComponent extends JComponent {
                     }
                 }
 
-                drawChar(graphics2D, ch, charColor);
+                if (model.isSelectionInProgress()) {
+                    Pointer currentCharPoint = new Pointer(row, column);
+                    Pointer from = model.getSelectionFrom();
+                    Pointer to = model.getSelectionTo();
+
+                    if (from.compareTo(currentCharPoint) <= 0 && to.compareTo(currentCharPoint) >= 0) {
+                        charBackground = Color.BLUE;
+                    }
+                }
+
+                drawChar(graphics2D, ch, charColor, charBackground);
             }
 
             if (pointer.row == row && pointer.column == lineBuilder.length()) {
@@ -65,21 +76,16 @@ public class DrawComponent extends JComponent {
             }
 
         }
-        //ToDo: When add selector - implement here
-        //if(selected){
-        //    setBackgroundColor(Blue);
-        //}
-
     }
 
-    private void drawChar(Graphics2D graphics2D, char currentChar, Color color) {
-//        if (!(blink = !blink)) {
-//            graphics2D.setColor(Color.LIGHT_GRAY);
-//            graphics2D.fillRect(0,
-//                    3,
-//                    graphics2D.getFontMetrics().charWidth(currentChar),
-//                    graphics2D.getFontMetrics().getHeight());
-//        }
+    private void drawChar(Graphics2D graphics2D, char currentChar, Color color, Color backgroundColor) {
+        if (backgroundColor != null) {
+            graphics2D.setColor(backgroundColor);
+            graphics2D.fillRect(0,
+                    3,
+                    graphics2D.getFontMetrics().charWidth(currentChar),
+                    graphics2D.getFontMetrics().getHeight());
+        }
 
         graphics2D.setColor(color);
         graphics2D.drawString(Character.toString(currentChar), 0, DEFAULT_Y_COORDINATE);
