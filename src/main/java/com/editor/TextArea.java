@@ -20,10 +20,11 @@ public class TextArea implements ActionListener {
     public JComponent jComponent;
     public StringBuilder stringBuilder;
     public Pointer pointer;
-    Map<Integer,Integer> newLineIndexesMap;
+    List<Integer> lineLengthsList;
 
     public TextArea() {
-        newLineIndexesMap = new TreeMap<>();
+        lineLengthsList = new ArrayList<>();
+        lineLengthsList.add(0);
         pointer = new Pointer(0,0,0);
         stringBuilder = new StringBuilder();
         jComponent = new DrawComponent(stringBuilder, pointer);
