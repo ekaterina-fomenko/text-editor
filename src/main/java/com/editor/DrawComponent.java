@@ -70,6 +70,7 @@ public class DrawComponent extends JComponent {
         graphics2D.setColor(color);
         graphics2D.drawString(Character.toString(currentChar), 0, DEFAULT_Y_COORDINATE);
         graphics2D.translate(graphics2D.getFontMetrics().charWidth(currentChar), 0);
+        graphics2D.setColor(DEFAULT_CHAR_COLOR);
     }
 
     private void drawPointer(Graphics2D graphics2D) {

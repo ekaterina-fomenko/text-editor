@@ -34,7 +34,7 @@ public class JavaScriptSyntax {
         List<CommonSyntaxHighlight> reservedWordsHighlights = new ArrayList<>();
         Matcher matcher = Pattern.compile(Regex.BEFORE_REGEX + Regex.JS_RESERVED_WORDS + Regex.AFTER_REGEX).matcher(input);
         while (matcher.find()) {
-            reservedWordsHighlights.add(new CommonSyntaxHighlight(matcher.start(), Color.PINK, matcher.end()));
+            reservedWordsHighlights.add(new CommonSyntaxHighlight(matcher.start(), Color.PINK, matcher.end() - 1));
 
         }
         reservedWordsHighlights.sort((o1, o2) -> Integer.compare(o1.getStartIndex(), o2.getStartIndex()));
