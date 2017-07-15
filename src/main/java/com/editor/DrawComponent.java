@@ -1,5 +1,6 @@
 package main.java.com.editor;
 
+import main.java.com.editor.model.Pointer;
 import main.java.com.editor.parser.CommonSyntaxHighlight;
 import main.java.com.editor.parser.JavaScriptSyntax;
 
@@ -30,6 +31,7 @@ public class DrawComponent extends JComponent {
         Color currentCharColor;
         AffineTransform affineTransform = graphics2D.getTransform();
         for (int i = 0; i < stringBuilder.length(); i++) {
+
             currentCharColor = DEFAULT_CHAR_COLOR;
             char currentChar = stringBuilder.charAt(i);
 
@@ -65,8 +67,17 @@ public class DrawComponent extends JComponent {
             drawPointer(graphics2D);
         }
     }
+    private boolean blink;
 
     private void drawChar(Graphics2D graphics2D, char currentChar, Color color) {
+        if (!(blink = !blink)) {
+            graphics2D.setColor(Color.LIGHT_GRAY);
+            graphics2D.fillRect(0,
+                    3,
+                    graphics2D.getFontMetrics().charWidth(currentChar),
+                    graphics2D.getFontMetrics().getHeight());
+        }
+
         graphics2D.setColor(color);
         graphics2D.drawString(Character.toString(currentChar), 0, DEFAULT_Y_COORDINATE);
         graphics2D.translate(graphics2D.getFontMetrics().charWidth(currentChar), 0);

@@ -1,5 +1,7 @@
 package main.java.com.editor;
 
+import main.java.com.editor.model.Pointer;
+
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

@@ -1,4 +1,4 @@
-package main.java.com.editor;
+package main.java.com.editor.model;
 
 public class Pointer {
     public int index;
