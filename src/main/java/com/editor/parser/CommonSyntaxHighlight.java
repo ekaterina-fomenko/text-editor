@@ -1,18 +1,17 @@
 package main.java.com.editor.parser;
 
-import java.awt.*;
 /**
  * This class helps to set the start, end and the color for highlight
  */
 public class CommonSyntaxHighlight {
+    private int rowIndex;
     private int startIndex;
     private int endIndex;
-    private Color startColor;
 
 
-    public CommonSyntaxHighlight(int startIndex, Color startColor, int endIndex) {
+    public CommonSyntaxHighlight(int rowIndex, int startIndex, int endIndex) {
         this.startIndex = startIndex;
-        this.startColor = startColor;
+        this.rowIndex = rowIndex;
         this.endIndex = endIndex;
     }
 
@@ -24,7 +23,7 @@ public class CommonSyntaxHighlight {
         return endIndex;
     }
 
-    public Color getStartColor() {
-        return startColor;
+    public int getRowIndex() {
+        return rowIndex;
     }
 }

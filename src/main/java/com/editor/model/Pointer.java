@@ -1,17 +1,19 @@
 package main.java.com.editor.model;
 
 public class Pointer {
-    public int index;
     public int row;
     public int column;
 
-    public Pointer(int index, int row, int column) {
-        this.index = index;
+    public Pointer(int row, int column) {
         this.row = row;
         this.column = column;
     }
 
     public Pointer() {
-        this(0, 0, 0);
+        this(0, 0);
+    }
+
+    public boolean isStart() {
+        return row == 0 && column == 0;
     }
 }

@@ -10,14 +10,13 @@ import java.awt.*;
 import java.awt.geom.AffineTransform;
 
 public class DrawComponent extends JComponent {
-    private StringBuilder stringBuilder;
+    private TextEditorModel model;
     private Pointer pointer;
     public static final Color DEFAULT_CHAR_COLOR = Color.black;
-    //public static final int DEFAULT_X_COORDINATE = 5;
     public static final int DEFAULT_Y_COORDINATE = 15;
 
     public DrawComponent(TextEditorModel model) {
-        this.stringBuilder = model.getTextBuilder();
+        this.model = model;
         this.pointer = model.getPointer();
     }
 
@@ -27,49 +26,51 @@ public class DrawComponent extends JComponent {
         graphics2D.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
         //graphics2D.setColor(new Color(99, 74, 68));
         JavaScriptSyntax js = new JavaScriptSyntax();
-        java.util.List<CommonSyntaxHighlight> reservedWordsList = js.getReservedWordsHighlight2(stringBuilder.toString());
+        java.util.List<CommonSyntaxHighlight> reservedWordsList = js.getReservedWordsHighlight2(model);
         char currentReservedWordIndex = 0;
-        Color currentCharColor;
         AffineTransform affineTransform = graphics2D.getTransform();
-        for (int i = 0; i < stringBuilder.length(); i++) {
+        java.util.ArrayList<StringBuilder> lineBuilders = model.getLineBuilders();
+        for (int row = 0; row < lineBuilders.size(); row++) {
+            StringBuilder lineBuilder = lineBuilders.get(row);
+            for (int column = 0; column < lineBuilder.length(); column++) {
+                char ch = lineBuilder.charAt(column);
 
-            currentCharColor = DEFAULT_CHAR_COLOR;
-            char currentChar = stringBuilder.charAt(i);
+                if (model.getPointer().row == row && model.getPointer().column == column) {
+                    drawPointer(graphics2D);
+                }
 
-            if (pointer.index == i) {
+                Color charColor = DEFAULT_CHAR_COLOR;
+
+                if (currentReservedWordIndex < reservedWordsList.size()) {
+                    CommonSyntaxHighlight currentReservedWord = reservedWordsList.get(currentReservedWordIndex);
+                    if (currentReservedWord.getRowIndex() == row && currentReservedWord.getStartIndex() <= column && column <= currentReservedWord.getEndIndex()) {
+                        charColor = Color.PINK;
+                        if (column == currentReservedWord.getEndIndex()) {
+                            currentReservedWordIndex++;
+                        }
+                    }
+                }
+
+                drawChar(graphics2D, ch, charColor);
+            }
+
+            if (pointer.row == row && pointer.column == lineBuilder.length()) {
                 drawPointer(graphics2D);
             }
 
-            if (currentChar == '\n') {
+            if (row < lineBuilders.size()) {
                 graphics2D.setTransform(affineTransform);
                 graphics2D.translate(0, graphics2D.getFontMetrics().getHeight());
                 affineTransform = graphics2D.getTransform();
-                continue;
             }
 
-            if (currentReservedWordIndex < reservedWordsList.size()) {
-                CommonSyntaxHighlight currentReservedWord = reservedWordsList.get(currentReservedWordIndex);
-                if (currentReservedWord.getStartIndex() <= i && i <= currentReservedWord.getEndIndex()) {
-                    currentCharColor = Color.PINK;
-                    if (i == currentReservedWord.getEndIndex()) {
-                        currentReservedWordIndex++;
-                    }
-                }
-            }
-
-            //ToDo: When add selector - implement here
-            //if(selected){
-            //    setBackgroundColor(Blue);
-            //}
-            drawChar(graphics2D, currentChar, currentCharColor);
         }
+        //ToDo: When add selector - implement here
+        //if(selected){
+        //    setBackgroundColor(Blue);
+        //}
 
-        if (pointer.index == stringBuilder.length()) {
-            drawPointer(graphics2D);
-        }
     }
-
-//    private boolean blink;
 
     private void drawChar(Graphics2D graphics2D, char currentChar, Color color) {
 //        if (!(blink = !blink)) {
