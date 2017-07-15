@@ -34,27 +34,33 @@ public class TextActionMap extends ActionMap {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.println("delete");
+
                 Pointer pointer = textArea.pointer;
+                List<Integer> lineLengthsList = textArea.lineLengthsList;
+                int currentLineLength = lineLengthsList.get(pointer.row);
 
-                if (pointer.index != 0) {
-                    List<Integer> lineLengthsList = textArea.lineLengthsList;
-                    int currentLineLength = lineLengthsList.get(pointer.row);
-
-                    lineLengthsList.set(pointer.row, currentLineLength - 1);
-
-                    textArea.stringBuilder.deleteCharAt(pointer.index - 1);
-                    pointer.index--;
-                    pointer.column--;
-
-                    if (pointer.column < 0 && pointer.row > 0) { //start of line
-                        pointer.row--;
-                        int lengthPrevRow = lineLengthsList.get(pointer.row);
-                        lineLengthsList.set(pointer.row, currentLineLength + lengthPrevRow);
-                        pointer.column = lengthPrevRow;
-                        lineLengthsList.remove(pointer.row + 1);
-                    }
-                    textArea.jComponent.repaint();
+                if (pointer.index == 0) {
+                    return;
                 }
+
+                textArea.stringBuilder.deleteCharAt(pointer.index - 1);
+                pointer.index--;
+
+                lineLengthsList.set(pointer.row, currentLineLength - 1);
+
+                pointer.column--;
+
+                if (pointer.column < 0 && pointer.row > 0) { //start of line
+                    int prevRowLength = lineLengthsList.get(pointer.row - 1);
+
+                    lineLengthsList.set(pointer.row - 1, currentLineLength + prevRowLength);
+                    lineLengthsList.remove(pointer.row);
+
+                    pointer.column = prevRowLength;
+                    pointer.row--;
+                }
+
+                textArea.jComponent.repaint();
             }
         });
         put("newLine", new AbstractAction() {
