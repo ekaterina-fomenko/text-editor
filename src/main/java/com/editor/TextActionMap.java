@@ -1,16 +1,26 @@
 package main.java.com.editor;
 
 import main.java.com.editor.model.Pointer;
+import main.java.com.editor.model.TextEditorModel;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.util.List;
 
 public class TextActionMap extends ActionMap {
+    private TextEditorModel model;
     private TextArea textArea;
 
-    public TextActionMap(TextArea textArea) {
-        this.textArea = textArea;
+    private Pointer pointer;
+    private StringBuilder textBuilder;
+    private List<Integer> lineLengthsList;
+
+    public TextActionMap(TextEditorModel model, TextArea area) {
+        this.model = model;
+        this.textArea = area;
+        this.pointer = model.getPointer();
+        this.textBuilder = model.getTextBuilder();
+        this.lineLengthsList = model.getLineLengthsList();
     }
 
     {
@@ -18,11 +28,11 @@ public class TextActionMap extends ActionMap {
             put(Character.toString(i), new AbstractAction() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    Pointer pointer = textArea.pointer;
-                    List<Integer> lineLengthsList = textArea.lineLengthsList;
+                    Pointer pointer = model.getPointer();
+                    List<Integer> lineLengthsList = model.getLineLengthsList();
                     int length = lineLengthsList.get(pointer.row);
 
-                    textArea.stringBuilder.insert(pointer.index, e.getActionCommand());
+                    model.addText(pointer.index, e.getActionCommand());
                     pointer.index++;
                     pointer.column++;
                     System.out.println("index: " + pointer.index + "column: " + pointer.column);
@@ -37,15 +47,14 @@ public class TextActionMap extends ActionMap {
             public void actionPerformed(ActionEvent e) {
                 System.out.println("delete");
 
-                Pointer pointer = textArea.pointer;
-                List<Integer> lineLengthsList = textArea.lineLengthsList;
+                Pointer pointer = model.getPointer();
                 int currentLineLength = lineLengthsList.get(pointer.row);
 
                 if (pointer.index == 0) {
                     return;
                 }
 
-                textArea.stringBuilder.deleteCharAt(pointer.index - 1);
+                textBuilder.deleteCharAt(pointer.index - 1);
                 pointer.index--;
 
                 lineLengthsList.set(pointer.row, currentLineLength - 1);
@@ -69,14 +78,11 @@ public class TextActionMap extends ActionMap {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.println("nw line");
-                Pointer pointer = textArea.pointer;
-                List<Integer> lineLengthsList = textArea.lineLengthsList;
-
                 int currentLineLength = lineLengthsList.get(pointer.row);
                 int currentLineNewLength = pointer.column;
                 int nextLineNewLength = currentLineLength - currentLineNewLength;
 
-                textArea.stringBuilder.insert(pointer.index, e.getActionCommand());
+                model.addText(pointer.index, e.getActionCommand());
                 pointer.index++;
                 pointer.column = 0;
                 pointer.row++;
@@ -90,11 +96,10 @@ public class TextActionMap extends ActionMap {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.println("inside right");
-                Pointer pointer = textArea.pointer;
-                if (pointer.index < textArea.stringBuilder.length()) {
+                if (pointer.index < textBuilder.length()) {
                     pointer.index++;
                     pointer.column++;
-                    if (pointer.column > textArea.lineLengthsList.get(pointer.row)) { //end of line
+                    if (pointer.column > lineLengthsList.get(pointer.row)) { //end of line
                         pointer.column = 0;
                         pointer.row++;
                     }
@@ -106,7 +111,6 @@ public class TextActionMap extends ActionMap {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.println("inside left");
-                Pointer pointer = textArea.pointer;
                 if (pointer.index > 0) {
                     pointer.index--;
                     pointer.column--;
@@ -114,7 +118,7 @@ public class TextActionMap extends ActionMap {
                     System.out.println("r1 " + pointer.row);
                     if (pointer.column < 0 && pointer.row > 0) { //start of line
                         pointer.row--;
-                        pointer.column = textArea.lineLengthsList.get(pointer.row);
+                        pointer.column = lineLengthsList.get(pointer.row);
                     }
                     System.out.println("c2 " + pointer.column);
                     System.out.println("r2 " + pointer.row);
@@ -127,10 +131,8 @@ public class TextActionMap extends ActionMap {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.println("up");
-                Pointer pointer = textArea.pointer;
-
                 if (pointer.row > 0) {
-                    Integer prevLineLength = textArea.lineLengthsList.get(pointer.row - 1);
+                    Integer prevLineLength = lineLengthsList.get(pointer.row - 1);
 
                     if (pointer.column > prevLineLength) {
                         pointer.index -= pointer.column + 1;
@@ -148,25 +150,23 @@ public class TextActionMap extends ActionMap {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.println("down");
-                List<Integer> lineLengthsList = textArea.lineLengthsList;
                 for (int f : lineLengthsList) {
                     System.out.println("keyset " + f);
                 }
-                Pointer areaPointer = textArea.pointer;
-                if (areaPointer.row < lineLengthsList.size() - 1) {
-                    Integer nextLineLength = lineLengthsList.get(areaPointer.row + 1);
-                    Integer currentLineLength = lineLengthsList.get(areaPointer.row);
+                if (pointer.row < lineLengthsList.size() - 1) {
+                    Integer nextLineLength = lineLengthsList.get(pointer.row + 1);
+                    Integer currentLineLength = lineLengthsList.get(pointer.row);
 
-                    if (areaPointer.column > nextLineLength) {
-                        areaPointer.index += currentLineLength - areaPointer.column + nextLineLength + 1;//because '\n' is symbol too
-                        areaPointer.column = nextLineLength;
+                    if (pointer.column > nextLineLength) {
+                        pointer.index += currentLineLength - pointer.column + nextLineLength + 1;//because '\n' is symbol too
+                        pointer.column = nextLineLength;
                     } else {
-                        areaPointer.index = areaPointer.index + currentLineLength + 1;
+                        pointer.index = pointer.index + currentLineLength + 1;
                     }
 
-                    System.out.println("down ind " + areaPointer.index);
-                    System.out.println("down col " + areaPointer.column);
-                    areaPointer.row++;
+                    System.out.println("down ind " + pointer.index);
+                    System.out.println("down col " + pointer.column);
+                    pointer.row++;
                     textArea.jComponent.repaint();
                 }
             }

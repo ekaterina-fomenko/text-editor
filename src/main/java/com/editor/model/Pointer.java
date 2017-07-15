@@ -5,9 +5,13 @@ public class Pointer {
     public int row;
     public int column;
 
-    public Pointer(int index, int row, int column){
+    public Pointer(int index, int row, int column) {
         this.index = index;
         this.row = row;
         this.column = column;
+    }
+
+    public Pointer() {
+        this(0, 0, 0);
     }
 }

@@ -1,6 +1,7 @@
 package main.java.com.editor;
 
 import main.java.com.editor.model.Pointer;
+import main.java.com.editor.model.TextEditorModel;
 import main.java.com.editor.parser.CommonSyntaxHighlight;
 import main.java.com.editor.parser.JavaScriptSyntax;
 
@@ -15,9 +16,9 @@ public class DrawComponent extends JComponent {
     //public static final int DEFAULT_X_COORDINATE = 5;
     public static final int DEFAULT_Y_COORDINATE = 15;
 
-    public DrawComponent(StringBuilder stringBuilder, Pointer pointer) {
-        this.stringBuilder = stringBuilder;
-        this.pointer = pointer;
+    public DrawComponent(TextEditorModel model) {
+        this.stringBuilder = model.getTextBuilder();
+        this.pointer = model.getPointer();
     }
 
     @Override
@@ -67,16 +68,17 @@ public class DrawComponent extends JComponent {
             drawPointer(graphics2D);
         }
     }
-    private boolean blink;
+
+//    private boolean blink;
 
     private void drawChar(Graphics2D graphics2D, char currentChar, Color color) {
-        if (!(blink = !blink)) {
-            graphics2D.setColor(Color.LIGHT_GRAY);
-            graphics2D.fillRect(0,
-                    3,
-                    graphics2D.getFontMetrics().charWidth(currentChar),
-                    graphics2D.getFontMetrics().getHeight());
-        }
+//        if (!(blink = !blink)) {
+//            graphics2D.setColor(Color.LIGHT_GRAY);
+//            graphics2D.fillRect(0,
+//                    3,
+//                    graphics2D.getFontMetrics().charWidth(currentChar),
+//                    graphics2D.getFontMetrics().getHeight());
+//        }
 
         graphics2D.setColor(color);
         graphics2D.drawString(Character.toString(currentChar), 0, DEFAULT_Y_COORDINATE);
