@@ -10,10 +10,10 @@ Done:
 * Cursor horizontal navigation(left, right)
 * Delete chars
 * Reserved js words highlighting
+* Cursor vertical navigation(up, down)
 
 To Do:
 
-* Cursor vertical navigation(up, down)
 * Scrolling
 * Selection
 * Reserved haskell words highlighting
