@@ -1,7 +1,10 @@
 package com.editor.model;
 
+import com.editor.system.SystemConstants;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class TextEditorModel {
     private Pointer cursorPosition;
@@ -21,8 +24,18 @@ public class TextEditorModel {
     public void addText(String text) {
         deleteSelection();
 
-        this.lineBuilders.get(cursorPosition.row).insert(cursorPosition.column, text);
-        cursorPosition.column += text.length();
+        String[] lines = text.split(SystemConstants.NEW_LINE);
+        for (int i = 0; i < lines.length; i++) {
+            String line = lines[i];
+            this.lineBuilders.get(cursorPosition.row).insert(cursorPosition.column, line);
+            cursorPosition.column += line.length();
+
+            if (i < lines.length - 1) {
+                cursorPosition.row++;
+                lineBuilders.add(cursorPosition.row, new StringBuilder());
+                cursorPosition.column = 0;
+            }
+        }
     }
 
     public void addNewLine() {
@@ -192,5 +205,41 @@ public class TextEditorModel {
 
     private int getCurrentRowLength() {
         return getCurrentRow().length();
+    }
+
+    public String getAllText() {
+        return lineBuilders.stream().collect(Collectors.joining(SystemConstants.NEW_LINE));
+    }
+
+    //ToDo: Fix
+    public String getSelectedText() {
+        Pointer from = getSelectionFrom();
+        Pointer to = getSelectionTo();
+
+        if (from.equals(to)) {
+            return null;
+        }
+
+        StringBuilder startingRow = lineBuilders.get(from.row);
+        StringBuilder endingRow = lineBuilders.get(to.row);
+        StringBuilder result = new StringBuilder();
+
+        if (from.row == to.row) {
+            result.append(startingRow.substring(from.column, to.column));
+        } else {
+            result.append(startingRow.substring(from.column, Math.max(from.column, startingRow.length())));
+
+            for (int i = from.row + 1; i < to.row; i++) {
+                result.append(lineBuilders.get(i));
+            }
+            result.append(endingRow.substring(to.column));
+            startingRow.append(endingRow);
+
+
+        }
+        this.cursorPosition = from;
+        dropSelection();
+
+        return result.toString();
     }
 }

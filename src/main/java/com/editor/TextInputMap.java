@@ -25,6 +25,10 @@ public class TextInputMap extends InputMap {
 
     public static final String DELETE = "delete";
 
+    public static final String CTRL_C = "CTRL_C";
+
+    public static final String CTRL_V = "CTRL_V";
+
     {
         for (char i = ' '; i <= '~'; i++) {
             put(KeyStroke.getKeyStroke(i), Character.toString(i));
@@ -43,5 +47,8 @@ public class TextInputMap extends InputMap {
 
         put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0), DOWN);
         put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, KeyEvent.SHIFT_DOWN_MASK), DOWN_SHIFT);
+
+        put(KeyStroke.getKeyStroke(KeyEvent.VK_C, KeyEvent.CTRL_MASK), CTRL_C);
+        put(KeyStroke.getKeyStroke(KeyEvent.VK_V, KeyEvent.CTRL_MASK), CTRL_V);
     }
 }

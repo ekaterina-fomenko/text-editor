@@ -11,10 +11,12 @@ Done:
 * Delete chars
 * Reserved js words highlighting
 * Cursor vertical navigation(up, down)
-* Selection (without delete, enter, and replacement by symbol)
+* Selection
+* Paste/Copy(all)
 
 To Do:
-* Finish selection
+
+* Finish copy selected text
 * Scrolling
 * Reserved haskell words highlighting
 * Reserved erlang words highlighting
