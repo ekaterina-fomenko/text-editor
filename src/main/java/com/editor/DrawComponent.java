@@ -8,16 +8,17 @@ import com.editor.parser.JavaScriptSyntax;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
+import java.util.ArrayList;
 
 public class DrawComponent extends JComponent {
     private TextEditorModel model;
-    private Pointer pointer;
     public static final Color DEFAULT_CHAR_COLOR = Color.black;
+    public static final Color SELECTOR_COLOR = new Color(250, 128, 114, 100);//(153, 255, 204);
+    public static final Color RESERVED_WORDS_COLOR = new Color(204, 0, 153);
     public static final int DEFAULT_Y_COORDINATE = 15;
 
     public DrawComponent(TextEditorModel model) {
         this.model = model;
-        this.pointer = model.getCursorPosition();
     }
 
     @Override
@@ -29,13 +30,15 @@ public class DrawComponent extends JComponent {
         java.util.List<CommonSyntaxHighlight> reservedWordsList = js.getReservedWordsHighlight2(model);
         char currentReservedWordIndex = 0;
         AffineTransform affineTransform = graphics2D.getTransform();
-        java.util.ArrayList<StringBuilder> lineBuilders = model.getLineBuilders();
+        ArrayList<StringBuilder> lineBuilders = model.getLineBuilders();
+
         for (int row = 0; row < lineBuilders.size(); row++) {
             StringBuilder lineBuilder = lineBuilders.get(row);
+            Pointer cursorPosition = model.getCursorPosition();
             for (int column = 0; column < lineBuilder.length(); column++) {
                 char ch = lineBuilder.charAt(column);
 
-                if (model.getCursorPosition().row == row && model.getCursorPosition().column == column) {
+                if (cursorPosition.row == row && cursorPosition.column == column) {
                     drawPointer(graphics2D);
                 }
 
@@ -45,7 +48,7 @@ public class DrawComponent extends JComponent {
                 if (currentReservedWordIndex < reservedWordsList.size()) {
                     CommonSyntaxHighlight currentReservedWord = reservedWordsList.get(currentReservedWordIndex);
                     if (currentReservedWord.getRowIndex() == row && currentReservedWord.getStartIndex() <= column && column <= currentReservedWord.getEndIndex()) {
-                        charColor = Color.PINK;
+                        charColor = RESERVED_WORDS_COLOR;
                         if (column == currentReservedWord.getEndIndex()) {
                             currentReservedWordIndex++;
                         }
@@ -57,15 +60,15 @@ public class DrawComponent extends JComponent {
                     Pointer from = model.getSelectionFrom();
                     Pointer to = model.getSelectionTo();
 
-                    if (from.compareTo(currentCharPoint) <= 0 && to.compareTo(currentCharPoint) >= 0) {
-                        charBackground = Color.BLUE;
+                    if (from.compareTo(currentCharPoint) <= 0 && to.compareTo(currentCharPoint) > 0) {
+                        charBackground = SELECTOR_COLOR;
                     }
                 }
 
                 drawChar(graphics2D, ch, charColor, charBackground);
             }
 
-            if (pointer.row == row && pointer.column == lineBuilder.length()) {
+            if (cursorPosition.row == row && cursorPosition.column == lineBuilder.length()) {
                 drawPointer(graphics2D);
             }
 
@@ -81,10 +84,7 @@ public class DrawComponent extends JComponent {
     private void drawChar(Graphics2D graphics2D, char currentChar, Color color, Color backgroundColor) {
         if (backgroundColor != null) {
             graphics2D.setColor(backgroundColor);
-            graphics2D.fillRect(0,
-                    3,
-                    graphics2D.getFontMetrics().charWidth(currentChar),
-                    graphics2D.getFontMetrics().getHeight());
+            graphics2D.fillRect(0, 3, graphics2D.getFontMetrics().charWidth(currentChar), graphics2D.getFontMetrics().getHeight());
         }
 
         graphics2D.setColor(color);

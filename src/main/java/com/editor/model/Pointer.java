@@ -9,12 +9,12 @@ public class Pointer implements Comparable<Pointer> {
         this.column = column;
     }
 
-    public Pointer() {
-        this(0, 0);
+    public Pointer(Pointer p) {
+        this(p.row, p.column);
     }
 
-    public boolean isStart() {
-        return row == 0 && column == 0;
+    public Pointer() {
+        this(0, 0);
     }
 
     @Override

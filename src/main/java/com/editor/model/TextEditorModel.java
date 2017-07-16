@@ -19,6 +19,8 @@ public class TextEditorModel {
     }
 
     public void addText(String text) {
+        deleteSelection();
+
         this.lineBuilders.get(cursorPosition.row).insert(cursorPosition.column, text);
         cursorPosition.column += text.length();
     }
@@ -39,23 +41,25 @@ public class TextEditorModel {
 
     public void onBackspace() {
         if (isSelectionInProgress()) {
-            removeAll(cursorPosition, selectionEnd);
+            deleteSelection();
         } else {
             startOrContinueSelection();
             movePointerLeft(false);
-            removeAll(cursorPosition, selectionEnd);
-            dropSelection();
+            deleteSelection();
         }
     }
 
-    private void removeAll(Pointer cursorPosition, Pointer selectionEnd) {
-        int comparison = cursorPosition.compareTo(selectionEnd);
-        if (comparison == 0) {
+    private void deleteSelection() {
+        if (!isSelectionInProgress()) {
             return;
         }
 
-        Pointer from = comparison < 0 ? cursorPosition : selectionEnd;
-        Pointer to = comparison > 0 ? cursorPosition : selectionEnd;
+        Pointer from = getSelectionFrom();
+        Pointer to = getSelectionTo();
+
+        if (from.equals(to)) {
+            return;
+        }
 
         StringBuilder startingRow = lineBuilders.get(from.row);
         StringBuilder endingRow = lineBuilders.get(to.row);
@@ -63,16 +67,19 @@ public class TextEditorModel {
         if (from.row == to.row) {
             startingRow.delete(from.column, to.column);
         } else {
-            startingRow.delete(from.column, Math.max(from.column, startingRow.length() - 1));
-
-            for (int i = from.row + 1; i < to.row; i++) {
-                lineBuilders.remove(i);
-            }
+            startingRow.delete(from.column, Math.max(from.column, startingRow.length()));
 
             endingRow.delete(0, to.column);
             startingRow.append(endingRow);
             lineBuilders.remove(to.row);
+
+            for (int i = to.row - 1; i > from.row; i--) {
+                lineBuilders.remove(i);
+            }
+
         }
+        this.cursorPosition = from;
+        dropSelection();
     }
 
     public Pointer getCursorPosition() {
@@ -91,12 +98,17 @@ public class TextEditorModel {
         cursorPosition.column++;
 
         int currentRowLength = getCurrentRowLength();
-        if (cursorPosition.column > currentRowLength) {
-            if (cursorPosition.row == lineBuilders.size() - 1) {
-                cursorPosition.column = currentRowLength;
-            } else {
+        if (cursorPosition.column == currentRowLength && !dropSelection) {
+            if (cursorPosition.row != lineBuilders.size() - 1) {
                 cursorPosition.column = 0;
                 cursorPosition.row++;
+            }
+        } else if (cursorPosition.column > currentRowLength && dropSelection) {
+            if (cursorPosition.row != lineBuilders.size() - 1) {
+                cursorPosition.column = 0;
+                cursorPosition.row++;
+            } else {
+                cursorPosition.column = currentRowLength;
             }
         }
     }
@@ -107,6 +119,7 @@ public class TextEditorModel {
         }
 
         cursorPosition.column--;
+
         if (cursorPosition.column < 0) {
             if (cursorPosition.row != 0) {
                 cursorPosition.row--;
@@ -160,13 +173,17 @@ public class TextEditorModel {
     public Pointer getSelectionFrom() {
         int comparison = cursorPosition.compareTo(selectionEnd);
 
-        return comparison < 0 ? cursorPosition : selectionEnd;
+        Pointer leftMostPointer = comparison < 0 ? cursorPosition : selectionEnd;
+
+        return new Pointer(leftMostPointer);
     }
 
     public Pointer getSelectionTo() {
         int comparison = cursorPosition.compareTo(selectionEnd);
 
-        return comparison > 0 ? cursorPosition : selectionEnd;
+        Pointer rightMostPointerExcluded = comparison > 0 ? cursorPosition : selectionEnd;
+
+        return new Pointer(rightMostPointerExcluded.row, rightMostPointerExcluded.column);
     }
 
     private StringBuilder getCurrentRow() {

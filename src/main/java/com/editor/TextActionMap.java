@@ -57,7 +57,7 @@ public class TextActionMap extends ActionMap {
                 textArea.jComponent.repaint();
             }
         });
-//
+
         put(TextInputMap.LEFT, new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -72,12 +72,13 @@ public class TextActionMap extends ActionMap {
             public void actionPerformed(ActionEvent e) {
                 System.out.println("inside left");
                 model.startOrContinueSelection();
+                //model.startOrContinueSelection();
                 model.movePointerLeft(false);
                 textArea.jComponent.repaint();
             }
         });
 
-        put("up", new AbstractAction() {
+        put(TextInputMap.UP, new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.println("up");
@@ -96,7 +97,7 @@ public class TextActionMap extends ActionMap {
             }
         });
 
-        put("down", new AbstractAction() {
+        put(TextInputMap.DOWN, new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.println("down");
