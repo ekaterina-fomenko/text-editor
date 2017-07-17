@@ -111,12 +111,7 @@ public class TextEditorModel {
         cursorPosition.column++;
 
         int currentRowLength = getCurrentRowLength();
-        if (cursorPosition.column == currentRowLength && !dropSelection) {
-            if (cursorPosition.row != lineBuilders.size() - 1) {
-                cursorPosition.column = 0;
-                cursorPosition.row++;
-            }
-        } else if (cursorPosition.column > currentRowLength && dropSelection) {
+        if (cursorPosition.column > currentRowLength) {
             if (cursorPosition.row != lineBuilders.size() - 1) {
                 cursorPosition.column = 0;
                 cursorPosition.row++;
