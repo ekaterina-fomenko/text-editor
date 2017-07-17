@@ -2,7 +2,7 @@ package com.editor.parser;
 /**
  * This class includes all regex templates
  */
-public class Regex {
+public class Regexp {
     public static final String BEFORE_REGEX = "(?<=^|\\s|\\(|\\{|\\[|\\)|\\}|\\]|,|\\+|\\-|\\*|\\/)";
     public static final String AFTER_REGEX = "(?=$|\\s|\\(|\\{|\\[|\\)|\\}|\\]|,|\\+|\\-|\\*|\\/)";
 
