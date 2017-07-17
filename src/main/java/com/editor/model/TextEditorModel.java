@@ -207,12 +207,11 @@ public class TextEditorModel {
         return getCurrentRow().length();
     }
 
-    public String getAllText() {
-        return lineBuilders.stream().collect(Collectors.joining(SystemConstants.NEW_LINE));
+    public String convertToString(List<StringBuilder> list) {
+        return list.stream().collect(Collectors.joining(SystemConstants.NEW_LINE));
     }
 
-    //ToDo: Fix
-    public String getSelectedText() {
+    public List<StringBuilder> getSelectedText() {
         Pointer from = getSelectionFrom();
         Pointer to = getSelectionTo();
 
@@ -222,24 +221,19 @@ public class TextEditorModel {
 
         StringBuilder startingRow = lineBuilders.get(from.row);
         StringBuilder endingRow = lineBuilders.get(to.row);
-        StringBuilder result = new StringBuilder();
+        List<StringBuilder> resultList = new ArrayList<>();
 
         if (from.row == to.row) {
-            result.append(startingRow.substring(from.column, to.column));
+            resultList.add(new StringBuilder(startingRow.substring(from.column, to.column)));
         } else {
-            result.append(startingRow.substring(from.column, Math.max(from.column, startingRow.length())));
+            resultList.add(new StringBuilder(startingRow.substring(from.column, Math.max(from.column, startingRow.length()))));
 
             for (int i = from.row + 1; i < to.row; i++) {
-                result.append(lineBuilders.get(i));
+                resultList.add(lineBuilders.get(i));
             }
-            result.append(endingRow.substring(to.column));
-            startingRow.append(endingRow);
-
+            resultList.add(new StringBuilder(endingRow.substring(0,to.column)));
 
         }
-        this.cursorPosition = from;
-        dropSelection();
-
-        return result.toString();
+        return resultList;
     }
 }

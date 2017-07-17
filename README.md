@@ -12,11 +12,10 @@ Done:
 * Reserved js words highlighting
 * Cursor vertical navigation(up, down)
 * Selection
-* Paste/Copy(all)
+* Paste/Copy
 
 To Do:
 
-* Finish copy selected text
 * Scrolling
 * Reserved haskell words highlighting
 * Reserved erlang words highlighting
@@ -26,8 +25,6 @@ Optional:
 * Brackets (opened and closed)
 * Comments highlighting
 * Home, End
-* Paste
-* Copy
 * Tests
 
 Possible issues:

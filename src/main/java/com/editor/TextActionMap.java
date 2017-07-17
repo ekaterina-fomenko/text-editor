@@ -122,17 +122,20 @@ public class TextActionMap extends ActionMap {
         put(TextInputMap.CTRL_V, new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                System.out.println("!!!"+model.getCursorPosition().column+" "+model.getCursorPosition().row);
                 model.addText(clipboardAdapter.getText());
+                System.out.println(model.getCursorPosition().column+" "+model.getCursorPosition().row);
+                System.out.println(model.isSelectionInProgress());
                 textArea.jComponent.repaint();
+
             }
         });
 
         put(TextInputMap.CTRL_C, new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String allText = model.getAllText();
-               //String selectedText = model.getSelectedText();
-                clipboardAdapter.setText(allText);
+               String selectedText = model.convertToString(model.getSelectedText());
+                clipboardAdapter.setText(selectedText);
                 textArea.jComponent.repaint();
             }
         });
