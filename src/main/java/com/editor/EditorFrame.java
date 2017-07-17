@@ -2,6 +2,8 @@ package com.editor;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.AdjustmentEvent;
+import java.awt.event.AdjustmentListener;
 
 public class EditorFrame extends JFrame {
 
@@ -25,8 +27,25 @@ public class EditorFrame extends JFrame {
         pane.setLayout(new BorderLayout());
         pane.add(textArea.jScrollPane, BorderLayout.CENTER);
 
+
         setJMenuBar(textArea.menuBar);
 
+        //ToDo: Fix
+        textArea.hbar.addAdjustmentListener(new AdjustmentListener() {
+            @Override
+            public void adjustmentValueChanged(AdjustmentEvent e) {
+
+            }
+        });
+        textArea.vbar.addAdjustmentListener(new AdjustmentListener() {
+            @Override
+            public void adjustmentValueChanged(AdjustmentEvent e) {
+
+            }
+        });
+        pane.add(textArea.vbar, BorderLayout.EAST);
+        pane.add(textArea.hbar, BorderLayout.SOUTH);
     }
+
 
 }

@@ -26,6 +26,9 @@ Optional:
 * Comments highlighting
 * Home, End
 * Tests
+* Add line numbers
+* Add string highlighting (inside " ")
+* Add bold font for reserved words
 
 Possible issues:
 
