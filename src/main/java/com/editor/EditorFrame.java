@@ -1,5 +1,7 @@
 package com.editor;
 
+import com.editor.menu.MenuBar;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.AdjustmentEvent;
@@ -14,6 +16,7 @@ public class EditorFrame extends JFrame {
     public static final int Y_COORDINATE = 100;
 
     public TextArea textArea;
+    public com.editor.menu.MenuBar menuBar;
 
     public EditorFrame() {
         super(TITLE);
@@ -27,8 +30,8 @@ public class EditorFrame extends JFrame {
         pane.setLayout(new BorderLayout());
         pane.add(textArea.jScrollPane, BorderLayout.CENTER);
 
-
-        setJMenuBar(textArea.menuBar);
+        menuBar = new MenuBar(textArea.jComponent);
+        setJMenuBar(menuBar.getMenuBar());
 
         //ToDo: Fix
         textArea.hbar.addAdjustmentListener(new AdjustmentListener() {

@@ -3,7 +3,7 @@ package com.editor;
 import com.editor.model.Pointer;
 import com.editor.model.TextEditorModel;
 import com.editor.parser.CommonSyntaxHighlight;
-import com.editor.parser.JavaScriptSyntax;
+import com.editor.parser.SyntaxParser;
 
 import javax.swing.*;
 import java.awt.*;
@@ -26,7 +26,7 @@ public class DrawComponent extends JComponent {
         Graphics2D graphics2D = (Graphics2D) graphics;
         graphics2D.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
         //graphics2D.setColor(new Color(99, 74, 68));
-        JavaScriptSyntax js = new JavaScriptSyntax();
+        SyntaxParser js = new SyntaxParser();
         java.util.List<CommonSyntaxHighlight> reservedWordsList = js.getReservedWordsHighlight2(model);
         char currentReservedWordIndex = 0;
         AffineTransform affineTransform = graphics2D.getTransform();
@@ -45,7 +45,7 @@ public class DrawComponent extends JComponent {
                 Color charColor = DEFAULT_CHAR_COLOR;
                 Color charBackground = null;
 
-                if (currentReservedWordIndex < reservedWordsList.size()) {
+                 if (currentReservedWordIndex < reservedWordsList.size()) {
                     CommonSyntaxHighlight currentReservedWord = reservedWordsList.get(currentReservedWordIndex);
                     if (currentReservedWord.getRowIndex() == row && currentReservedWord.getStartIndex() <= column && column <= currentReservedWord.getEndIndex()) {
                         charColor = RESERVED_WORDS_COLOR;
