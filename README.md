@@ -13,12 +13,12 @@ Done:
 * Cursor vertical navigation(up, down)
 * Selection
 * Paste/Copy
+* Reserved erlang words highlighting
+* Reserved haskell words highlighting
 
 To Do:
 
 * Scrolling
-* Reserved haskell words highlighting
-* Reserved erlang words highlighting
 
 Optional:
 
