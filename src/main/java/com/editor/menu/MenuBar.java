@@ -15,18 +15,19 @@ public class MenuBar {
     private JMenu javaScriptSyntax;
     private JMenu erlangSyntax;
     private JMenu haskellSyntax;
-    private EditorMenuListener menuListener;
+    private EditorMouseListener menuListener;
+
     public MenuBar(JComponent jComponent){
-        menuListener = new EditorMenuListener(jComponent);
+        menuListener = new EditorMouseListener(jComponent);
         menuBar = new JMenuBar();
         plainTextSyntax = new JMenu(TEXT);
         javaScriptSyntax = new JMenu(JAVASCRIPT);
         haskellSyntax = new JMenu(HASKELL) ;
         erlangSyntax = new JMenu(ERLANG);
-        plainTextSyntax.addMenuListener(menuListener);
-        javaScriptSyntax.addMenuListener(menuListener);
-        erlangSyntax.addMenuListener(menuListener);
-        haskellSyntax.addMenuListener(menuListener);
+        plainTextSyntax.addMouseListener(menuListener);
+        javaScriptSyntax.addMouseListener(menuListener);
+        erlangSyntax.addMouseListener(menuListener);
+        haskellSyntax.addMouseListener(menuListener);
 
         menuBar.add(plainTextSyntax);
         menuBar.add(javaScriptSyntax);

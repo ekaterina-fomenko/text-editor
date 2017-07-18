@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
  */
 public class SyntaxParser {
 
-    private static String SYNTAX = Regexp.JS_RESERVED_WORDS;
+    private static String SYNTAX = Regexp.PLAIN_TEXT_WORDS;
 
     public static  void setSyntax(Syntax syntax) {
         switch (syntax) {
