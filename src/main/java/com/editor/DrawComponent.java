@@ -27,8 +27,12 @@ public class DrawComponent extends JComponent {
         graphics2D.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
         //graphics2D.setColor(new Color(99, 74, 68));
         SyntaxParser js = new SyntaxParser();
-        java.util.List<CommonSyntaxHighlight> reservedWordsList = js.getReservedWordsHighlight2(model);
-        char currentReservedWordIndex = 0;
+        java.util.List<CommonSyntaxHighlight> reservedWordsList = js.getReservedWordsHighlight(model);
+        //java.util.List<CommonSyntaxHighlight> bracketsList = js.getBrackets(model);
+        int currentReservedWordIndex = 0;
+        //int bracketInd = 0;
+        //int secondBracketPosition = -1;
+        //int secondBracketRow = -1;
         AffineTransform affineTransform = graphics2D.getTransform();
         ArrayList<StringBuilder> lineBuilders = model.getLineBuilders();
 
@@ -45,7 +49,7 @@ public class DrawComponent extends JComponent {
                 Color charColor = DEFAULT_CHAR_COLOR;
                 Color charBackground = null;
 
-                 if (currentReservedWordIndex < reservedWordsList.size()) {
+                if (currentReservedWordIndex < reservedWordsList.size()) {
                     CommonSyntaxHighlight currentReservedWord = reservedWordsList.get(currentReservedWordIndex);
                     if (currentReservedWord.getRowIndex() == row && currentReservedWord.getStartIndex() <= column && column <= currentReservedWord.getEndIndex()) {
                         charColor = RESERVED_WORDS_COLOR;
@@ -54,7 +58,30 @@ public class DrawComponent extends JComponent {
                         }
                     }
                 }
+               //ToDo: Fix brackets or remove
+              /*  if (secondBracketPosition != -1) {
+                    if (secondBracketRow == row && secondBracketPosition == column) {
+                        charColor = Color.GREEN;
+                        secondBracketPosition = -1;
+                        secondBracketRow = -1;
+                    }
+                } else {
+                    if (bracketsList != null && !bracketsList.isEmpty() && (ch == '{' || ch == '}')) {
+                        CommonSyntaxHighlight currentBracket = bracketsList.get(bracketInd);
+                        int start = currentBracket.getStartIndex();
+                        int end = currentBracket.getEndIndex();
+                        if (currentBracket.getRowIndex() == row) {
+                            if (start == column || end == column) {
+                                bracketEndInd++;
+                                secondBracketRow = row;
+                                secondBracketPosition = column;
+                                charColor = Color.GREEN;
+                            }
 
+                        }
+
+                    }
+                }*/
                 if (model.isSelectionInProgress()) {
                     Pointer currentCharPoint = new Pointer(row, column);
                     Pointer from = model.getSelectionFrom();
@@ -79,6 +106,7 @@ public class DrawComponent extends JComponent {
             }
 
         }
+
     }
 
     private void drawChar(Graphics2D graphics2D, char currentChar, Color color, Color backgroundColor) {

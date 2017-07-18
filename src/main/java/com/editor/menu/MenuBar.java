@@ -1,7 +1,7 @@
 package com.editor.menu;
 
 import javax.swing.*;
-
+//ToDo: remove comments
 public class MenuBar {
     public static final String TEXT = "Text";
     public static final String JAVASCRIPT = "JavaScript";
@@ -9,30 +9,43 @@ public class MenuBar {
     public static final String HASKELL = "Haskell";
 
     private JMenuBar menuBar;
+    private JMenu menu;
 
-    private JMenu plainTextSyntax;
+    private JMenuItem plainTextSyntax;
 
-    private JMenu javaScriptSyntax;
-    private JMenu erlangSyntax;
-    private JMenu haskellSyntax;
-    private EditorMouseListener menuListener;
+    private JMenuItem javaScriptSyntax;
+    private JMenuItem erlangSyntax;
+    private JMenuItem haskellSyntax;
+    //private EditorMouseListener menuListener;
+    private MenuActions menuListener;
 
     public MenuBar(JComponent jComponent){
-        menuListener = new EditorMouseListener(jComponent);
+        menu = new JMenu("Syntax");
+       //menuListener = new EditorMouseListener(jComponent);
+        menuListener = new MenuActions(jComponent);
         menuBar = new JMenuBar();
-        plainTextSyntax = new JMenu(TEXT);
-        javaScriptSyntax = new JMenu(JAVASCRIPT);
-        haskellSyntax = new JMenu(HASKELL) ;
-        erlangSyntax = new JMenu(ERLANG);
-        plainTextSyntax.addMouseListener(menuListener);
+        plainTextSyntax = new JMenuItem(TEXT);
+        javaScriptSyntax = new JMenuItem(JAVASCRIPT);
+        haskellSyntax = new JMenuItem(HASKELL) ;
+        erlangSyntax = new JMenuItem(ERLANG);
+        /* plainTextSyntax.addMouseListener(menuListener);
         javaScriptSyntax.addMouseListener(menuListener);
         erlangSyntax.addMouseListener(menuListener);
-        haskellSyntax.addMouseListener(menuListener);
+        haskellSyntax.addMouseListener(menuListener);*/
+        plainTextSyntax.addActionListener(menuListener);
+        javaScriptSyntax.addActionListener(menuListener);
+        erlangSyntax.addActionListener(menuListener);
+        haskellSyntax.addActionListener(menuListener);
 
+        menu.add(haskellSyntax);
+        menu.add(plainTextSyntax);
+        menu.add(javaScriptSyntax);
+        menu.add(erlangSyntax);
+        menuBar.add(menu);
+        /*menuBar.add(haskellSyntax);
         menuBar.add(plainTextSyntax);
         menuBar.add(javaScriptSyntax);
-        menuBar.add(haskellSyntax);
-        menuBar.add(erlangSyntax);
+        menuBar.add(erlangSyntax);*/
     }
 
     public JMenuBar getMenuBar() {

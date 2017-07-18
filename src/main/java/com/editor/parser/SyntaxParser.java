@@ -15,7 +15,7 @@ public class SyntaxParser {
 
     private static String SYNTAX = Regexp.PLAIN_TEXT_WORDS;
 
-    public static  void setSyntax(Syntax syntax) {
+    public static void setSyntax(Syntax syntax) {
         switch (syntax) {
             case TEXT:
                 SYNTAX = Regexp.PLAIN_TEXT_WORDS;
@@ -38,7 +38,7 @@ public class SyntaxParser {
         return highlights;
     }
 
-    public List<CommonSyntaxHighlight> getReservedWordsHighlight2(TextEditorModel model) {
+    public List<CommonSyntaxHighlight> getReservedWordsHighlight(TextEditorModel model) {
         List<CommonSyntaxHighlight> reservedWordsHighlights = new ArrayList<>();
         ArrayList<StringBuilder> lineBuilders = model.getLineBuilders();
         for (int i = 0; i < lineBuilders.size(); i++) {
@@ -49,8 +49,39 @@ public class SyntaxParser {
                 reservedWordsHighlights.add(new CommonSyntaxHighlight(i, matcher.start(), matcher.end() - 1));
 
             }
-            reservedWordsHighlights.sort(Comparator.comparing(CommonSyntaxHighlight::getRowIndex).thenComparing(CommonSyntaxHighlight::getStartIndex));
         }
+        reservedWordsHighlights.sort(Comparator.comparing(CommonSyntaxHighlight::getRowIndex).thenComparing(CommonSyntaxHighlight::getStartIndex));
         return reservedWordsHighlights;
     }
+//ToDo: Fix brackets
+ /*   public List<CommonSyntaxHighlight> getBrackets(TextEditorModel model) {
+        List<CommonSyntaxHighlight> bracketsHighlights = new ArrayList<>();
+        ArrayList<StringBuilder> lineBuilders = model.getLineBuilders();
+        Stack<CommonSyntaxHighlight> stack = new Stack<>();
+        for (int i = 0; i < lineBuilders.size(); i++) {
+            StringBuilder stringBuilder = lineBuilders.get(i);
+            for (int j = 0; j < stringBuilder.length(); j++) {
+                char ch = stringBuilder.charAt(j);
+                if (ch == '{') {
+                    stack.add(new CommonSyntaxHighlight(i, j, -1));
+                } else if (ch == '}') {
+                    if (!stack.isEmpty()) {
+                        CommonSyntaxHighlight bracket = stack.pop();
+                        bracket.setEndIndex(j);
+                        bracketsHighlights.add(bracket);
+                    } else {
+                        CommonSyntaxHighlight bracket = new CommonSyntaxHighlight(i, -1, j);
+                        bracketsHighlights.add(bracket);
+                    }
+                }
+
+            }
+
+        }
+        if (!stack.isEmpty()) {
+            bracketsHighlights.addAll(stack);
+        }
+        bracketsHighlights.sort(Comparator.comparing(CommonSyntaxHighlight::getRowIndex).thenComparing(CommonSyntaxHighlight::getStartIndex));
+        return bracketsHighlights;
+    }*/
 }

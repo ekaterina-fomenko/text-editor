@@ -7,7 +7,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-
+//ToDo: remove this class
 public class EditorMouseListener implements MouseListener{
     public static final Color BACKGROUND_COLOR = new Color(25, 51, 0);
     public static final Color DEFAULT_BACKGROUND_COLOR = Color.WHITE;

@@ -30,8 +30,4 @@ Optional:
 * Add string highlighting (inside " ")
 * Add bold font for reserved words
 
-Possible issues:
-
-* Insert in StringBuilder O(n)
-
 

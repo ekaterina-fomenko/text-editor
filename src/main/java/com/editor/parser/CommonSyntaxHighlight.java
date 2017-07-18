@@ -8,7 +8,6 @@ public class CommonSyntaxHighlight {
     private int startIndex;
     private int endIndex;
 
-
     public CommonSyntaxHighlight(int rowIndex, int startIndex, int endIndex) {
         this.startIndex = startIndex;
         this.rowIndex = rowIndex;
@@ -26,4 +25,9 @@ public class CommonSyntaxHighlight {
     public int getRowIndex() {
         return rowIndex;
     }
+
+//ToDo: Remove if remove brackets
+/*    public void setEndIndex(int endIndex) {
+        this.endIndex = endIndex;
+    }*/
 }
