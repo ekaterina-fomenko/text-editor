@@ -22,6 +22,7 @@ public class DrawComponent extends JComponent {
     }
 
     private Dimension preferredSize;
+    private Rectangle cursorBounds;
 
     @Override
     protected void paintComponent(Graphics graphics) {
@@ -51,8 +52,7 @@ public class DrawComponent extends JComponent {
                 char ch = lineBuilder.charAt(column);
 
                 if (cursorPosition.row == row && cursorPosition.column == column) {
-                    drawPointer(graphics2D);
-                    scrollToPointer(graphics2D, row, column);
+                    drawPointer(graphics2D, row, column);
                 }
 
                 Color charColor = DEFAULT_CHAR_COLOR;
@@ -105,8 +105,7 @@ public class DrawComponent extends JComponent {
             }
 
             if (cursorPosition.row == row && cursorPosition.column == lineBuilder.length()) {
-                drawPointer(graphics2D);
-                scrollToPointer(graphics2D, row, lineBuilder.length());
+                drawPointer(graphics2D, row, lineBuilder.length());
             }
 
             if (row < lineBuilders.size()) {
@@ -147,19 +146,25 @@ public class DrawComponent extends JComponent {
         preferredSize = new Dimension(width, height);
     }
 
-    private void drawPointer(Graphics2D graphics2D) {
+    private void drawPointer(Graphics2D graphics2D, int row, int column) {
         graphics2D.setColor(Color.DARK_GRAY);
         graphics2D.fillRect(0, 3, 2, graphics2D.getFontMetrics().getHeight());
+
+        updateCursorBounds(graphics2D, row, column);
     }
 
-    private void scrollToPointer(Graphics2D graphics2D, int i, int j) {
+    private void updateCursorBounds(Graphics2D graphics2D, int i, int j) {
         FontMetrics fontMetrics = graphics2D.getFontMetrics();
 
         StringBuilder line = model.getLineBuilders().get(i);
-        scrollRectToVisible(new Rectangle(
+        cursorBounds = new Rectangle(
                 fontMetrics.stringWidth(line.substring(0, j)),
                 fontMetrics.getHeight() * i,
                 2,
-                fontMetrics.getHeight()));
+                fontMetrics.getHeight());
+    }
+
+    public void scrollToPointer() {
+        scrollRectToVisible(cursorBounds);
     }
 }
