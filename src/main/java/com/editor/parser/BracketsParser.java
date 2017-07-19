@@ -34,15 +34,15 @@ public class BracketsParser {
         setOfOpenedBrackets.add(CLOSED_SQUARE_BRACKET);
     }
 
-    private static List<CommonSyntaxHighlight> getBracketsHighlighting(TextEditorModel model) {
+    private static List<BracketModel> getBracketsHighlighting(TextEditorModel model) {
 
         List<StringBuilder> lines = model.getLineBuilders();
 
-        Stack<CommonSyntaxHighlight> stackOfBraces = new Stack<>();
-        Stack<CommonSyntaxHighlight> stackOfRoundBrackets = new Stack<>();
-        Stack<CommonSyntaxHighlight> stackOfSquareBrackets = new Stack<>();
+        Stack<BracketModel> stackOfBraces = new Stack<>();
+        Stack<BracketModel> stackOfRoundBrackets = new Stack<>();
+        Stack<BracketModel> stackOfSquareBrackets = new Stack<>();
 
-        List<CommonSyntaxHighlight> result = new java.util.ArrayList<>();
+        List<BracketModel> result = new java.util.ArrayList<>();
 
         for (int i = 0; i < lines.size(); i++) {
             StringBuilder line = lines.get(i);
@@ -53,13 +53,13 @@ public class BracketsParser {
                 if (setOfOpenedBrackets.contains(ch)) {
                     switch (ch) {
                         case '{':
-                            stackOfBraces.add(new CommonSyntaxHighlight(i, j, -1));
+                            stackOfBraces.add(new BracketModel(i, j, -1));
                             break;
                         case '(':
-                            stackOfRoundBrackets.add(new CommonSyntaxHighlight(i, j, -1));
+                            stackOfRoundBrackets.add(new BracketModel(i, j, -1));
                             break;
                         case '[':
-                            stackOfSquareBrackets.add(new CommonSyntaxHighlight(i, j, -1));
+                            stackOfSquareBrackets.add(new BracketModel(i, j, -1));
                             break;
                     }
                 } else if (setOfClosedBrackets.contains(ch)) {
@@ -81,13 +81,13 @@ public class BracketsParser {
         return result;
     }
 
-    private static void processClosedBracket(Stack<CommonSyntaxHighlight> stack, List<CommonSyntaxHighlight> result, int row, int column) {
+    private static void processClosedBracket(Stack<BracketModel> stack, List<BracketModel> result, int row, int column) {
         if (stack.isEmpty()) {
-            result.add(new CommonSyntaxHighlight(row, -1, column));
+            result.add(new BracketModel(row, column,-1));
         } else {
-            CommonSyntaxHighlight bracket = stack.pop();
+            BracketModel bracket = stack.pop();
             bracket.setEndIndex(column);
-            bracket.setRowEndIndex(row);
+            bracket.setRowSecondBracket(row);
             result.add(bracket);
         }
     }

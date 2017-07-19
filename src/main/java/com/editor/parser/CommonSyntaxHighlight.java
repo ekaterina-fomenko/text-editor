@@ -7,17 +7,11 @@ public class CommonSyntaxHighlight {
     private int rowIndex;
     private int startIndex;
     private int endIndex;
-    private int rowEndIndex = -1;
-
-/*    public CommonSyntaxHighlight(int rowIndex, int startIndex, int endIndex) {
-        new CommonSyntaxHighlight(rowIndex, startIndex, endIndex, -1);
-    }*/
 
     public CommonSyntaxHighlight(int rowIndex, int startIndex, int endIndex) {
         this.startIndex = startIndex;
         this.rowIndex = rowIndex;
         this.endIndex = endIndex;
-      //  this.rowEndIndex = rowEndIndex;
     }
 
     public int getStartIndex() {
@@ -30,13 +24,5 @@ public class CommonSyntaxHighlight {
 
     public int getRowIndex() {
         return rowIndex;
-    }
-
-    public void setEndIndex(int endIndex) {
-        this.endIndex = endIndex;
-    }
-
-    public void setRowEndIndex(int rowEndIndex) {
-        this.rowEndIndex = rowEndIndex;
     }
 }
