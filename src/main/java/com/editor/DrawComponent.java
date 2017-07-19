@@ -26,8 +26,8 @@ public class DrawComponent extends JComponent {
         Graphics2D graphics2D = (Graphics2D) graphics;
         graphics2D.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
         //graphics2D.setColor(new Color(99, 74, 68));
-        SyntaxParser js = new SyntaxParser();
-        java.util.List<CommonSyntaxHighlight> reservedWordsList = js.getReservedWordsHighlight(model);
+        SyntaxParser syntaxParser = new SyntaxParser();
+        java.util.List<CommonSyntaxHighlight> reservedWordsList = syntaxParser.getReservedWordsHighlight(model);
         //java.util.List<CommonSyntaxHighlight> bracketsList = js.getBrackets(model);
         int currentReservedWordIndex = 0;
         //int bracketInd = 0;
