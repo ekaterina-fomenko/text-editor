@@ -6,22 +6,19 @@ import javax.swing.*;
 
 public class TextArea {
     public JScrollPane jScrollPane;
-    public JComponent jComponent;
-    public JScrollBar hbar;
-    public JScrollBar vbar;
-
+    public DrawComponent jComponent;
 
     private TextEditorModel model;
+    public JFrame frame;
 
-    public TextArea() {
-        hbar = new JScrollBar(JScrollBar.HORIZONTAL, 30, 20, 0, 500);
-        vbar = new JScrollBar(JScrollBar.VERTICAL, 30, 40, 0, 500);
-
+    public TextArea(JFrame frame) {
+        this.frame = frame;
         model = new TextEditorModel();
         jComponent = new DrawComponent(model);
         jComponent.setActionMap(new TextActionMap(model, this));
         jComponent.setInputMap(JComponent.WHEN_FOCUSED, new TextInputMap());
         jScrollPane = new JScrollPane(jComponent);
-
+        jScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        jScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
     }
 }

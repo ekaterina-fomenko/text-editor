@@ -4,8 +4,6 @@ import com.editor.menu.MenuBar;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.AdjustmentEvent;
-import java.awt.event.AdjustmentListener;
 
 public class EditorFrame extends JFrame {
 
@@ -24,30 +22,15 @@ public class EditorFrame extends JFrame {
         setResizable(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        textArea = new TextArea();
+        textArea = new TextArea(this);
 
         Container pane = getContentPane();
+        pane.setPreferredSize(new Dimension(WIDTH, HEIGHT));
         pane.setLayout(new BorderLayout());
         pane.add(textArea.jScrollPane, BorderLayout.CENTER);
 
         menuBar = new MenuBar(textArea.jComponent);
         setJMenuBar(menuBar.getMenuBar());
-
-        //ToDo: Fix
-        textArea.hbar.addAdjustmentListener(new AdjustmentListener() {
-            @Override
-            public void adjustmentValueChanged(AdjustmentEvent e) {
-
-            }
-        });
-        textArea.vbar.addAdjustmentListener(new AdjustmentListener() {
-            @Override
-            public void adjustmentValueChanged(AdjustmentEvent e) {
-
-            }
-        });
-        pane.add(textArea.vbar, BorderLayout.EAST);
-        pane.add(textArea.hbar, BorderLayout.SOUTH);
     }
 
 

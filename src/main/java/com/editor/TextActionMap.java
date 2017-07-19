@@ -23,7 +23,7 @@ public class TextActionMap extends ActionMap {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     model.addText(e.getActionCommand());
-                    textArea.jComponent.repaint();
+                    render();
                 }
             });
         }
@@ -32,7 +32,7 @@ public class TextActionMap extends ActionMap {
             @Override
             public void actionPerformed(ActionEvent e) {
                 model.onBackspace();
-                textArea.jComponent.repaint();
+                render();
             }
         });
 
@@ -40,7 +40,7 @@ public class TextActionMap extends ActionMap {
             @Override
             public void actionPerformed(ActionEvent e) {
                 model.addNewLine();
-                textArea.jComponent.repaint();
+                render();
             }
         });
 
@@ -48,7 +48,7 @@ public class TextActionMap extends ActionMap {
             @Override
             public void actionPerformed(ActionEvent e) {
                 model.movePointerRight(true);
-                textArea.jComponent.repaint();
+                render();
             }
         });
 
@@ -57,7 +57,7 @@ public class TextActionMap extends ActionMap {
             public void actionPerformed(ActionEvent e) {
                 model.startOrContinueSelection();
                 model.movePointerRight(false);
-                textArea.jComponent.repaint();
+                render();
             }
         });
 
@@ -66,7 +66,7 @@ public class TextActionMap extends ActionMap {
             public void actionPerformed(ActionEvent e) {
                 System.out.println("inside left");
                 model.movePointerLeft(true);
-                textArea.jComponent.repaint();
+                render();
             }
         });
 
@@ -77,7 +77,7 @@ public class TextActionMap extends ActionMap {
                 model.startOrContinueSelection();
                 //model.startOrContinueSelection();
                 model.movePointerLeft(false);
-                textArea.jComponent.repaint();
+                render();
             }
         });
 
@@ -86,7 +86,7 @@ public class TextActionMap extends ActionMap {
             public void actionPerformed(ActionEvent e) {
                 System.out.println("up");
                 model.movePointerUp(true);
-                textArea.jComponent.repaint();
+                render();
             }
         });
 
@@ -96,7 +96,7 @@ public class TextActionMap extends ActionMap {
                 System.out.println("up");
                 model.startOrContinueSelection();
                 model.movePointerUp(false);
-                textArea.jComponent.repaint();
+                render();
             }
         });
 
@@ -105,7 +105,7 @@ public class TextActionMap extends ActionMap {
             public void actionPerformed(ActionEvent e) {
                 System.out.println("down");
                 model.movePointerDown(true);
-                textArea.jComponent.repaint();
+                render();
             }
         });
 
@@ -115,18 +115,18 @@ public class TextActionMap extends ActionMap {
                 System.out.println("down");
                 model.startOrContinueSelection();
                 model.movePointerDown(false);
-                textArea.jComponent.repaint();
+                render();
             }
         });
 
         put(TextInputMap.CTRL_V, new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("!!!"+model.getCursorPosition().column+" "+model.getCursorPosition().row);
+                System.out.println("!!!" + model.getCursorPosition().column + " " + model.getCursorPosition().row);
                 model.addText(clipboardAdapter.getText());
-                System.out.println(model.getCursorPosition().column+" "+model.getCursorPosition().row);
+                System.out.println(model.getCursorPosition().column + " " + model.getCursorPosition().row);
                 System.out.println(model.isSelectionInProgress());
-                textArea.jComponent.repaint();
+                render();
 
             }
         });
@@ -134,10 +134,16 @@ public class TextActionMap extends ActionMap {
         put(TextInputMap.CTRL_C, new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-               String selectedText = model.convertToString(model.getSelectedText());
+                String selectedText = model.convertToString(model.getSelectedText());
                 clipboardAdapter.setText(selectedText);
-                textArea.jComponent.repaint();
+                render();
             }
         });
+    }
+
+    private void render() {
+        DrawComponent jComponent = textArea.jComponent;
+        jComponent.repaint();
+        jComponent.revalidate();
     }
 }

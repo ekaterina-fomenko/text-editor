@@ -21,10 +21,17 @@ public class DrawComponent extends JComponent {
         this.model = model;
     }
 
+    private Dimension preferredSize;
+
     @Override
     protected void paintComponent(Graphics graphics) {
+        super.paintComponent(graphics);
+
         Graphics2D graphics2D = (Graphics2D) graphics;
         graphics2D.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
+
+        updatePreferredSize(graphics);
+
         //graphics2D.setColor(new Color(99, 74, 68));
         SyntaxParser syntaxParser = new SyntaxParser();
         java.util.List<CommonSyntaxHighlight> reservedWordsList = syntaxParser.getReservedWordsHighlight(model);
@@ -39,11 +46,13 @@ public class DrawComponent extends JComponent {
         for (int row = 0; row < lineBuilders.size(); row++) {
             StringBuilder lineBuilder = lineBuilders.get(row);
             Pointer cursorPosition = model.getCursorPosition();
+
             for (int column = 0; column < lineBuilder.length(); column++) {
                 char ch = lineBuilder.charAt(column);
 
                 if (cursorPosition.row == row && cursorPosition.column == column) {
                     drawPointer(graphics2D);
+                    scrollToPointer(graphics2D, row, column);
                 }
 
                 Color charColor = DEFAULT_CHAR_COLOR;
@@ -97,6 +106,7 @@ public class DrawComponent extends JComponent {
 
             if (cursorPosition.row == row && cursorPosition.column == lineBuilder.length()) {
                 drawPointer(graphics2D);
+                scrollToPointer(graphics2D, row, lineBuilder.length());
             }
 
             if (row < lineBuilders.size()) {
@@ -107,6 +117,11 @@ public class DrawComponent extends JComponent {
 
         }
 
+    }
+
+    @Override
+    public Dimension getPreferredSize() {
+        return preferredSize != null ? preferredSize : super.getPreferredSize();
     }
 
     private void drawChar(Graphics2D graphics2D, char currentChar, Color color, Color backgroundColor) {
@@ -120,8 +135,31 @@ public class DrawComponent extends JComponent {
         graphics2D.translate(graphics2D.getFontMetrics().charWidth(currentChar), 0);
     }
 
+    private void updatePreferredSize(Graphics graphics) {
+        FontMetrics fontMetrics = graphics.getFontMetrics();
+        int height = fontMetrics.getHeight() * (model.getLineBuilders().size() + 1);
+        int width = 0;
+        for (StringBuilder line : model.getLineBuilders()) {
+            int length = line.length();
+            int horSpaceOffset = length > 0 ? fontMetrics.charWidth(line.charAt(length - 1)) : 0;
+            width = Math.max(width, fontMetrics.stringWidth(line.toString())) + horSpaceOffset;
+        }
+        preferredSize = new Dimension(width, height);
+    }
+
     private void drawPointer(Graphics2D graphics2D) {
         graphics2D.setColor(Color.DARK_GRAY);
         graphics2D.fillRect(0, 3, 2, graphics2D.getFontMetrics().getHeight());
+    }
+
+    private void scrollToPointer(Graphics2D graphics2D, int i, int j) {
+        FontMetrics fontMetrics = graphics2D.getFontMetrics();
+
+        StringBuilder line = model.getLineBuilders().get(i);
+        scrollRectToVisible(new Rectangle(
+                fontMetrics.stringWidth(line.substring(0, j)),
+                fontMetrics.getHeight() * i,
+                2,
+                fontMetrics.getHeight()));
     }
 }
