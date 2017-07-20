@@ -15,19 +15,23 @@ Done:
 * Paste/Copy
 * Reserved erlang words highlighting
 * Reserved haskell words highlighting
-
-To Do:
-
 * Scrolling
+* Brackets (opened and closed)
 
 Optional:
 
-* Brackets (opened and closed)
 * Comments highlighting
-* Home, End
+* Home, End, CTRL+A
 * Tests
 * Add line numbers
 * Add string highlighting (inside " ")
 * Add bold font for reserved words
+* Add Save\Load file option
+* CTRL+Z
+
+Possible issues:
+
+* Copy not by CMD on Mac
+* Big files performance
 
 

@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DrawComponent extends JComponent {
+    public static final int POINTER_WIDTH = 2;
     private TextEditorModel model;
     public static final Color DEFAULT_CHAR_COLOR = Color.black;
     public static final Color SELECTOR_COLOR = new Color(250, 128, 114, 100);//(153, 255, 204);
@@ -24,6 +25,8 @@ public class DrawComponent extends JComponent {
 
     private Dimension preferredSize;
     private Rectangle cursorBounds;
+
+    private boolean scrollToCursorOnceOnPaint;
 
     @Override
     protected void paintComponent(Graphics graphics) {
@@ -130,23 +133,29 @@ public class DrawComponent extends JComponent {
 
     private void drawPointer(Graphics2D graphics2D, int row, int column) {
         graphics2D.setColor(Color.DARK_GRAY);
-        graphics2D.fillRect(0, 3, 2, graphics2D.getFontMetrics().getHeight());
+        graphics2D.fillRect(0, 3, POINTER_WIDTH, graphics2D.getFontMetrics().getHeight());
 
-        updateCursorBounds(graphics2D, row, column);
+        updatePointerBounds(graphics2D, row, column);
+
+        if (scrollToCursorOnceOnPaint) {
+            revalidate();
+            scrollRectToVisible(cursorBounds);
+            scrollToCursorOnceOnPaint = false;
+        }
     }
 
-    private void updateCursorBounds(Graphics2D graphics2D, int i, int j) {
+    private void updatePointerBounds(Graphics2D graphics2D, int i, int j) {
         FontMetrics fontMetrics = graphics2D.getFontMetrics();
 
         StringBuilder line = model.getLineBuilders().get(i);
         cursorBounds = new Rectangle(
                 fontMetrics.stringWidth(line.substring(0, j)),
                 fontMetrics.getHeight() * i,
-                2,
-                fontMetrics.getHeight());
+                POINTER_WIDTH * 4,
+                fontMetrics.getHeight() * 2);
     }
 
-    public void scrollToPointer() {
-        scrollRectToVisible(cursorBounds);
+    public void setScrollToCursorOnceOnPaint(boolean scrollToCursorOnceOnPaint) {
+        this.scrollToCursorOnceOnPaint = scrollToCursorOnceOnPaint;
     }
 }

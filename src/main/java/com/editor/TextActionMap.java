@@ -147,7 +147,7 @@ public class TextActionMap extends ActionMap {
         DrawComponent jComponent = textArea.jComponent;
         jComponent.repaint();
         jComponent.revalidate();
-        jComponent.scrollToPointer();
+        jComponent.setScrollToCursorOnceOnPaint(true);
         if (Syntax.TEXT != SyntaxParser.getCurrentSyntax()) {
             model.updatePairedBrackets();
         }

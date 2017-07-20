@@ -3,10 +3,7 @@ package com.editor.model;
 import com.editor.parser.Brackets;
 import com.editor.system.SystemConstants;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Stack;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class TextEditorModel {
@@ -100,18 +97,28 @@ public class TextEditorModel {
     public void addText(String text) {
         deleteSelection();
 
-        String[] lines = text.split(SystemConstants.NEW_LINE);
-        for (int i = 0; i < lines.length; i++) {
-            String line = lines[i];
+        List<String> lines = splitIntoLines(text);
+        for (int i = 0; i < lines.size(); i++) {
+            String line = lines.get(i);
             this.lineBuilders.get(cursorPosition.row).insert(cursorPosition.column, line);
             cursorPosition.column += line.length();
 
-            if (i < lines.length - 1) {
+            if (i < lines.size() - 1) {
                 cursorPosition.row++;
                 lineBuilders.add(cursorPosition.row, new StringBuilder());
                 cursorPosition.column = 0;
             }
         }
+    }
+
+    private List<String> splitIntoLines(String text) {
+        List<String> lines = new ArrayList<>();
+        Scanner sc = new Scanner(text);
+        while (sc.hasNextLine()) {
+            lines.add(sc.nextLine());
+        }
+
+        return lines;
     }
 
     public void addNewLine() {
