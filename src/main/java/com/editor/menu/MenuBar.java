@@ -1,6 +1,9 @@
 package com.editor.menu;
 
+import com.editor.TextArea;
+
 import javax.swing.*;
+
 public class MenuBar {
     public static final String TEXT = "Text";
     public static final String JAVASCRIPT = "JavaScript";
@@ -17,9 +20,9 @@ public class MenuBar {
     private JMenuItem haskellSyntax;
     private MenuActions menuListener;
 
-    public MenuBar(JComponent jComponent){
+    public MenuBar(TextArea textArea) {
         menu = new JMenu("Syntax");
-        menuListener = new MenuActions(jComponent);
+        menuListener = new MenuActions(textArea);
         menuBar = new JMenuBar();
         plainTextSyntax = new JMenuItem(TEXT);
         javaScriptSyntax = new JMenuItem(JAVASCRIPT);

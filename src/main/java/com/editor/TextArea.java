@@ -1,6 +1,7 @@
 package com.editor;
 
 import com.editor.model.TextEditorModel;
+import com.editor.parser.SyntaxParser;
 
 import javax.swing.*;
 
@@ -20,5 +21,15 @@ public class TextArea {
         jScrollPane = new JScrollPane(jComponent);
         jScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         jScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+    }
+
+    public void render() {
+        DrawComponent jComponent = this.jComponent;
+        jComponent.repaint();
+        jComponent.revalidate();
+        jComponent.setScrollToCursorOnceOnPaint(true);
+        if (!SyntaxParser.isTextSyntax()) {
+            model.updatePairedBrackets();
+        }
     }
 }

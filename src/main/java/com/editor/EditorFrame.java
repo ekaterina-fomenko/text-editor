@@ -29,7 +29,7 @@ public class EditorFrame extends JFrame {
         pane.setLayout(new BorderLayout());
         pane.add(textArea.jScrollPane, BorderLayout.CENTER);
 
-        menuBar = new MenuBar(textArea.jComponent);
+        menuBar = new MenuBar(textArea);
         setJMenuBar(menuBar.getMenuBar());
     }
 

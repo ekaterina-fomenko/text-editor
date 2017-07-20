@@ -39,6 +39,10 @@ public class SyntaxParser {
         }
     }
 
+    public static boolean isTextSyntax(){
+        return getCurrentSyntax() == Syntax.TEXT;
+    }
+
     public List<CommonSyntaxHighlight> getReservedWordsHighlight(TextEditorModel model) {
         List<CommonSyntaxHighlight> reservedWordsHighlights = new ArrayList<>();
         List<StringBuilder> lineBuilders = model.getLineBuilders();

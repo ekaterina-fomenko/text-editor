@@ -1,5 +1,6 @@
 package com.editor.menu;
 
+import com.editor.TextArea;
 import com.editor.parser.Syntax;
 import com.editor.parser.SyntaxParser;
 
@@ -8,9 +9,11 @@ import java.awt.event.ActionEvent;
 
 public class MenuActions extends AbstractAction {
     public JComponent jComponent;
+    public TextArea textArea;
 
-    public MenuActions(JComponent jComponent){
-        this.jComponent = jComponent;
+    public MenuActions(TextArea textArea){
+        this.textArea = textArea;
+        this.jComponent = textArea.jComponent;
     }
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -30,6 +33,6 @@ public class MenuActions extends AbstractAction {
                 SyntaxParser.setCurrentSyntax(Syntax.HASKELL);
                 break;
         }
-        jComponent.repaint();
+        textArea.render();
     }
 }

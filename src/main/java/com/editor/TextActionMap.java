@@ -1,8 +1,6 @@
 package com.editor;
 
 import com.editor.model.TextEditorModel;
-import com.editor.parser.Syntax;
-import com.editor.parser.SyntaxParser;
 import com.editor.system.ClipboardAdapter;
 
 import javax.swing.*;
@@ -25,7 +23,7 @@ public class TextActionMap extends ActionMap {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     model.addText(e.getActionCommand());
-                    render();
+                    textArea.render();
                 }
             });
         }
@@ -34,7 +32,7 @@ public class TextActionMap extends ActionMap {
             @Override
             public void actionPerformed(ActionEvent e) {
                 model.onBackspace();
-                render();
+                textArea.render();
             }
         });
 
@@ -42,7 +40,7 @@ public class TextActionMap extends ActionMap {
             @Override
             public void actionPerformed(ActionEvent e) {
                 model.addNewLine();
-                render();
+                textArea.render();
             }
         });
 
@@ -50,7 +48,7 @@ public class TextActionMap extends ActionMap {
             @Override
             public void actionPerformed(ActionEvent e) {
                 model.movePointerRight(true);
-                render();
+                textArea.render();
             }
         });
 
@@ -59,7 +57,7 @@ public class TextActionMap extends ActionMap {
             public void actionPerformed(ActionEvent e) {
                 model.startOrContinueSelection();
                 model.movePointerRight(false);
-                render();
+                textArea.render();
             }
         });
 
@@ -68,7 +66,7 @@ public class TextActionMap extends ActionMap {
             public void actionPerformed(ActionEvent e) {
                 System.out.println("inside left");
                 model.movePointerLeft(true);
-                render();
+                textArea.render();
             }
         });
 
@@ -79,7 +77,7 @@ public class TextActionMap extends ActionMap {
                 model.startOrContinueSelection();
                 //model.startOrContinueSelection();
                 model.movePointerLeft(false);
-                render();
+                textArea.render();
             }
         });
 
@@ -88,7 +86,7 @@ public class TextActionMap extends ActionMap {
             public void actionPerformed(ActionEvent e) {
                 System.out.println("up");
                 model.movePointerUp(true);
-                render();
+                textArea.render();
             }
         });
 
@@ -98,7 +96,7 @@ public class TextActionMap extends ActionMap {
                 System.out.println("up");
                 model.startOrContinueSelection();
                 model.movePointerUp(false);
-                render();
+                textArea.render();
             }
         });
 
@@ -107,7 +105,7 @@ public class TextActionMap extends ActionMap {
             public void actionPerformed(ActionEvent e) {
                 System.out.println("down");
                 model.movePointerDown(true);
-                render();
+                textArea.render();
             }
         });
 
@@ -117,7 +115,7 @@ public class TextActionMap extends ActionMap {
                 System.out.println("down");
                 model.startOrContinueSelection();
                 model.movePointerDown(false);
-                render();
+                textArea.render();
             }
         });
 
@@ -128,7 +126,7 @@ public class TextActionMap extends ActionMap {
                 model.addText(clipboardAdapter.getText());
                 System.out.println(model.getCursorPosition().column + " " + model.getCursorPosition().row);
                 System.out.println(model.isSelectionInProgress());
-                render();
+                textArea.render();
 
             }
         });
@@ -138,18 +136,8 @@ public class TextActionMap extends ActionMap {
             public void actionPerformed(ActionEvent e) {
                 String selectedText = model.convertToString(model.getSelectedText());
                 clipboardAdapter.setText(selectedText);
-                render();
+                textArea.render();
             }
         });
-    }
-
-    private void render() {
-        DrawComponent jComponent = textArea.jComponent;
-        jComponent.repaint();
-        jComponent.revalidate();
-        jComponent.setScrollToCursorOnceOnPaint(true);
-        if (Syntax.TEXT != SyntaxParser.getCurrentSyntax()) {
-            model.updatePairedBrackets();
-        }
     }
 }
