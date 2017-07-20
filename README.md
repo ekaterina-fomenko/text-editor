@@ -29,6 +29,7 @@ Text editor with syntax highlighting for Javascript, Haskell and Erlang
 * Scrolling
 * Brackets (opened and closed)
 * Move cursor to file begin, move cursor to file end (like Home, End)
+* Numbers,';',',' chars highlighting
 
 *Optional*:
 
