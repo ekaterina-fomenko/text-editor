@@ -4,7 +4,6 @@ import com.editor.model.TextEditorModel;
 import com.editor.system.ClipboardAdapter;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 
 public class TextActionMap extends ActionMap {
@@ -147,5 +146,6 @@ public class TextActionMap extends ActionMap {
         jComponent.repaint();
         jComponent.revalidate();
         jComponent.scrollToPointer();
+        model.updatePairedBrackets();
     }
 }

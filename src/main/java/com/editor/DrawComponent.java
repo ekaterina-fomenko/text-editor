@@ -9,6 +9,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
+import java.util.List;
 
 public class DrawComponent extends JComponent {
     private TextEditorModel model;
@@ -35,12 +36,13 @@ public class DrawComponent extends JComponent {
 
         //graphics2D.setColor(new Color(99, 74, 68));
         SyntaxParser syntaxParser = new SyntaxParser();
-        java.util.List<CommonSyntaxHighlight> reservedWordsList = syntaxParser.getReservedWordsHighlight(model);
-        //java.util.List<CommonSyntaxHighlight> bracketsList = js.getBrackets(model);
+        List<CommonSyntaxHighlight> reservedWordsList = syntaxParser.getReservedWordsHighlight(model);
+
+//        BracketsParser bracketParser = new BracketsParser();
+//        List<BracketModel> bracketsList = bracketParser.getBracketsHighlighting(model);
+//        int currentBracketIndex = 0;
+
         int currentReservedWordIndex = 0;
-        //int bracketInd = 0;
-        //int secondBracketPosition = -1;
-        //int secondBracketRow = -1;
         AffineTransform affineTransform = graphics2D.getTransform();
         ArrayList<StringBuilder> lineBuilders = model.getLineBuilders();
 
@@ -67,7 +69,34 @@ public class DrawComponent extends JComponent {
                         }
                     }
                 }
-               //ToDo: Fix brackets or remove
+
+                Pointer startBracket = model.getStartBracket();
+                Pointer endBracket = model.getEndBracket();
+                if (startBracket != null && row == startBracket.row && column == startBracket.column ||
+                        (endBracket != null && row == endBracket.row && column == endBracket.column)) {
+                    charColor = Color.GREEN;
+                }
+//
+//                if (bracketsList != null && !bracketsList.isEmpty()) {
+//                    if (bracketParser.hasPair) {
+//                        BracketModel bracketModel = bracketsList.get(currentBracketIndex);
+//                        if (bracketModel.getRowSecondBracket() == cursorPosition.row &&
+//                                bracketModel.getSecondIndex() == cursorPosition.column) {
+//                            charColor = Color.GREEN;
+//                            bracketParser.hasPair = false;
+//                        }
+//                    } else {
+//                        BracketModel bracketModel = bracketsList.get(currentBracketIndex);
+//                        if (bracketModel.getRowFirstBracket() == cursorPosition.row && bracketModel.getFirstIndex() == cursorPosition.column) {
+//                            charColor = Color.GREEN;
+//                            if (bracketModel.getSecondIndex() != -1) {
+//                                bracketParser.hasPair = true;
+//                                currentBracketIndex++;
+//                            }
+//                        }
+//                    }
+//                }
+                //ToDo: Fix brackets or remove
               /*  if (secondBracketPosition != -1) {
                     if (secondBracketRow == row && secondBracketPosition == column) {
                         charColor = Color.GREEN;

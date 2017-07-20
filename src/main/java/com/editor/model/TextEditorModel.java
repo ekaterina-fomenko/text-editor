@@ -1,9 +1,12 @@
 package com.editor.model;
 
+import com.editor.parser.Brackets;
 import com.editor.system.SystemConstants;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Stack;
 import java.util.stream.Collectors;
 
 public class TextEditorModel {
@@ -11,6 +14,16 @@ public class TextEditorModel {
     private Pointer selectionEnd;
     private ArrayList<StringBuilder> lineBuilders;
     private List<Integer> lineLengthsList;
+    private Pointer startBracket;
+    private Pointer endBracket;
+
+    public Pointer getStartBracket() {
+        return startBracket;
+    }
+
+    public Pointer getEndBracket() {
+        return endBracket;
+    }
 
     public TextEditorModel() {
         this.cursorPosition = new Pointer();
@@ -19,6 +32,69 @@ public class TextEditorModel {
 
         this.lineLengthsList = new ArrayList<>();
         this.lineLengthsList.add(0);
+    }
+
+    public void updatePairedBrackets() {
+        startBracket = null;
+        endBracket = null;
+
+        char ch = getChar(cursorPosition.row, cursorPosition.column);
+        Brackets brackets = new Brackets();
+        Map<Character, Boolean> bracketsDirectionMap = brackets.getBracketsDirection();
+        Map<Character, Character> bracketsOppositeMap = brackets.getBracketsOpposite();
+
+        if (bracketsDirectionMap.containsKey(ch)) {
+            boolean isForward = bracketsDirectionMap.get(ch);
+            char opposite = bracketsOppositeMap.get(ch);
+
+            Stack<Boolean> stack = new Stack<>();
+            stack.add(isForward);
+            startBracket = new Pointer(cursorPosition.row, cursorPosition.column);
+            int i = cursorPosition.row;
+            int j = cursorPosition.column;
+            while (true) {
+                j += isForward ? 1 : -1;
+                if (isForward) {
+                    if (j == lineBuilders.get(i).length()) {
+                        j = 0;
+                        i++;
+                    }
+
+                    if (i == lineBuilders.size()) {
+                        break;
+                    }
+                } else {
+                    if (j == -1) {
+                        i--;
+                        j = i > 0 ? lineBuilders.get(i).length() - 1 : 0;
+                    }
+
+                    if (i == -1) {
+                        break;
+                    }
+                }
+
+                if (getChar(i, j) == opposite) {
+                    stack.pop();
+                } else if (getChar(i, j) == ch) {
+                    stack.add(isForward);
+                }
+
+                if (stack.isEmpty()) {
+                    endBracket = new Pointer(i, j);
+                    break;
+                }
+            }
+
+        }
+
+        System.out.println("Brackets");
+        System.out.println(startBracket);
+        System.out.println(endBracket);
+    }
+
+    private char getChar(int row, int column) {
+        return this.lineBuilders.get(row).charAt(column);
     }
 
     public void addText(String text) {
@@ -226,7 +302,7 @@ public class TextEditorModel {
             for (int i = from.row + 1; i < to.row; i++) {
                 resultList.add(lineBuilders.get(i));
             }
-            resultList.add(new StringBuilder(endingRow.substring(0,to.column)));
+            resultList.add(new StringBuilder(endingRow.substring(0, to.column)));
 
         }
         return resultList;

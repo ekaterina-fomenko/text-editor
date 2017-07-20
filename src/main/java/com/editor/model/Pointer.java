@@ -45,4 +45,12 @@ public class Pointer implements Comparable<Pointer> {
         result = 31 * result + column;
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "Pointer{" +
+                "row=" + row +
+                ", column=" + column +
+                '}';
+    }
 }

@@ -2,10 +2,7 @@ package com.editor.parser;
 
 import com.editor.model.TextEditorModel;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.Stack;
+import java.util.*;
 
 public class BracketsParser {
 
@@ -34,7 +31,7 @@ public class BracketsParser {
         setOfOpenedBrackets.add(CLOSED_SQUARE_BRACKET);
     }
 
-    private static List<BracketModel> getBracketsHighlighting(TextEditorModel model) {
+    public List<BracketModel> getBracketsHighlighting(TextEditorModel model) {
 
         List<StringBuilder> lines = model.getLineBuilders();
 
@@ -42,7 +39,7 @@ public class BracketsParser {
         Stack<BracketModel> stackOfRoundBrackets = new Stack<>();
         Stack<BracketModel> stackOfSquareBrackets = new Stack<>();
 
-        List<BracketModel> result = new java.util.ArrayList<>();
+        List<BracketModel> result = new ArrayList<>();
 
         for (int i = 0; i < lines.size(); i++) {
             StringBuilder line = lines.get(i);
@@ -66,11 +63,13 @@ public class BracketsParser {
                     switch (ch) {
                         case '}':
                             processClosedBracket(stackOfBraces, result, i, ch);
+                            break;
                         case ')':
                             processClosedBracket(stackOfRoundBrackets, result, i, ch);
                             break;
                         case ']':
                             processClosedBracket(stackOfSquareBrackets, result, i, ch);
+                            break;
                     }
                 }
             }
@@ -78,15 +77,16 @@ public class BracketsParser {
         result.addAll(stackOfBraces);
         result.addAll(stackOfRoundBrackets);
         result.addAll(stackOfSquareBrackets);
+        result.sort(Comparator.comparing(BracketModel::getRowFirstBracket).thenComparing(BracketModel::getFirstIndex));
         return result;
     }
 
     private static void processClosedBracket(Stack<BracketModel> stack, List<BracketModel> result, int row, int column) {
         if (stack.isEmpty()) {
-            result.add(new BracketModel(row, column,-1));
+            result.add(new BracketModel(row, column, -1));
         } else {
             BracketModel bracket = stack.pop();
-            bracket.setEndIndex(column);
+            bracket.setSecondIndex(column);
             bracket.setRowSecondBracket(row);
             result.add(bracket);
         }

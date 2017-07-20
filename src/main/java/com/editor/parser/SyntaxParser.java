@@ -9,7 +9,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * This class helps highlight the syntax of a JavaScript
+ * This class helps highlight the syntax of languages
  */
 public class SyntaxParser {
 
@@ -31,11 +31,6 @@ public class SyntaxParser {
                 break;
         }
 
-    }
-
-    public List<CommonSyntaxHighlight> makeHighlights(String input) {
-        List<CommonSyntaxHighlight> highlights = new ArrayList<>();
-        return highlights;
     }
 
     public List<CommonSyntaxHighlight> getReservedWordsHighlight(TextEditorModel model) {

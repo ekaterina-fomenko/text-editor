@@ -7,7 +7,7 @@ public class BracketModel {
     private int rowSecondBracket;
 
     public BracketModel(int rowFirstBracket, int firstIndex, int secondIndex){
-      new BracketModel(rowFirstBracket, firstIndex, secondIndex, -1);
+      this(rowFirstBracket, firstIndex, secondIndex, -1);
     }
     public BracketModel(int rowFirstBracket, int firstIndex, int secondIndex, int rowSecondBracket) {
         this.rowFirstBracket = rowFirstBracket;
@@ -28,15 +28,21 @@ public class BracketModel {
         return secondIndex;
     }
 
+    public boolean isPaired() {
+        return firstIndex != -1 && secondIndex != -1;
+    }
+
     public int getRowSecondBracket() {
         return rowSecondBracket;
     }
 
-    public void setEndIndex(int endIndex) {
-        this.secondIndex = endIndex;
+    public void setSecondIndex(int secondIndex) {
+        this.secondIndex = secondIndex;
     }
 
     public void setRowSecondBracket(int rowSecondBracket) {
         this.rowSecondBracket = rowSecondBracket;
     }
+
+
 }
