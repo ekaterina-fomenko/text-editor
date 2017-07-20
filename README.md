@@ -28,7 +28,7 @@ Text editor with syntax highlighting for Javascript, Haskell and Erlang
 * Reserved haskell words highlighting
 * Scrolling
 * Brackets (opened and closed)
-* Move cursor to file begin, move cursor to the file end (like Home, End)
+* Move cursor to file begin, move cursor to file end (like Home, End)
 
 *Optional*:
 
