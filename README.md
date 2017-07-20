@@ -2,17 +2,18 @@
 
 Text editor with syntax highlighting for Javascript, Haskell and Erlang
 
-Hot Keys:
-* Home - Alt + Up
-* End - Alt + Down
-* Copy - Ctrl + C
-* Paste - Ctrl + V
-* Delete - Backspace
-* Enter - New line
-* Select - Shift + Up/Down/Right/Left
+**Hot Keys**:
+
+* Home: Alt + Up
+* End: Alt + Down
+* Copy: Ctrl + C
+* Paste: Ctrl + V
+* Delete: Backspace
+* Enter: New line
+* Select: Shift + Up/Down/Right/Left
 
 
-Done:
+**Done**:
 
 * Chars
 * Cursor
@@ -29,7 +30,7 @@ Done:
 * Brackets (opened and closed)
 * Move cursor to file begin, move cursor to the file end (like Home, End)
 
-Optional:
+*Optional*:
 
 * Comments highlighting
 * CTRL+A
@@ -40,7 +41,7 @@ Optional:
 * Add Save\Load file option
 * CTRL+Z
 
-Possible issues:
+*Possible issues*:
 
 * Copy not by CMD on Mac
 * Big files performance
