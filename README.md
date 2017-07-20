@@ -34,7 +34,7 @@ Text editor with syntax highlighting for Javascript, Haskell and Erlang
 *Optional*:
 
 * Comments highlighting
-* CTRL+A
+* CTRL+A, Home/End for lines
 * Tests
 * Add line numbers
 * Add string highlighting (inside " ")
