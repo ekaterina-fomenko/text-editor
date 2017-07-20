@@ -18,16 +18,16 @@ public class MenuActions extends AbstractAction {
         event.setSelected(false);
         switch (event.getText()) {
             case MenuBar.TEXT:
-                SyntaxParser.setSyntax(Syntax.TEXT);
+                SyntaxParser.setCurrentSyntax(Syntax.TEXT);
                 break;
             case MenuBar.JAVASCRIPT:
-                SyntaxParser.setSyntax(Syntax.JAVASCRIPT);
+                SyntaxParser.setCurrentSyntax(Syntax.JAVASCRIPT);
                 break;
             case MenuBar.ERLANG:
-                SyntaxParser.setSyntax(Syntax.ERLANG);
+                SyntaxParser.setCurrentSyntax(Syntax.ERLANG);
                 break;
             case MenuBar.HASKELL:
-                SyntaxParser.setSyntax(Syntax.HASKELL);
+                SyntaxParser.setCurrentSyntax(Syntax.HASKELL);
                 break;
         }
         jComponent.repaint();

@@ -13,24 +13,30 @@ import java.util.regex.Pattern;
  */
 public class SyntaxParser {
 
-    private static String SYNTAX = Regexp.PLAIN_TEXT_WORDS;
+    private static Syntax CurrentSyntax = Syntax.TEXT;
+    private static String CurrentSyntaxRegex = Regexp.PLAIN_TEXT_WORDS;
 
-    public static void setSyntax(Syntax syntax) {
+    public static Syntax getCurrentSyntax() {
+        return CurrentSyntax;
+    }
+
+    public static void setCurrentSyntax(Syntax syntax) {
+        CurrentSyntax = syntax;
+
         switch (syntax) {
             case TEXT:
-                SYNTAX = Regexp.PLAIN_TEXT_WORDS;
+                CurrentSyntaxRegex = Regexp.PLAIN_TEXT_WORDS;
                 break;
             case JAVASCRIPT:
-                SYNTAX = Regexp.JS_RESERVED_WORDS;
+                CurrentSyntaxRegex = Regexp.JS_RESERVED_WORDS;
                 break;
             case HASKELL:
-                SYNTAX = Regexp.HASKELL_RESERVED_WORDS;
+                CurrentSyntaxRegex = Regexp.HASKELL_RESERVED_WORDS;
                 break;
             case ERLANG:
-                SYNTAX = Regexp.ERLANG_RESERVED_WORDS;
+                CurrentSyntaxRegex = Regexp.ERLANG_RESERVED_WORDS;
                 break;
         }
-
     }
 
     public List<CommonSyntaxHighlight> getReservedWordsHighlight(TextEditorModel model) {
@@ -39,7 +45,7 @@ public class SyntaxParser {
         for (int i = 0; i < lineBuilders.size(); i++) {
             StringBuilder stringBuilder = lineBuilders.get(i);
             String input = stringBuilder.toString();
-            Matcher matcher = Pattern.compile(Regexp.BEFORE_REGEX + SYNTAX + Regexp.AFTER_REGEX).matcher(input);
+            Matcher matcher = Pattern.compile(Regexp.BEFORE_REGEX + CurrentSyntaxRegex + Regexp.AFTER_REGEX).matcher(input);
             while (matcher.find()) {
                 reservedWordsHighlights.add(new CommonSyntaxHighlight(i, matcher.start(), matcher.end() - 1));
 

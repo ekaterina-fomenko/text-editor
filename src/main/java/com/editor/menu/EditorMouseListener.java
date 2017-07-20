@@ -36,16 +36,16 @@ public class EditorMouseListener implements MouseListener{
         event.setBackground(BACKGROUND_COLOR);
         switch (event.getText()) {
             case MenuBar.TEXT:
-                SyntaxParser.setSyntax(Syntax.TEXT);
+                SyntaxParser.setCurrentSyntax(Syntax.TEXT);
                 break;
             case MenuBar.JAVASCRIPT:
-                SyntaxParser.setSyntax(Syntax.JAVASCRIPT);
+                SyntaxParser.setCurrentSyntax(Syntax.JAVASCRIPT);
                 break;
             case MenuBar.ERLANG:
-                SyntaxParser.setSyntax(Syntax.ERLANG);
+                SyntaxParser.setCurrentSyntax(Syntax.ERLANG);
                 break;
             case MenuBar.HASKELL:
-                SyntaxParser.setSyntax(Syntax.HASKELL);
+                SyntaxParser.setCurrentSyntax(Syntax.HASKELL);
                 break;
         }
         jComponent.repaint();

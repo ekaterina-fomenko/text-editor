@@ -1,6 +1,8 @@
 package com.editor;
 
 import com.editor.model.TextEditorModel;
+import com.editor.parser.Syntax;
+import com.editor.parser.SyntaxParser;
 import com.editor.system.ClipboardAdapter;
 
 import javax.swing.*;
@@ -146,6 +148,8 @@ public class TextActionMap extends ActionMap {
         jComponent.repaint();
         jComponent.revalidate();
         jComponent.scrollToPointer();
-        model.updatePairedBrackets();
+        if (Syntax.TEXT != SyntaxParser.getCurrentSyntax()) {
+            model.updatePairedBrackets();
+        }
     }
 }

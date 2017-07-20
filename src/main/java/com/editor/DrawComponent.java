@@ -38,10 +38,6 @@ public class DrawComponent extends JComponent {
         SyntaxParser syntaxParser = new SyntaxParser();
         List<CommonSyntaxHighlight> reservedWordsList = syntaxParser.getReservedWordsHighlight(model);
 
-//        BracketsParser bracketParser = new BracketsParser();
-//        List<BracketModel> bracketsList = bracketParser.getBracketsHighlighting(model);
-//        int currentBracketIndex = 0;
-
         int currentReservedWordIndex = 0;
         AffineTransform affineTransform = graphics2D.getTransform();
         ArrayList<StringBuilder> lineBuilders = model.getLineBuilders();
@@ -76,50 +72,7 @@ public class DrawComponent extends JComponent {
                         (endBracket != null && row == endBracket.row && column == endBracket.column)) {
                     charColor = Color.GREEN;
                 }
-//
-//                if (bracketsList != null && !bracketsList.isEmpty()) {
-//                    if (bracketParser.hasPair) {
-//                        BracketModel bracketModel = bracketsList.get(currentBracketIndex);
-//                        if (bracketModel.getRowSecondBracket() == cursorPosition.row &&
-//                                bracketModel.getSecondIndex() == cursorPosition.column) {
-//                            charColor = Color.GREEN;
-//                            bracketParser.hasPair = false;
-//                        }
-//                    } else {
-//                        BracketModel bracketModel = bracketsList.get(currentBracketIndex);
-//                        if (bracketModel.getRowFirstBracket() == cursorPosition.row && bracketModel.getFirstIndex() == cursorPosition.column) {
-//                            charColor = Color.GREEN;
-//                            if (bracketModel.getSecondIndex() != -1) {
-//                                bracketParser.hasPair = true;
-//                                currentBracketIndex++;
-//                            }
-//                        }
-//                    }
-//                }
-                //ToDo: Fix brackets or remove
-              /*  if (secondBracketPosition != -1) {
-                    if (secondBracketRow == row && secondBracketPosition == column) {
-                        charColor = Color.GREEN;
-                        secondBracketPosition = -1;
-                        secondBracketRow = -1;
-                    }
-                } else {
-                    if (bracketsList != null && !bracketsList.isEmpty() && (ch == '{' || ch == '}')) {
-                        CommonSyntaxHighlight currentBracket = bracketsList.get(bracketInd);
-                        int start = currentBracket.getStartIndex();
-                        int end = currentBracket.getEndIndex();
-                        if (currentBracket.getRowIndex() == row) {
-                            if (start == column || end == column) {
-                                bracketEndInd++;
-                                secondBracketRow = row;
-                                secondBracketPosition = column;
-                                charColor = Color.GREEN;
-                            }
 
-                        }
-
-                    }
-                }*/
                 if (model.isSelectionInProgress()) {
                     Pointer currentCharPoint = new Pointer(row, column);
                     Pointer from = model.getSelectionFrom();

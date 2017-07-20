@@ -38,7 +38,13 @@ public class TextEditorModel {
         startBracket = null;
         endBracket = null;
 
-        char ch = getChar(cursorPosition.row, cursorPosition.column);
+        int cursorRow = cursorPosition.row;
+        int column = cursorPosition.column;
+        if (!isValidTextPosition(cursorRow, column)) {
+            return;
+        }
+
+        char ch = getChar(cursorRow, column);
         Brackets brackets = new Brackets();
         Map<Character, Boolean> bracketsDirectionMap = brackets.getBracketsDirection();
         Map<Character, Character> bracketsOppositeMap = brackets.getBracketsOpposite();
@@ -48,53 +54,47 @@ public class TextEditorModel {
             char opposite = bracketsOppositeMap.get(ch);
 
             Stack<Boolean> stack = new Stack<>();
-            stack.add(isForward);
-            startBracket = new Pointer(cursorPosition.row, cursorPosition.column);
-            int i = cursorPosition.row;
-            int j = cursorPosition.column;
-            while (true) {
-                j += isForward ? 1 : -1;
-                if (isForward) {
-                    if (j == lineBuilders.get(i).length()) {
-                        j = 0;
-                        i++;
+            int i = cursorRow;
+            int j = column;
+            while (i > -1 && i < lineBuilders.size()) {
+                if (isValidTextPosition(i, j)) {
+                    char aChar = getChar(i, j);
+                    if (aChar == opposite) {
+                        stack.pop();
+                    } else if (aChar == ch) {
+                        stack.add(isForward);
+                        startBracket = new Pointer(cursorRow, column);
                     }
-
-                    if (i == lineBuilders.size()) {
-                        break;
-                    }
-                } else {
-                    if (j == -1) {
-                        i--;
-                        j = i > 0 ? lineBuilders.get(i).length() - 1 : 0;
-                    }
-
-                    if (i == -1) {
-                        break;
-                    }
-                }
-
-                if (getChar(i, j) == opposite) {
-                    stack.pop();
-                } else if (getChar(i, j) == ch) {
-                    stack.add(isForward);
                 }
 
                 if (stack.isEmpty()) {
                     endBracket = new Pointer(i, j);
                     break;
                 }
+
+                j += isForward ? 1 : -1;
+                if (isForward) {
+                    if (j > lineBuilders.get(i).length() - 1) {
+                        j = 0;
+                        i++;
+                    }
+                } else {
+                    if (j < 0) {
+                        i--;
+                        j = Math.max(0, i > -1 ? lineBuilders.get(i).length() - 1 : 0);
+                    }
+                }
             }
 
         }
-
-        System.out.println("Brackets");
-        System.out.println(startBracket);
-        System.out.println(endBracket);
     }
 
     private char getChar(int row, int column) {
         return this.lineBuilders.get(row).charAt(column);
+    }
+
+    private boolean isValidTextPosition(int row, int column) {
+        return row > -1 && row < lineBuilders.size() && column > -1 && column < lineBuilders.get(row).length();
     }
 
     public void addText(String text) {
