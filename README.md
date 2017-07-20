@@ -2,6 +2,16 @@
 
 Text editor with syntax highlighting for Javascript, Haskell and Erlang
 
+Hot Keys:
+* Home - Alt + Up
+* End - Alt + Down
+* Copy - Ctrl + C
+* Paste - Ctrl + V
+* Delete - Backspace
+* Enter - New line
+* Select - Shift + Up/Down/Right/Left
+
+
 Done:
 
 * Chars
@@ -17,11 +27,12 @@ Done:
 * Reserved haskell words highlighting
 * Scrolling
 * Brackets (opened and closed)
+* Move cursor to file begin, move cursor to the file end (like Home, End)
 
 Optional:
 
 * Comments highlighting
-* Home, End, CTRL+A
+* CTRL+A
 * Tests
 * Add line numbers
 * Add string highlighting (inside " ")
@@ -33,5 +44,7 @@ Possible issues:
 
 * Copy not by CMD on Mac
 * Big files performance
+* Paired brackets highlighting when one of them in literal (ex.: "adf{kj" })
+* Highlighting for numbers in names with numbers (ex.: abc2)
 
 

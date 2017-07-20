@@ -73,9 +73,7 @@ public class TextActionMap extends ActionMap {
         put(TextInputMap.LEFT_SHIFT, new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("inside left");
                 model.startOrContinueSelection();
-                //model.startOrContinueSelection();
                 model.movePointerLeft(false);
                 textArea.render();
             }
@@ -84,7 +82,6 @@ public class TextActionMap extends ActionMap {
         put(TextInputMap.UP, new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("up");
                 model.movePointerUp(true);
                 textArea.render();
             }
@@ -93,7 +90,6 @@ public class TextActionMap extends ActionMap {
         put(TextInputMap.UP_SHIFT, new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("up");
                 model.startOrContinueSelection();
                 model.movePointerUp(false);
                 textArea.render();
@@ -103,7 +99,6 @@ public class TextActionMap extends ActionMap {
         put(TextInputMap.DOWN, new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("down");
                 model.movePointerDown(true);
                 textArea.render();
             }
@@ -112,7 +107,6 @@ public class TextActionMap extends ActionMap {
         put(TextInputMap.DOWN_SHIFT, new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("down");
                 model.startOrContinueSelection();
                 model.movePointerDown(false);
                 textArea.render();
@@ -122,7 +116,6 @@ public class TextActionMap extends ActionMap {
         put(TextInputMap.CTRL_V, new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("!!!" + model.getCursorPosition().column + " " + model.getCursorPosition().row);
                 model.addText(clipboardAdapter.getText());
                 System.out.println(model.getCursorPosition().column + " " + model.getCursorPosition().row);
                 System.out.println(model.isSelectionInProgress());
@@ -136,6 +129,22 @@ public class TextActionMap extends ActionMap {
             public void actionPerformed(ActionEvent e) {
                 String selectedText = model.convertToString(model.getSelectedText());
                 clipboardAdapter.setText(selectedText);
+                textArea.render();
+            }
+        });
+
+        put(TextInputMap.INIT_POSITION, new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                model.movePointerToInitPosition();
+                textArea.render();
+            }
+        });
+
+        put(TextInputMap.LAST_POSITION, new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                model.movePointerToLastPosition();
                 textArea.render();
             }
         });

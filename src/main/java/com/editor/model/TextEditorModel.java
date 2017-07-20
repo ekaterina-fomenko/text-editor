@@ -314,4 +314,14 @@ public class TextEditorModel {
         }
         return resultList;
     }
+
+    public void movePointerToInitPosition() {
+        cursorPosition.row = 0;
+        cursorPosition.column = 0;
+    }
+
+    public void movePointerToLastPosition() {
+        cursorPosition.row = lineBuilders.size()-1;
+        cursorPosition.column = lineBuilders.get(cursorPosition.row).length();
+    }
 }

@@ -29,6 +29,10 @@ public class TextInputMap extends InputMap {
 
     public static final String CTRL_V = "CTRL_V";
 
+    public static final String INIT_POSITION = "ALT_UP";
+
+    public static final Object LAST_POSITION = "ALT_DOWN";
+
     {
         for (char i = ' '; i <= '~'; i++) {
             put(KeyStroke.getKeyStroke(i), Character.toString(i));
@@ -50,5 +54,8 @@ public class TextInputMap extends InputMap {
 
         put(KeyStroke.getKeyStroke(KeyEvent.VK_C, KeyEvent.CTRL_MASK), CTRL_C);
         put(KeyStroke.getKeyStroke(KeyEvent.VK_V, KeyEvent.CTRL_MASK), CTRL_V);
+
+        put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, KeyEvent.ALT_MASK), INIT_POSITION);
+        put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, KeyEvent.ALT_MASK), LAST_POSITION);
     }
 }

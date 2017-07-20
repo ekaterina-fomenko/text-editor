@@ -16,7 +16,7 @@ public class DrawComponent extends JComponent {
     private TextEditorModel model;
     public static final Color DEFAULT_CHAR_COLOR = Color.black;
 
-    public static final Color SELECTOR_COLOR = new Color(250, 128, 114, 100);//(153, 255, 204);
+    public static final Color SELECTOR_COLOR = new Color(250, 128, 114, 100);
     public static final Color RESERVED_WORDS_COLOR = new Color(204, 0, 153);
     public static final Color PAIRED_BRACKETS_COLOR = Color.GREEN;
     public static final int DEFAULT_Y_COORDINATE = 15;
@@ -78,7 +78,16 @@ public class DrawComponent extends JComponent {
                             (endBracket != null && row == endBracket.row && column == endBracket.column)) {
                         charColor = PAIRED_BRACKETS_COLOR;
                     }
+
+                    if (Character.isDigit(ch)) {
+                        charColor = Color.BLUE;
+                    }
+
+                    if (ch == ',' || ch == ';') {
+                        charColor = RESERVED_WORDS_COLOR;
+                    }
                 }
+
                 if (model.isSelectionInProgress()) {
                     Pointer currentCharPoint = new Pointer(row, column);
                     Pointer from = model.getSelectionFrom();
