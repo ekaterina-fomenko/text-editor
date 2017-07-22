@@ -24,12 +24,15 @@ public class TextArea {
     }
 
     public void render() {
+        System.out.println("!!!! x: " + frame.getBounds().getCenterX() + " y:" + frame.getBounds().getCenterY() + " height: " + frame.getBounds().getHeight());
         DrawComponent jComponent = this.jComponent;
-        jComponent.repaint();
         jComponent.revalidate();
+        jComponent.repaint();
         jComponent.setScrollToCursorOnceOnPaint(true);
         if (!SyntaxParser.isTextSyntax()) {
             model.updatePairedBrackets();
         }
+
+        jComponent.setVisibleBounds(jScrollPane.getViewport().getViewRect());
     }
 }

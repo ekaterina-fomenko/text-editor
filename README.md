@@ -30,6 +30,7 @@ Text editor with syntax highlighting for Javascript, Haskell and Erlang
 * Brackets (opened and closed)
 * Move cursor to file begin, move cursor to file end (like Home, End)
 * Numbers,';',',' chars highlighting
+* Text virtualization
 
 *Optional*:
 
@@ -42,11 +43,12 @@ Text editor with syntax highlighting for Javascript, Haskell and Erlang
 * Add Save\Load file option
 * CTRL+Z
 
-*Possible issues*:
+*Known issues*:
 
 * Copy not by CMD on Mac
-* Big files performance
 * Paired brackets highlighting when one of them in literal (ex.: "adf{kj" })
 * Highlighting for numbers in names with numbers (ex.: abc2)
-
-
+* Rendering 1 letter when move scroll (major)
+* not rendering after CTRL+V or CTRL+DOWN, requires additional gesture to rerender (major)
+* Blinking cursor on scrolling up and down (minor)
+* Highlihting broken (blocker)

@@ -9,7 +9,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
-import java.util.List;
 
 public class DrawComponent extends JComponent {
     public static final int POINTER_WIDTH = 2;
@@ -29,33 +28,65 @@ public class DrawComponent extends JComponent {
     private Rectangle cursorBounds;
 
     private boolean scrollToCursorOnceOnPaint;
+    private Rectangle visibleBounds;
 
     @Override
     protected void paintComponent(Graphics graphics) {
         super.paintComponent(graphics);
+        long startDraw = System.currentTimeMillis();
 
         Graphics2D graphics2D = (Graphics2D) graphics;
         graphics2D.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
 
         updatePreferredSize(graphics);
 
-        //graphics2D.setColor(new Color(99, 74, 68));
         SyntaxParser syntaxParser = new SyntaxParser();
-        List<CommonSyntaxHighlight> reservedWordsList = syntaxParser.getReservedWordsHighlight(model);
+        java.util.List<CommonSyntaxHighlight> reservedWordsList = syntaxParser.getReservedWordsHighlight(model);
 
         int currentReservedWordIndex = 0;
         AffineTransform affineTransform = graphics2D.getTransform();
         ArrayList<StringBuilder> lineBuilders = model.getLineBuilders();
+        int fontHeight = graphics.getFontMetrics().getHeight();
 
-        for (int row = 0; row < lineBuilders.size(); row++) {
+        updatePointerBounds(graphics2D, model.getCursorPosition().row, model.getCursorPosition().column);
+
+        if (scrollToCursorOnceOnPaint) {
+            revalidate();
+            scrollRectToVisible(cursorBounds);
+            scrollToCursorOnceOnPaint = false;
+        }
+
+        int startRow = 0;
+        int endRow = lineBuilders.size() - 1;
+        if (visibleBounds != null) {
+            startRow = Math.max(0, visibleBounds.y / fontHeight - 1);
+            graphics2D.translate(0, Math.max(0, visibleBounds.y - fontHeight));
+            affineTransform = graphics2D.getTransform();
+
+            endRow = Math.min(lineBuilders.size() - 1, (visibleBounds.y + visibleBounds.height) / fontHeight - 1);
+        }
+
+        for (int row = startRow; row <= endRow; row++) {
             StringBuilder lineBuilder = lineBuilders.get(row);
             Pointer cursorPosition = model.getCursorPosition();
 
-            for (int column = 0; column < lineBuilder.length(); column++) {
+            int startCol = 0;
+            int endCol = lineBuilder.length() - 1;
+            if (visibleBounds != null) {
+                System.out.println(visibleBounds);
+                startCol = Math.max(0, getCharIndex(visibleBounds.x, lineBuilder, graphics2D));
+                graphics2D.translate(visibleBounds.x, 0);
+
+                endCol = Math.min(lineBuilder.length() - 1, getCharIndex(visibleBounds.x + visibleBounds.width, lineBuilder, graphics2D));
+                System.out.println("startCol " + startCol);
+                System.out.println("endCol " + endCol);
+            }
+
+            for (int column = startCol; column <= endCol; column++) {
                 char ch = lineBuilder.charAt(column);
 
                 if (cursorPosition.row == row && cursorPosition.column == column) {
-                    drawPointer(graphics2D, row, column);
+                    drawPointer(graphics2D);
                 }
 
                 Color charColor = DEFAULT_CHAR_COLOR;
@@ -102,7 +133,7 @@ public class DrawComponent extends JComponent {
             }
 
             if (cursorPosition.row == row && cursorPosition.column == lineBuilder.length()) {
-                drawPointer(graphics2D, row, lineBuilder.length());
+                drawPointer(graphics2D);
             }
 
             if (row < lineBuilders.size()) {
@@ -113,6 +144,22 @@ public class DrawComponent extends JComponent {
 
         }
 
+        System.out.println("Draw: " + (System.currentTimeMillis() - startDraw));
+
+    }
+
+    private int getCharIndex(int x, StringBuilder lineBuilder, Graphics2D graphics2D) {
+        int size = 0;
+        int i;
+        for (i = 0; i < lineBuilder.length() && size < x; i++) {
+            size += graphics2D.getFontMetrics().charWidth(lineBuilder.charAt(i));
+        }
+
+        return i;
+    }
+
+    public void setVisibleBounds(Rectangle visibleBounds) {
+        this.visibleBounds = visibleBounds;
     }
 
     @Override
@@ -121,6 +168,8 @@ public class DrawComponent extends JComponent {
     }
 
     private void drawChar(Graphics2D graphics2D, char currentChar, Color color, Color backgroundColor) {
+        //  graphics2D.setClip(0,0,100,100);
+        //  graphics2D.clearRect(0,0,50,50);
         if (backgroundColor != null) {
             graphics2D.setColor(backgroundColor);
             graphics2D.fillRect(0, 3, graphics2D.getFontMetrics().charWidth(currentChar), graphics2D.getFontMetrics().getHeight());
@@ -132,6 +181,7 @@ public class DrawComponent extends JComponent {
     }
 
     private void updatePreferredSize(Graphics graphics) {
+        long start = System.currentTimeMillis();
         FontMetrics fontMetrics = graphics.getFontMetrics();
         int height = fontMetrics.getHeight() * (model.getLineBuilders().size() + 1);
         int width = 0;
@@ -141,19 +191,12 @@ public class DrawComponent extends JComponent {
             width = Math.max(width, fontMetrics.stringWidth(line.toString())) + horSpaceOffset;
         }
         preferredSize = new Dimension(width, height);
+        System.out.println("updatePreferredSize: " + (System.currentTimeMillis() - start));
     }
 
-    private void drawPointer(Graphics2D graphics2D, int row, int column) {
+    private void drawPointer(Graphics2D graphics2D) {
         graphics2D.setColor(Color.DARK_GRAY);
         graphics2D.fillRect(0, 3, POINTER_WIDTH, graphics2D.getFontMetrics().getHeight());
-
-        updatePointerBounds(graphics2D, row, column);
-
-        if (scrollToCursorOnceOnPaint) {
-            revalidate();
-            scrollRectToVisible(cursorBounds);
-            scrollToCursorOnceOnPaint = false;
-        }
     }
 
     private void updatePointerBounds(Graphics2D graphics2D, int i, int j) {
@@ -165,9 +208,11 @@ public class DrawComponent extends JComponent {
                 fontMetrics.getHeight() * i,
                 POINTER_WIDTH * 4,
                 fontMetrics.getHeight() * 2);
+        System.out.println("fontMetrics.stringWidth" + fontMetrics.stringWidth(line.substring(0, j)) + "fontMetrics.getHeight()" + fontMetrics.getHeight() * i);
     }
 
     public void setScrollToCursorOnceOnPaint(boolean scrollToCursorOnceOnPaint) {
         this.scrollToCursorOnceOnPaint = scrollToCursorOnceOnPaint;
+        System.out.println("scrollC:" + this.scrollToCursorOnceOnPaint);
     }
 }

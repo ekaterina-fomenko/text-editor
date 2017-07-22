@@ -64,9 +64,11 @@ public class TextActionMap extends ActionMap {
         put(TextInputMap.LEFT, new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                long l = System.currentTimeMillis();
                 System.out.println("inside left");
                 model.movePointerLeft(true);
                 textArea.render();
+                System.out.println("LEFT: " + (System.currentTimeMillis() - l));
             }
         });
 

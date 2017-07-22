@@ -321,7 +321,7 @@ public class TextEditorModel {
     }
 
     public void movePointerToLastPosition() {
-        cursorPosition.row = lineBuilders.size()-1;
+        cursorPosition.row = lineBuilders.size() - 1;
         cursorPosition.column = lineBuilders.get(cursorPosition.row).length();
     }
 }
