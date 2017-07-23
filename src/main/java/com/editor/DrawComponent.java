@@ -40,8 +40,7 @@ public class DrawComponent extends JComponent {
 
         updatePreferredSize(graphics);
 
-        SyntaxParser syntaxParser = new SyntaxParser();
-        java.util.List<CommonSyntaxHighlight> reservedWordsList = syntaxParser.getReservedWordsHighlight(model);
+        java.util.List<CommonSyntaxHighlight> reservedWordsList = model.getReservedWordsList();
 
         int currentReservedWordIndex = 0;
         AffineTransform affineTransform = graphics2D.getTransform();

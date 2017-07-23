@@ -33,6 +33,6 @@ public class MenuActions extends AbstractAction {
                 SyntaxParser.setCurrentSyntax(Syntax.HASKELL);
                 break;
         }
-        textArea.render();
+        textArea.render(true);
     }
 }
