@@ -184,6 +184,8 @@ public class DrawComponent extends JComponent {
 
             model.setSelectionEnd(new Pointer(cursorRow, cursorCol));
             mouseSelectionEndPointer = null;
+        } else {
+            model.setSelectionEnd(null);
         }
     }
 
