@@ -21,6 +21,13 @@ public class TextArea {
         jScrollPane = new JScrollPane(jComponent);
         jScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         jScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        jScrollPane.getHorizontalScrollBar().addAdjustmentListener(listener -> {
+            jComponent.setVisibleBounds(jScrollPane.getViewport().getViewRect());
+        });
+
+        jScrollPane.getVerticalScrollBar().addAdjustmentListener(listener -> {
+            jComponent.setVisibleBounds(jScrollPane.getViewport().getViewRect());
+        });
     }
 
     public void render() {
@@ -28,11 +35,12 @@ public class TextArea {
         DrawComponent jComponent = this.jComponent;
 
         jComponent.revalidate();
+        jComponent.setVisibleBounds(jScrollPane.getViewport().getViewRect());
         jComponent.repaint();
         jComponent.setScrollToCursorOnceOnPaint(true);
         if (!SyntaxParser.isTextSyntax()) {
             model.updatePairedBrackets();
         }
-        jComponent.setVisibleBounds(jScrollPane.getViewport().getViewRect());
+
     }
 }

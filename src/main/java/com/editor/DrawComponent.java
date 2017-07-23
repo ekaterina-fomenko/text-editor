@@ -34,6 +34,8 @@ public class DrawComponent extends JComponent {
     @Override
     protected void paintComponent(Graphics graphics) {
         super.paintComponent(graphics);
+        System.out.println();
+        System.out.println("Paint started. VisibleBounds: " + visibleBounds);
         long startDraw = System.currentTimeMillis();
 
         Graphics2D graphics2D = (Graphics2D) graphics;
@@ -79,13 +81,10 @@ public class DrawComponent extends JComponent {
             int startCol = 0;
             int endCol = lineBuilder.length() - 1;
             if (visibleBounds != null) {
-                System.out.println(visibleBounds);
                 startCol = Math.max(0, getCharIndex(visibleBounds.x, lineBuilder, graphics2D));
                 graphics2D.translate(visibleBounds.x, 0);
 
                 endCol = Math.min(lineBuilder.length() - 1, getCharIndex(visibleBounds.x + visibleBounds.width, lineBuilder, graphics2D));
-                System.out.println("startCol " + startCol);
-                System.out.println("endCol " + endCol);
             }
 
             for (int column = startCol; column <= endCol; column++) {
@@ -214,11 +213,11 @@ public class DrawComponent extends JComponent {
                 fontMetrics.getHeight() * i,
                 POINTER_WIDTH * 4,
                 fontMetrics.getHeight() * 2);
-        System.out.println("fontMetrics.stringWidth" + fontMetrics.stringWidth(line.substring(0, j)) + "fontMetrics.getHeight()" + fontMetrics.getHeight() * i);
+//        System.out.println("fontMetrics.stringWidth" + fontMetrics.stringWidth(line.substring(0, j)) + "fontMetrics.getHeight()" + fontMetrics.getHeight() * i);
     }
 
     public void setScrollToCursorOnceOnPaint(boolean scrollToCursorOnceOnPaint) {
         this.scrollToCursorOnceOnPaint = scrollToCursorOnceOnPaint;
-        System.out.println("scrollC:" + this.scrollToCursorOnceOnPaint);
+//        System.out.println("scrollC:" + this.scrollToCursorOnceOnPaint);
     }
 }
