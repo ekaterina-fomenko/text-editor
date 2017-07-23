@@ -122,7 +122,6 @@ public class TextActionMap extends ActionMap {
                 System.out.println(model.getCursorPosition().column + " " + model.getCursorPosition().row);
                 System.out.println(model.isSelectionInProgress());
                 textArea.render();
-
             }
         });
 

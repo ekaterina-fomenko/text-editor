@@ -30,7 +30,7 @@ public class TextArea {
             jComponent.setVisibleBounds(jScrollPane.getViewport().getViewRect());
         });
 
-        mouseListener = new DrawComponentMouseListener(jComponent);
+        mouseListener = new DrawComponentMouseListener(jComponent, model);
         jComponent.addMouseListener(mouseListener);
         jComponent.addMouseMotionListener(mouseListener);
     }

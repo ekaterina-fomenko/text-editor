@@ -182,10 +182,13 @@ public class DrawComponent extends JComponent {
             int cursorRow = getColumnByY(fontHeight, cursorY);
             int cursorCol = getCharIndex(cursorX, lineBuilders.get(cursorRow), graphics2D);
 
-            model.setSelectionEnd(new Pointer(cursorRow, cursorCol));
+            Pointer selectionEnd = new Pointer(cursorRow, cursorCol);
+            if (selectionEnd.equals(model.getCursorPosition())) {
+                selectionEnd = null;
+            }
+            model.setSelectionEnd(selectionEnd);
+
             mouseSelectionEndPointer = null;
-        } else {
-            model.setSelectionEnd(null);
         }
     }
 

@@ -30,7 +30,9 @@ Text editor with syntax highlighting for Javascript, Haskell and Erlang
 * Brackets (opened and closed)
 * Move cursor to file begin, move cursor to file end (like Home, End)
 * Numbers,';',',' chars highlighting
-* Text virtualization
+* Text virtualization (big files support)
+* Mouse click to set cursor
+* Mouse selection inside visible area
 
 *Optional*:
 
@@ -41,6 +43,7 @@ Text editor with syntax highlighting for Javascript, Haskell and Erlang
 * Add string highlighting (inside " ")
 * Add Save\Load file option
 * CTRL+Z
+* Mouse selection wider than visible area (without moving scrollbar)
 
 *Known issues*:
 
@@ -48,6 +51,7 @@ Text editor with syntax highlighting for Javascript, Haskell and Erlang
 * Paired brackets highlighting when one of them in literal (ex.: "adf{kj" })
 * Highlighting for numbers in names with numbers (ex.: abc2)
 * Blinking cursor on scrolling up and down (minor)
+*
 
 *Compile and run*
 Requires: Maven and Java
