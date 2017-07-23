@@ -328,6 +328,7 @@ public class TextEditorModel {
     public void setCursorPosition(Pointer cursorPosition) {
         System.out.println("Update cursor to: " + cursorPosition);
         this.cursorPosition = cursorPosition;
+        selectionEnd = cursorPosition;
     }
 
     public void setSelectionEnd(Pointer selectionEnd) {

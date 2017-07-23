@@ -8,7 +8,6 @@ import java.awt.event.MouseMotionListener;
 
 public class DrawComponentMouseListener implements MouseListener, MouseMotionListener {
     private final DrawComponent drawComponent;
-    private boolean isMouseDown;
 
     public DrawComponentMouseListener(DrawComponent drawComponent) {
         this.drawComponent = drawComponent;
@@ -18,21 +17,17 @@ public class DrawComponentMouseListener implements MouseListener, MouseMotionLis
     public void mouseClicked(MouseEvent e) {
         Pointer mouseClickedPointer = new Pointer(e.getY(), e.getX());
         System.out.println("Mouse clicked on: " + mouseClickedPointer);
-//
-//        drawComponent.setMouseCursorPointer(mouseClickedPointer);
-//        drawComponent.repaint();
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
-        isMouseDown = true;
+        drawComponent.setMouseSelectionEndPointer(null);
         drawComponent.setMouseCursorPointer(new Pointer(e.getY(), e.getX()));
         drawComponent.repaint();
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        isMouseDown = false;
         drawComponent.setMouseSelectionEndPointer(new Pointer(e.getY(), e.getX()));
         drawComponent.repaint();
     }
@@ -49,14 +44,11 @@ public class DrawComponentMouseListener implements MouseListener, MouseMotionLis
 
     @Override
     public void mouseDragged(MouseEvent e) {
-
+        drawComponent.setMouseSelectionEndPointer(new Pointer(e.getY(), e.getX()));
+        drawComponent.repaint();
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        if (isMouseDown) {
-            drawComponent.setMouseSelectionEndPointer(new Pointer(e.getY(), e.getX()));
-            drawComponent.repaint();
-        }
     }
 }

@@ -175,16 +175,16 @@ public class DrawComponent extends JComponent {
             mouseCursorPointer = null;
         }
 
-        //        if (mouseSelectionEndPointer != null) {
-        //            int cursorY = mouseSelectionEndPointer.row;
-        //            int cursorX = mouseSelectionEndPointer.column;
-        //
-        //            int cursorRow = getColumnByY(fontHeight, cursorY);
-        //            int cursorCol = getCharIndex(cursorX, lineBuilders.get(model.getCursorPosition().row), graphics2D);
-        //
-        //            model.setSelectionEnd(new Pointer(cursorRow, cursorCol));
-        //            mouseSelectionEndPointer = null;
-        //        }
+        if (mouseSelectionEndPointer != null) {
+            int cursorY = mouseSelectionEndPointer.row;
+            int cursorX = mouseSelectionEndPointer.column;
+
+            int cursorRow = getColumnByY(fontHeight, cursorY);
+            int cursorCol = getCharIndex(cursorX, lineBuilders.get(cursorRow), graphics2D);
+
+            model.setSelectionEnd(new Pointer(cursorRow, cursorCol));
+            mouseSelectionEndPointer = null;
+        }
     }
 
     private int getColumnByY(int fontHeight, int cursorY) {
