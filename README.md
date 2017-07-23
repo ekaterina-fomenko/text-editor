@@ -39,7 +39,6 @@ Text editor with syntax highlighting for Javascript, Haskell and Erlang
 * Tests
 * Add line numbers
 * Add string highlighting (inside " ")
-* Add bold font for reserved words
 * Add Save\Load file option
 * CTRL+Z
 
@@ -48,7 +47,12 @@ Text editor with syntax highlighting for Javascript, Haskell and Erlang
 * Copy not by CMD on Mac
 * Paired brackets highlighting when one of them in literal (ex.: "adf{kj" })
 * Highlighting for numbers in names with numbers (ex.: abc2)
-* Rendering 1 letter when move scroll (major)
-* not rendering after CTRL+V or CTRL+DOWN, requires additional gesture to rerender (major)
 * Blinking cursor on scrolling up and down (minor)
-* Highlihting broken (blocker)
+
+*Compile and run*
+Requires: Maven and Java
+1) Compile
+mvn install
+
+2) Run
+ java -cp target/text-editor-1.0-SNAPSHOT.jar com.editor.Main

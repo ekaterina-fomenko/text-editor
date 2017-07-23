@@ -1,7 +1,6 @@
 package com.editor.model;
 
 import com.editor.parser.Brackets;
-import com.editor.parser.CommonSyntaxHighlight;
 import com.editor.system.SystemConstants;
 
 import java.util.*;
@@ -14,7 +13,6 @@ public class TextEditorModel {
     private List<Integer> lineLengthsList;
     private Pointer startBracket;
     private Pointer endBracket;
-    private List<CommonSyntaxHighlight> reservedWordsList;
 
     public Pointer getStartBracket() {
         return startBracket;
@@ -325,13 +323,5 @@ public class TextEditorModel {
     public void movePointerToLastPosition() {
         cursorPosition.row = lineBuilders.size() - 1;
         cursorPosition.column = lineBuilders.get(cursorPosition.row).length();
-    }
-
-    public List<CommonSyntaxHighlight> getReservedWordsList(){
-        return reservedWordsList;
-    }
-
-    public void setReservedWordsList(List<CommonSyntaxHighlight> reservedWordsList) {
-        this.reservedWordsList = reservedWordsList;
     }
 }

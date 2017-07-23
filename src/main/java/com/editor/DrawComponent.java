@@ -45,8 +45,6 @@ public class DrawComponent extends JComponent {
 
         updatePreferredSize(graphics);
 
-        //java.util.List<CommonSyntaxHighlight> reservedWordsList = model.getReservedWordsList();
-
         int currentReservedWordIndex = 0;
         AffineTransform affineTransform = graphics2D.getTransform();
         ArrayList<StringBuilder> lineBuilders = model.getLineBuilders();
@@ -99,6 +97,12 @@ public class DrawComponent extends JComponent {
 
                 if (currentReservedWordIndex < reservedWordsList.size()) {
                     CommonSyntaxHighlight currentReservedWord = reservedWordsList.get(currentReservedWordIndex);
+
+                    while(currentReservedWord.getRowIndex() == row && startCol>currentReservedWord.getEndIndex()){
+                        currentReservedWordIndex++;
+                        currentReservedWord = reservedWordsList.get(currentReservedWordIndex);
+                    }
+
                     if (currentReservedWord.getRowIndex() == row && currentReservedWord.getStartIndex() <= column && column <= currentReservedWord.getEndIndex()) {
                         charColor = RESERVED_WORDS_COLOR;
                         if (column == currentReservedWord.getEndIndex()) {
