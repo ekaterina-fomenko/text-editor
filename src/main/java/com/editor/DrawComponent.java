@@ -30,11 +30,8 @@ public class DrawComponent extends JComponent {
 
     private boolean scrollToCursorOnceOnPaint;
     private Rectangle visibleBounds;
-    private Pointer mouseClickedPointer;
-
-    public void setMouseClickedPointer(Pointer mouseClickedPointer) {
-        this.mouseClickedPointer = mouseClickedPointer;
-    }
+    private Pointer mouseSelectionEndPointer;
+    private Pointer mouseCursorPointer;
 
     @Override
     protected void paintComponent(Graphics graphics) {
@@ -55,16 +52,7 @@ public class DrawComponent extends JComponent {
         ArrayList<StringBuilder> lineBuilders = model.getLineBuilders();
         int fontHeight = graphics.getFontMetrics().getHeight();
 
-        if (mouseClickedPointer != null) {
-            int cursorY = mouseClickedPointer.row;
-            int cursorX = mouseClickedPointer.column;
-
-            int cursorRow = getColumnByY(fontHeight, cursorY);
-            int cursorCol = getCharIndex(cursorX, lineBuilders.get(model.getCursorPosition().row), graphics2D);
-
-            model.setCursorPosition(new Pointer(cursorRow, cursorCol));
-            mouseClickedPointer = null;
-        }
+        handleMouseActions(graphics2D, lineBuilders, fontHeight);
 
         updatePointerBounds(graphics2D, model.getCursorPosition().row, model.getCursorPosition().column);
 
@@ -172,8 +160,35 @@ public class DrawComponent extends JComponent {
 
     }
 
+    private void handleMouseActions(Graphics2D graphics2D, ArrayList<StringBuilder> lineBuilders, int fontHeight) {
+        if (mouseCursorPointer != null) {
+            int cursorY = mouseCursorPointer.row;
+            int cursorX = mouseCursorPointer.column;
+
+            int cursorRow = getColumnByY(fontHeight, cursorY);
+
+            StringBuilder line = lineBuilders.get(cursorRow);
+            int cursorCol = getCharIndex(cursorX, line, graphics2D);
+
+            model.setCursorPosition(new Pointer(cursorRow, cursorCol));
+
+            mouseCursorPointer = null;
+        }
+
+        //        if (mouseSelectionEndPointer != null) {
+        //            int cursorY = mouseSelectionEndPointer.row;
+        //            int cursorX = mouseSelectionEndPointer.column;
+        //
+        //            int cursorRow = getColumnByY(fontHeight, cursorY);
+        //            int cursorCol = getCharIndex(cursorX, lineBuilders.get(model.getCursorPosition().row), graphics2D);
+        //
+        //            model.setSelectionEnd(new Pointer(cursorRow, cursorCol));
+        //            mouseSelectionEndPointer = null;
+        //        }
+    }
+
     private int getColumnByY(int fontHeight, int cursorY) {
-        int desiredLineNumber = cursorY / fontHeight - 1;
+        int desiredLineNumber = (int) Math.round(cursorY / (double) fontHeight) - 1;
         int lastLineNumber = model.getLineBuilders().size() - 1;
         if (desiredLineNumber > lastLineNumber) {
             desiredLineNumber = lastLineNumber;
@@ -244,11 +259,19 @@ public class DrawComponent extends JComponent {
                 fontMetrics.getHeight() * i,
                 POINTER_WIDTH * 4,
                 fontMetrics.getHeight() * 2);
-//        System.out.println("fontMetrics.stringWidth" + fontMetrics.stringWidth(line.substring(0, j)) + "fontMetrics.getHeight()" + fontMetrics.getHeight() * i);
+        //        System.out.println("fontMetrics.stringWidth" + fontMetrics.stringWidth(line.substring(0, j)) + "fontMetrics.getHeight()" + fontMetrics.getHeight() * i);
     }
 
     public void setScrollToCursorOnceOnPaint(boolean scrollToCursorOnceOnPaint) {
         this.scrollToCursorOnceOnPaint = scrollToCursorOnceOnPaint;
-//        System.out.println("scrollC:" + this.scrollToCursorOnceOnPaint);
+        //        System.out.println("scrollC:" + this.scrollToCursorOnceOnPaint);
+    }
+
+    public void setMouseCursorPointer(Pointer mouseCursorPointer) {
+        this.mouseCursorPointer = mouseCursorPointer;
+    }
+
+    public void setMouseSelectionEndPointer(Pointer mouseSelectionEndPointer) {
+        this.mouseSelectionEndPointer = mouseSelectionEndPointer;
     }
 }

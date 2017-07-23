@@ -32,6 +32,7 @@ public class TextArea {
 
         mouseListener = new DrawComponentMouseListener(jComponent);
         jComponent.addMouseListener(mouseListener);
+        jComponent.addMouseMotionListener(mouseListener);
     }
 
     public void render() {
