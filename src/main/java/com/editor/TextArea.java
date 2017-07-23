@@ -11,6 +11,7 @@ public class TextArea {
 
     private TextEditorModel model;
     public JFrame frame;
+    private DrawComponentMouseListener mouseListener;
 
     public TextArea(JFrame frame) {
         this.frame = frame;
@@ -28,6 +29,9 @@ public class TextArea {
         jScrollPane.getVerticalScrollBar().addAdjustmentListener(listener -> {
             jComponent.setVisibleBounds(jScrollPane.getViewport().getViewRect());
         });
+
+        mouseListener = new DrawComponentMouseListener(jComponent);
+        jComponent.addMouseListener(mouseListener);
     }
 
     public void render() {

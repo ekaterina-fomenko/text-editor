@@ -30,6 +30,11 @@ public class DrawComponent extends JComponent {
 
     private boolean scrollToCursorOnceOnPaint;
     private Rectangle visibleBounds;
+    private Pointer mouseClickedPointer;
+
+    public void setMouseClickedPointer(Pointer mouseClickedPointer) {
+        this.mouseClickedPointer = mouseClickedPointer;
+    }
 
     @Override
     protected void paintComponent(Graphics graphics) {
@@ -50,8 +55,18 @@ public class DrawComponent extends JComponent {
         ArrayList<StringBuilder> lineBuilders = model.getLineBuilders();
         int fontHeight = graphics.getFontMetrics().getHeight();
 
-        updatePointerBounds(graphics2D, model.getCursorPosition().row, model.getCursorPosition().column);
+        if (mouseClickedPointer != null) {
+            int cursorY = mouseClickedPointer.row;
+            int cursorX = mouseClickedPointer.column;
 
+            int cursorRow = getColumnByY(fontHeight, cursorY);
+            int cursorCol = getCharIndex(cursorX, lineBuilders.get(model.getCursorPosition().row), graphics2D);
+
+            model.setCursorPosition(new Pointer(cursorRow, cursorCol));
+            mouseClickedPointer = null;
+        }
+
+        updatePointerBounds(graphics2D, model.getCursorPosition().row, model.getCursorPosition().column);
 
         if (scrollToCursorOnceOnPaint) {
             revalidate();
@@ -98,7 +113,7 @@ public class DrawComponent extends JComponent {
                 if (currentReservedWordIndex < reservedWordsList.size()) {
                     CommonSyntaxHighlight currentReservedWord = reservedWordsList.get(currentReservedWordIndex);
 
-                    while(currentReservedWord.getRowIndex() == row && startCol>currentReservedWord.getEndIndex()){
+                    while (currentReservedWord.getRowIndex() == row && startCol > currentReservedWord.getEndIndex()) {
                         currentReservedWordIndex++;
                         currentReservedWord = reservedWordsList.get(currentReservedWordIndex);
                     }
@@ -155,6 +170,18 @@ public class DrawComponent extends JComponent {
 
         System.out.println("Draw: " + (System.currentTimeMillis() - startDraw));
 
+    }
+
+    private int getColumnByY(int fontHeight, int cursorY) {
+        int desiredLineNumber = cursorY / fontHeight - 1;
+        int lastLineNumber = model.getLineBuilders().size() - 1;
+        if (desiredLineNumber > lastLineNumber) {
+            desiredLineNumber = lastLineNumber;
+        }
+        if (desiredLineNumber < 0) {
+            desiredLineNumber = 0;
+        }
+        return desiredLineNumber;
     }
 
     private int getCharIndex(int x, StringBuilder lineBuilder, Graphics2D graphics2D) {

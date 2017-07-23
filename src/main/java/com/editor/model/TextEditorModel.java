@@ -324,4 +324,9 @@ public class TextEditorModel {
         cursorPosition.row = lineBuilders.size() - 1;
         cursorPosition.column = lineBuilders.get(cursorPosition.row).length();
     }
+
+    public void setCursorPosition(Pointer cursorPosition) {
+        System.out.println("Update cursor to: " + cursorPosition);
+        this.cursorPosition = cursorPosition;
+    }
 }
