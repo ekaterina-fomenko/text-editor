@@ -30,19 +30,22 @@ public class TextArea {
             jComponent.setVisibleBounds(jScrollPane.getViewport().getViewRect());
         });
 
-        mouseListener = new DrawComponentMouseListener(jComponent, model);
+        mouseListener = new DrawComponentMouseListener(this, jComponent, model);
         jComponent.addMouseListener(mouseListener);
         jComponent.addMouseMotionListener(mouseListener);
     }
 
     public void render() {
-        System.out.println("!!!! x: " + frame.getBounds().getCenterX() + " y:" + frame.getBounds().getCenterY() + " height: " + frame.getBounds().getHeight());
-        DrawComponent jComponent = this.jComponent;
+        render(true);
+    }
 
-        jComponent.revalidate();
-        jComponent.setVisibleBounds(jScrollPane.getViewport().getViewRect());
-        jComponent.repaint();
-        jComponent.setScrollToCursorOnceOnPaint(true);
+    public void render(boolean forceScrollToCursor) {
+//        System.out.println("!!!! x: " + frame.getBounds().getCenterX() + " y:" + frame.getBounds().getCenterY() + " height: " + frame.getBounds().getHeight());
+
+        this.jComponent.revalidate();
+        this.jComponent.setVisibleBounds(jScrollPane.getViewport().getViewRect());
+        this.jComponent.repaint();
+        this.jComponent.setScrollToCursorOnceOnPaint(forceScrollToCursor);
         if (!SyntaxParser.isTextSyntax()) {
             model.updatePairedBrackets();
         }

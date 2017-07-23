@@ -101,9 +101,9 @@ public class DrawComponent extends JComponent {
                 if (currentReservedWordIndex < reservedWordsList.size()) {
                     CommonSyntaxHighlight currentReservedWord = reservedWordsList.get(currentReservedWordIndex);
 
-                    while (currentReservedWord.getRowIndex() == row && startCol > currentReservedWord.getEndIndex()) {
-                        currentReservedWordIndex++;
+                    while (currentReservedWordIndex < reservedWordsList.size() && currentReservedWord.getRowIndex() == row && startCol > currentReservedWord.getEndIndex()) {
                         currentReservedWord = reservedWordsList.get(currentReservedWordIndex);
+                        currentReservedWordIndex++;
                     }
 
                     if (currentReservedWord.getRowIndex() == row && currentReservedWord.getStartIndex() <= column && column <= currentReservedWord.getEndIndex()) {

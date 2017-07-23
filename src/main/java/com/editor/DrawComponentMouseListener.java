@@ -8,10 +8,12 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
 public class DrawComponentMouseListener implements MouseListener, MouseMotionListener {
+    private final TextArea textArea;
     private final DrawComponent drawComponent;
     private final TextEditorModel model;
 
-    public DrawComponentMouseListener(DrawComponent drawComponent, TextEditorModel model) {
+    public DrawComponentMouseListener(TextArea textArea, DrawComponent drawComponent, TextEditorModel model) {
+        this.textArea = textArea;
         this.drawComponent = drawComponent;
         this.model = model;
     }
@@ -24,13 +26,13 @@ public class DrawComponentMouseListener implements MouseListener, MouseMotionLis
     public void mousePressed(MouseEvent e) {
         model.dropSelection();
         drawComponent.setMouseCursorPointer(new Pointer(e.getY(), e.getX()));
-        drawComponent.repaint();
+        textArea.render(false);
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
         drawComponent.setMouseSelectionEndPointer(new Pointer(e.getY(), e.getX()));
-        drawComponent.repaint();
+        textArea.render(false);
     }
 
     @Override
@@ -46,7 +48,7 @@ public class DrawComponentMouseListener implements MouseListener, MouseMotionLis
     @Override
     public void mouseDragged(MouseEvent e) {
         drawComponent.setMouseSelectionEndPointer(new Pointer(e.getY(), e.getX()));
-        drawComponent.repaint();
+        textArea.render(false);
     }
 
     @Override
