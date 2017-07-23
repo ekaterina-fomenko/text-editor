@@ -9,6 +9,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
+import java.util.List;
 
 public class DrawComponent extends JComponent {
     public static final int POINTER_WIDTH = 2;
@@ -38,9 +39,11 @@ public class DrawComponent extends JComponent {
         Graphics2D graphics2D = (Graphics2D) graphics;
         graphics2D.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
 
+        SyntaxParser syntaxParser = new SyntaxParser();
+
         updatePreferredSize(graphics);
 
-        java.util.List<CommonSyntaxHighlight> reservedWordsList = model.getReservedWordsList();
+        //java.util.List<CommonSyntaxHighlight> reservedWordsList = model.getReservedWordsList();
 
         int currentReservedWordIndex = 0;
         AffineTransform affineTransform = graphics2D.getTransform();
@@ -48,6 +51,7 @@ public class DrawComponent extends JComponent {
         int fontHeight = graphics.getFontMetrics().getHeight();
 
         updatePointerBounds(graphics2D, model.getCursorPosition().row, model.getCursorPosition().column);
+
 
         if (scrollToCursorOnceOnPaint) {
             revalidate();
@@ -57,6 +61,7 @@ public class DrawComponent extends JComponent {
 
         int startRow = 0;
         int endRow = lineBuilders.size() - 1;
+
         if (visibleBounds != null) {
             startRow = Math.max(0, visibleBounds.y / fontHeight - 1);
             graphics2D.translate(0, Math.max(0, visibleBounds.y - fontHeight));
@@ -64,6 +69,8 @@ public class DrawComponent extends JComponent {
 
             endRow = Math.min(lineBuilders.size() - 1, (visibleBounds.y + visibleBounds.height) / fontHeight - 1);
         }
+
+        List<CommonSyntaxHighlight> reservedWordsList = syntaxParser.getReservedWordsHighlightByIndexes(model, startRow, endRow);
 
         for (int row = startRow; row <= endRow; row++) {
             StringBuilder lineBuilder = lineBuilders.get(row);

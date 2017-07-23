@@ -58,4 +58,20 @@ public class SyntaxParser {
         reservedWordsHighlights.sort(Comparator.comparing(CommonSyntaxHighlight::getRowIndex).thenComparing(CommonSyntaxHighlight::getStartIndex));
         return reservedWordsHighlights;
     }
+
+    public List<CommonSyntaxHighlight> getReservedWordsHighlightByIndexes(TextEditorModel model, int startRow, int endRow) {
+        List<CommonSyntaxHighlight> reservedWordsHighlights = new ArrayList<>();
+        List<StringBuilder> lineBuilders = model.getLineBuilders();
+        for (int i = startRow; i <= endRow; i++) {
+            StringBuilder stringBuilder = lineBuilders.get(i);
+            String input = stringBuilder.toString();
+            Matcher matcher = Pattern.compile(Regexp.BEFORE_REGEX + CurrentSyntaxRegex + Regexp.AFTER_REGEX).matcher(input);
+            while (matcher.find()) {
+                reservedWordsHighlights.add(new CommonSyntaxHighlight(i, matcher.start(), matcher.end() - 1));
+
+            }
+        }
+        reservedWordsHighlights.sort(Comparator.comparing(CommonSyntaxHighlight::getRowIndex).thenComparing(CommonSyntaxHighlight::getStartIndex));
+        return reservedWordsHighlights;
+    }
 }

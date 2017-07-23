@@ -12,11 +12,8 @@ public class TextArea {
     private TextEditorModel model;
     public JFrame frame;
 
-    private SyntaxParser syntaxParser;
-
     public TextArea(JFrame frame) {
         this.frame = frame;
-        syntaxParser = new SyntaxParser();
         model = new TextEditorModel();
         jComponent = new DrawComponent(model);
         jComponent.setActionMap(new TextActionMap(model, this));
@@ -26,13 +23,9 @@ public class TextArea {
         jScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
     }
 
-    public void render(boolean isNeedToReCountReservedWords) {
+    public void render() {
         System.out.println("!!!! x: " + frame.getBounds().getCenterX() + " y:" + frame.getBounds().getCenterY() + " height: " + frame.getBounds().getHeight());
         DrawComponent jComponent = this.jComponent;
-
-        if(isNeedToReCountReservedWords){
-            model.setReservedWordsList(syntaxParser.getReservedWordsHighlight(model));
-        }
 
         jComponent.revalidate();
         jComponent.repaint();

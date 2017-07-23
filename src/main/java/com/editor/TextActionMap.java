@@ -23,7 +23,7 @@ public class TextActionMap extends ActionMap {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     model.addText(e.getActionCommand());
-                    textArea.render(true);
+                    textArea.render();
                 }
             });
         }
@@ -32,7 +32,7 @@ public class TextActionMap extends ActionMap {
             @Override
             public void actionPerformed(ActionEvent e) {
                 model.onBackspace();
-                textArea.render(true);
+                textArea.render();
             }
         });
 
@@ -40,7 +40,7 @@ public class TextActionMap extends ActionMap {
             @Override
             public void actionPerformed(ActionEvent e) {
                 model.addNewLine();
-                textArea.render(true);
+                textArea.render();
             }
         });
 
@@ -48,7 +48,7 @@ public class TextActionMap extends ActionMap {
             @Override
             public void actionPerformed(ActionEvent e) {
                 model.movePointerRight(true);
-                textArea.render(false);
+                textArea.render();
             }
         });
 
@@ -57,7 +57,7 @@ public class TextActionMap extends ActionMap {
             public void actionPerformed(ActionEvent e) {
                 model.startOrContinueSelection();
                 model.movePointerRight(false);
-                textArea.render(false);
+                textArea.render();
             }
         });
 
@@ -67,7 +67,7 @@ public class TextActionMap extends ActionMap {
                 long l = System.currentTimeMillis();
                 System.out.println("inside left");
                 model.movePointerLeft(true);
-                textArea.render(false);
+                textArea.render();
                 System.out.println("LEFT: " + (System.currentTimeMillis() - l));
             }
         });
@@ -77,7 +77,7 @@ public class TextActionMap extends ActionMap {
             public void actionPerformed(ActionEvent e) {
                 model.startOrContinueSelection();
                 model.movePointerLeft(false);
-                textArea.render(false);
+                textArea.render();
             }
         });
 
@@ -85,7 +85,7 @@ public class TextActionMap extends ActionMap {
             @Override
             public void actionPerformed(ActionEvent e) {
                 model.movePointerUp(true);
-                textArea.render(false);
+                textArea.render();
             }
         });
 
@@ -94,7 +94,7 @@ public class TextActionMap extends ActionMap {
             public void actionPerformed(ActionEvent e) {
                 model.startOrContinueSelection();
                 model.movePointerUp(false);
-                textArea.render(false);
+                textArea.render();
             }
         });
 
@@ -102,7 +102,7 @@ public class TextActionMap extends ActionMap {
             @Override
             public void actionPerformed(ActionEvent e) {
                 model.movePointerDown(true);
-                textArea.render(false);
+                textArea.render();
             }
         });
 
@@ -111,7 +111,7 @@ public class TextActionMap extends ActionMap {
             public void actionPerformed(ActionEvent e) {
                 model.startOrContinueSelection();
                 model.movePointerDown(false);
-                textArea.render(false);
+                textArea.render();
             }
         });
 
@@ -121,7 +121,7 @@ public class TextActionMap extends ActionMap {
                 model.addText(clipboardAdapter.getText());
                 System.out.println(model.getCursorPosition().column + " " + model.getCursorPosition().row);
                 System.out.println(model.isSelectionInProgress());
-                textArea.render(true);
+                textArea.render();
 
             }
         });
@@ -131,7 +131,7 @@ public class TextActionMap extends ActionMap {
             public void actionPerformed(ActionEvent e) {
                 String selectedText = model.convertToString(model.getSelectedText());
                 clipboardAdapter.setText(selectedText);
-                textArea.render(false);
+                textArea.render();
             }
         });
 
@@ -139,7 +139,7 @@ public class TextActionMap extends ActionMap {
             @Override
             public void actionPerformed(ActionEvent e) {
                 model.movePointerToInitPosition();
-                textArea.render(false);
+                textArea.render();
             }
         });
 
@@ -147,7 +147,7 @@ public class TextActionMap extends ActionMap {
             @Override
             public void actionPerformed(ActionEvent e) {
                 model.movePointerToLastPosition();
-                textArea.render(false);
+                textArea.render();
             }
         });
     }
