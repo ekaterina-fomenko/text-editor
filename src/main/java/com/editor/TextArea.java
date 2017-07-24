@@ -4,6 +4,7 @@ import com.editor.model.TextEditorModel;
 import com.editor.parser.SyntaxParser;
 
 import javax.swing.*;
+import java.awt.*;
 
 public class TextArea {
     public JScrollPane jScrollPane;
@@ -33,6 +34,7 @@ public class TextArea {
         mouseListener = new DrawComponentMouseListener(this, jComponent, model);
         jComponent.addMouseListener(mouseListener);
         jComponent.addMouseMotionListener(mouseListener);
+        jComponent.setCursor(new Cursor(Cursor.TEXT_CURSOR));
     }
 
     public void render() {
