@@ -46,9 +46,10 @@ java -cp target/text-editor-1.0-SNAPSHOT.jar com.editor.Main
 * Text virtualization (big files support)
 * Mouse click to set cursor
 * Mouse selection inside visible area
-* Add opening files from disk
-* Add save/saveAs menu items
-* Add parsing file extension and set syntax automatically
+* Open files from disk
+* Save/saveAs menu items
+* Parsing file extension and set syntax automatically
+* Current line highlighting
 
 *Optional*:
 

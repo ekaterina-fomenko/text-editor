@@ -16,6 +16,7 @@ public class DrawComponent extends JComponent {
     public static final Color DEFAULT_CHAR_COLOR = Color.black;
 
     public static final Color SELECTOR_COLOR = new Color(250, 128, 114, 100);
+    public static final Color CURRENT_ROW_COLOR = new Color(255, 235, 205);
     public static final Color RESERVED_WORDS_COLOR = new Color(204, 0, 153);
     public static final Color PAIRED_BRACKETS_COLOR = Color.GREEN;
     public static final int DEFAULT_Y_COORDINATE = 15;
@@ -77,6 +78,10 @@ public class DrawComponent extends JComponent {
         for (int row = startRow; row <= endRow; row++) {
             StringBuilder lineBuilder = lineBuilders.get(row);
             Pointer cursorPosition = model.getCursorPosition();
+
+            if (cursorPosition.row == row){
+                drawLineBackground(graphics2D, CURRENT_ROW_COLOR);
+            }
 
             int startCol = 0;
             int endCol = lineBuilder.length() - 1;
@@ -233,6 +238,11 @@ public class DrawComponent extends JComponent {
         graphics2D.setColor(color);
         graphics2D.drawString(Character.toString(currentChar), 0, DEFAULT_Y_COORDINATE);
         graphics2D.translate(graphics2D.getFontMetrics().charWidth(currentChar), 0);
+    }
+
+    private void drawLineBackground(Graphics graphics2D, Color backgroundColor) {
+        graphics2D.setColor(backgroundColor);
+        graphics2D.fillRect(0, 3, visibleBounds.x + visibleBounds.width, graphics2D.getFontMetrics().getHeight());
     }
 
     private void updatePreferredSize(Graphics graphics) {
