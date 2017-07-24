@@ -337,7 +337,19 @@ public class TextEditorModel {
 
     public void setLineBuildersFromFile(List<StringBuilder> lineBuilders) {
         this.lineBuilders = lineBuilders;
-        cursorPosition.row = lineBuilders.size()-1;
-        cursorPosition.column = lineBuilders.get(cursorPosition.row).length();
+        cursorPosition.row = 0;
+        cursorPosition.column = 0;
+    }
+
+    public String lineBuildersToString() {
+        StringBuilder result = new StringBuilder();
+        int size = lineBuilders.size();
+        for (int i = 0; i < size; i++) {
+            result.append(lineBuilders.get(i));
+            if (i != size - 1) {
+                result.append("\n");
+            }
+        }
+        return result.toString();
     }
 }

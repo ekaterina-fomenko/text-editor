@@ -37,6 +37,12 @@ public class MenuActions extends AbstractAction {
                 break;
             case MenuBar.OPEN_FILE:
                 fileManager.openFile();
+                break;
+            case MenuBar.SAVE_FILE:
+                fileManager.saveFile();
+                break;
+            case MenuBar.SAVE_AS_FILE:
+                fileManager.saveAsFile();
         }
         textArea.render();
     }

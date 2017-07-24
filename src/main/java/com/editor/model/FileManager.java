@@ -38,12 +38,47 @@ public class FileManager {
                 model.setLineBuildersFromFile(text);
                 fileName = fileChooser.getName(file);
                 directory = fileChooser.getCurrentDirectory().getPath();
-                frame.setTitle(fileName);
+                if (fileName != null) {
+                    frame.setTitle(fileName);
+                }
             } catch (FileNotFoundException e) {
-                e.printStackTrace();
+                System.out.println("Cannot find  file " + fileName + " : " + e);
             } catch (IOException e) {
-                e.printStackTrace();
+                System.out.println("Exception was occurred while trying to read file " + fileName + " from buffer: " + e);
             }
+        }
+    }
+
+    public void saveAsFile() {
+        JFileChooser chooser = new JFileChooser();
+        chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        if (chooser.showSaveDialog(frame) == JFileChooser.APPROVE_OPTION) {
+            try {
+                FileWriter writer = new FileWriter(chooser.getSelectedFile());
+                writer.write(model.lineBuildersToString());
+                writer.close();
+                fileName = chooser.getName(chooser.getSelectedFile());
+                directory = chooser.getCurrentDirectory().getPath();
+                if (fileName != null) {
+                    frame.setTitle(fileName);
+                }
+                ;
+            } catch (IOException e) {
+                System.out.println("Exception was occurred while trying to write into file: " + fileName + ", exception: " + e);
+            }
+        }
+    }
+
+    public void saveFile() {
+        if (fileName == null || directory == null) {
+            saveAsFile();
+        }
+        try {
+            FileWriter writer = new FileWriter(new File(directory + "/" + fileName));
+            writer.write(model.lineBuildersToString());
+            writer.close();
+        } catch (IOException e) {
+            System.out.println("Exception was occurred while trying to write into file: " + fileName + ", exception: " + e);
         }
     }
 }

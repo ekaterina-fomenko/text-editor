@@ -44,9 +44,12 @@ java -cp target/text-editor-1.0-SNAPSHOT.jar com.editor.Main
 * Mouse click to set cursor
 * Mouse selection inside visible area
 * Add opening files from disk
+* Add save/saveAs menu items
 
 *Optional*:
 
+* Add parsing file extension and set syntax automatically
+* Add dialog box with asking if user wants to save file before exit
 * Comments highlighting
 * CTRL+A, Home/End for lines
 * Tests
