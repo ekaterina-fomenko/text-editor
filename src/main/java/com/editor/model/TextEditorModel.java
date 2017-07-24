@@ -352,4 +352,12 @@ public class TextEditorModel {
         }
         return result.toString();
     }
+
+    public void movePointerToTheEndOfLine() {
+        cursorPosition.column = lineBuilders.get(cursorPosition.row).length();
+    }
+
+    public void movePointerToStartOfLine() {
+        cursorPosition.column = 0;
+    }
 }

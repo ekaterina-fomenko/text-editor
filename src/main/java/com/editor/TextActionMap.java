@@ -149,5 +149,21 @@ public class TextActionMap extends ActionMap {
                 textArea.render();
             }
         });
+
+        put(TextInputMap.LINE_END, new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                model.movePointerToTheEndOfLine();
+                textArea.render();
+            }
+        });
+
+        put(TextInputMap.LINE_START, new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                model.movePointerToStartOfLine();
+                textArea.render();
+            }
+        });
     }
 }

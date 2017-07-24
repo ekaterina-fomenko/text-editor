@@ -24,7 +24,9 @@ java -cp target/text-editor-1.0-SNAPSHOT.jar com.editor.Main
 * Delete: Backspace
 * Enter: New line
 * Select: Shift + Up/Down/Right/Left
-
+* Mouse selection
+* Line start: Alt + Left
+* Line end: Alt + Right
 
 **Done**:
 
@@ -51,6 +53,8 @@ java -cp target/text-editor-1.0-SNAPSHOT.jar com.editor.Main
 * Parsing file extension and set syntax automatically
 * Current line highlighting
 * Add line comments highlighting for js, hs and erlang
+* Add home/end for lines
+* Add test
 
 *Optional*:
 

@@ -31,7 +31,11 @@ public class TextInputMap extends InputMap {
 
     public static final String INIT_POSITION = "ALT_UP";
 
-    public static final Object LAST_POSITION = "ALT_DOWN";
+    public static final String LAST_POSITION = "ALT_DOWN";
+
+    public static final String LINE_END = "ALT_RIGHT";
+
+    public static final String LINE_START = "ALT_LEFT";
 
     {
         for (char i = ' '; i <= '~'; i++) {
@@ -57,5 +61,7 @@ public class TextInputMap extends InputMap {
 
         put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, KeyEvent.ALT_MASK), INIT_POSITION);
         put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, KeyEvent.ALT_MASK), LAST_POSITION);
+        put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, KeyEvent.ALT_MASK), LINE_END);
+        put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, KeyEvent.ALT_MASK), LINE_START);
     }
 }
