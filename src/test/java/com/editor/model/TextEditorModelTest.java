@@ -68,7 +68,13 @@ public class TextEditorModelTest {
         assertTrue(line2.equals(stringBuilders.get(2).toString()));
         assertTrue(line3.equals(stringBuilders.get(3).toString()));
 
+    }
 
+    @Test
+    public void test(){
+        textEditorModel.movePointerToInitPosition();
+        assertEquals(0,textEditorModel.getCursorPosition().column);
+        assertEquals(0, textEditorModel.getCursorPosition().row);
     }
 }
 
