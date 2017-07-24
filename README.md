@@ -67,7 +67,7 @@ java -cp target/text-editor-1.0-SNAPSHOT.jar com.editor.Main
 
 *Known issues*:
 
-* 
+* Make comments highlighting for long strings with best performance
 * Copy not by CMD on Mac
 * Paired brackets highlighting when one of them in literal (ex.: "adf{kj" })
 * Highlighting for numbers in names with numbers (ex.: abc2)

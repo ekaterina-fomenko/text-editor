@@ -20,7 +20,7 @@ public class DrawComponent extends JComponent {
     public static final Color CURRENT_ROW_COLOR = new Color(255, 235, 205);
     public static final Color RESERVED_WORDS_COLOR = new Color(204, 0, 153);
     public static final Color PAIRED_BRACKETS_COLOR = Color.GREEN;
-    public static final Color COMMENTS_COLOR = new Color(138,43,226);
+    public static final Color COMMENTS_COLOR = new Color(138, 43, 226);
 
     public static final int DEFAULT_Y_COORDINATE = 15;
 
@@ -84,7 +84,7 @@ public class DrawComponent extends JComponent {
             StringBuilder lineBuilder = lineBuilders.get(row);
             Pointer cursorPosition = model.getCursorPosition();
 
-            if (cursorPosition.row == row){
+            if (cursorPosition.row == row) {
                 drawLineBackground(graphics2D, CURRENT_ROW_COLOR);
             }
 
@@ -140,12 +140,16 @@ public class DrawComponent extends JComponent {
                     }
                 }
 
-                if (currentCommentIndex < lineJsCommentsList.size()) {
-                    CommentsHighlight currentComment = lineJsCommentsList.get(currentCommentIndex);
-                    if (currentComment.isIsCommentsInProgress(row, column)) {
-                        charColor = COMMENTS_COLOR;
-                        if (column == currentComment.getEndIndex() - 1) {
+                // if (currentCommentIndex < lineJsCommentsList.size()) {
+                if (!lineJsCommentsList.isEmpty()) {
+                    for (CommentsHighlight currentComment : lineJsCommentsList) {
+                        // CommentsHighlight currentComment = lineJsCommentsList.get(currentCommentIndex);
+                        if (currentComment.isIsCommentsInProgress(row, column)) {
+                            charColor = COMMENTS_COLOR;
+                       /* if (column == currentComment.getEndIndex() - 1) {
                             currentCommentIndex++;
+                        }*/
+                            break;
                         }
                     }
                 }
