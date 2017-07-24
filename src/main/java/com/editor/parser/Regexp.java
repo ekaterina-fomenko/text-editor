@@ -12,6 +12,4 @@ public class Regexp {
     public static final String HASKELL_RESERVED_WORDS = "(return|case|class|data|deriving|do|else|if|import|in|infix|infixl|infixr|instance|let|of|module|newtype|then|type|where|foreign|forall|hiding|proc|rec|qualified)";
     public static final String ERLANG_RESERVED_WORDS = "(fun|module|export|import|after|case|or|and|orelse|andalso|cond|query|band|div|receive|rem|end|begin|bnot|bor|if|let|xor|bsl|bsr|not|of|bxor|try|when|ok|error|undefined|reply|noreply|stop|ignore)";
 
-    public static final String JS_LINE_COMMENTS = "//";
-
 }

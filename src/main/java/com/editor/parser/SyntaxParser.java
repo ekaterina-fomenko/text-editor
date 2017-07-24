@@ -49,6 +49,7 @@ public class SyntaxParser {
     }
 
 
+
     public static boolean isTextSyntax() {
         return getCurrentSyntax() == Syntax.TEXT;
     }
@@ -73,12 +74,13 @@ public class SyntaxParser {
 
     public List<CommentsHighlight> getJsLineCommentsHighlight(TextEditorModel model, int startRow, int endRow) {
         List<CommentsHighlight> commentsHighlights = new ArrayList<>();
-        if (CurrentSyntax == Syntax.JAVASCRIPT) {
+        if (CurrentSyntax != Syntax.TEXT) {
+            String lineCommentSymbols = CurrentSyntax.getLineComments();
             List<StringBuilder> lineBuilders = model.getLineBuilders();
             for (int i = startRow; i <= endRow; i++) {
                 StringBuilder stringBuilder = lineBuilders.get(i);
                 String input = stringBuilder.toString();
-                int firstIndex = input.indexOf(Regexp.JS_LINE_COMMENTS);
+                int firstIndex = input.indexOf(lineCommentSymbols);
                 if (firstIndex != -1) {
                     commentsHighlights.add(new CommentsHighlight(i, firstIndex, stringBuilder.length()));
                 }

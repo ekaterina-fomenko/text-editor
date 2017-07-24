@@ -50,10 +50,11 @@ java -cp target/text-editor-1.0-SNAPSHOT.jar com.editor.Main
 * Save/saveAs menu items
 * Parsing file extension and set syntax automatically
 * Current line highlighting
-* Add line comments highlighting for js
+* Add line comments highlighting for js, hs and erlang
 
 *Optional*:
 
+* Add multi-lines comments
 * Add dialog box with asking if user wants to save file before exit
 * Comments highlighting
 * CTRL+A, Home/End for lines
@@ -66,6 +67,7 @@ java -cp target/text-editor-1.0-SNAPSHOT.jar com.editor.Main
 
 *Known issues*:
 
+* 
 * Copy not by CMD on Mac
 * Paired brackets highlighting when one of them in literal (ex.: "adf{kj" })
 * Highlighting for numbers in names with numbers (ex.: abc2)
