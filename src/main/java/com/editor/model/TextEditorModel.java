@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 public class TextEditorModel {
     private Pointer cursorPosition;
     private Pointer selectionEnd;
-    private ArrayList<StringBuilder> lineBuilders;
+    private List<StringBuilder> lineBuilders;
     private List<Integer> lineLengthsList;
     private Pointer startBracket;
     private Pointer endBracket;
@@ -182,7 +182,7 @@ public class TextEditorModel {
         return cursorPosition;
     }
 
-    public ArrayList<StringBuilder> getLineBuilders() {
+    public List<StringBuilder> getLineBuilders() {
         return lineBuilders;
     }
 
@@ -333,5 +333,11 @@ public class TextEditorModel {
 
     public void setSelectionEnd(Pointer selectionEnd) {
         this.selectionEnd = selectionEnd;
+    }
+
+    public void setLineBuildersFromFile(List<StringBuilder> lineBuilders) {
+        this.lineBuilders = lineBuilders;
+        cursorPosition.row = lineBuilders.size()-1;
+        cursorPosition.column = lineBuilders.get(cursorPosition.row).length();
     }
 }

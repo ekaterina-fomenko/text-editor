@@ -9,7 +9,7 @@ public class TextArea {
     public JScrollPane jScrollPane;
     public DrawComponent jComponent;
 
-    private TextEditorModel model;
+    public TextEditorModel model;
     public JFrame frame;
     private DrawComponentMouseListener mouseListener;
 
@@ -40,8 +40,6 @@ public class TextArea {
     }
 
     public void render(boolean forceScrollToCursor) {
-//        System.out.println("!!!! x: " + frame.getBounds().getCenterX() + " y:" + frame.getBounds().getCenterY() + " height: " + frame.getBounds().getHeight());
-
         this.jComponent.revalidate();
         this.jComponent.setVisibleBounds(jScrollPane.getViewport().getViewRect());
         this.jComponent.repaint();

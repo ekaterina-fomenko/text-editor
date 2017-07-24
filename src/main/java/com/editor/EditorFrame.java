@@ -7,7 +7,7 @@ import java.awt.*;
 
 public class EditorFrame extends JFrame {
 
-    public static final String TITLE = "Kate Editor";
+    public static String TITLE = "Kate Editor";
     public static final int WIDTH = 500;
     public static final int HEIGHT = 700;
     public static final int X_COORDINATE = 100;

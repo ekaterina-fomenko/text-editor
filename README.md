@@ -2,6 +2,16 @@
 
 Text editor with syntax highlighting for Javascript, Haskell and Erlang
 
+**Compile and run**
+
+Requires: Maven and Java
+
+1) Compile
+mvn install
+
+2) Run
+java -cp target/text-editor-1.0-SNAPSHOT.jar com.editor.Main
+
 **Hot Keys**:
 
 * Home: Alt + Up
@@ -33,6 +43,7 @@ Text editor with syntax highlighting for Javascript, Haskell and Erlang
 * Text virtualization (big files support)
 * Mouse click to set cursor
 * Mouse selection inside visible area
+* Add opening files from disk
 
 *Optional*:
 
@@ -51,12 +62,4 @@ Text editor with syntax highlighting for Javascript, Haskell and Erlang
 * Paired brackets highlighting when one of them in literal (ex.: "adf{kj" })
 * Highlighting for numbers in names with numbers (ex.: abc2)
 * Blinking cursor on scrolling up and down (minor)
-*
 
-*Compile and run*
-Requires: Maven and Java
-1) Compile
-mvn install
-
-2) Run
- java -cp target/text-editor-1.0-SNAPSHOT.jar com.editor.Main

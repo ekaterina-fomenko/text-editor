@@ -1,6 +1,7 @@
 package com.editor.menu;
 
 import com.editor.TextArea;
+import com.editor.model.FileManager;
 import com.editor.parser.Syntax;
 import com.editor.parser.SyntaxParser;
 
@@ -10,10 +11,12 @@ import java.awt.event.ActionEvent;
 public class MenuActions extends AbstractAction {
     public JComponent jComponent;
     public TextArea textArea;
+    public FileManager fileManager;
 
     public MenuActions(TextArea textArea){
         this.textArea = textArea;
         this.jComponent = textArea.jComponent;
+        this.fileManager = new FileManager(textArea);
     }
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -32,6 +35,8 @@ public class MenuActions extends AbstractAction {
             case MenuBar.HASKELL:
                 SyntaxParser.setCurrentSyntax(Syntax.HASKELL);
                 break;
+            case MenuBar.OPEN_FILE:
+                fileManager.openFile();
         }
         textArea.render();
     }

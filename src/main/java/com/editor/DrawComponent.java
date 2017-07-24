@@ -8,7 +8,6 @@ import com.editor.parser.SyntaxParser;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
-import java.util.ArrayList;
 import java.util.List;
 
 public class DrawComponent extends JComponent {
@@ -49,7 +48,7 @@ public class DrawComponent extends JComponent {
 
         int currentReservedWordIndex = 0;
         AffineTransform affineTransform = graphics2D.getTransform();
-        ArrayList<StringBuilder> lineBuilders = model.getLineBuilders();
+        List<StringBuilder> lineBuilders = model.getLineBuilders();
         int fontHeight = graphics.getFontMetrics().getHeight();
 
         handleMouseActions(graphics2D, lineBuilders, fontHeight);
@@ -160,7 +159,7 @@ public class DrawComponent extends JComponent {
 
     }
 
-    private void handleMouseActions(Graphics2D graphics2D, ArrayList<StringBuilder> lineBuilders, int fontHeight) {
+    private void handleMouseActions(Graphics2D graphics2D, List<StringBuilder> lineBuilders, int fontHeight) {
         if (mouseCursorPointer != null) {
             int cursorY = mouseCursorPointer.row;
             int cursorX = mouseCursorPointer.column;
