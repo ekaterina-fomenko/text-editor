@@ -14,8 +14,11 @@ java -cp target/text-editor-1.0-SNAPSHOT.jar com.editor.Main
 
 **Hot Keys**:
 
-* Home: Alt + Up
-* End: Alt + Down
+* Open file: Ctrl + O
+* Save file: Ctrl + S
+* Save As file: Ctrl +Shift + S
+* File Home: Alt + Up
+* File End: Alt + Down
 * Copy: Ctrl + C
 * Paste: Ctrl + V
 * Delete: Backspace

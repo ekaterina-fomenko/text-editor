@@ -3,6 +3,7 @@ package com.editor.menu;
 import com.editor.TextArea;
 
 import javax.swing.*;
+import java.awt.event.KeyEvent;
 
 public class MenuBar {
     public static final String TEXT = "Text";
@@ -56,6 +57,10 @@ public class MenuBar {
         openFile.addActionListener(menuListener);
         saveFile.addActionListener(menuListener);
         saveAsFile.addActionListener(menuListener);
+
+        openFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, KeyEvent.CTRL_MASK));
+        saveFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_MASK));
+        saveAsFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_MASK + KeyEvent.SHIFT_MASK));
 
         syntaxMenu.add(haskellSyntax);
         syntaxMenu.add(plainTextSyntax);
