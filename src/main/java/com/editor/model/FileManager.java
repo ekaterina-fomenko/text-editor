@@ -1,6 +1,7 @@
 package com.editor.model;
 
 import com.editor.TextArea;
+import com.editor.parser.SyntaxParser;
 
 import javax.swing.*;
 import java.io.*;
@@ -38,9 +39,8 @@ public class FileManager {
                 model.setLineBuildersFromFile(text);
                 fileName = fileChooser.getName(file);
                 directory = fileChooser.getCurrentDirectory().getPath();
-                if (fileName != null) {
-                    frame.setTitle(fileName);
-                }
+                setTitleAndSyntax();
+
             } catch (FileNotFoundException e) {
                 System.out.println("Cannot find  file " + fileName + " : " + e);
             } catch (IOException e) {
@@ -59,10 +59,8 @@ public class FileManager {
                 writer.close();
                 fileName = chooser.getName(chooser.getSelectedFile());
                 directory = chooser.getCurrentDirectory().getPath();
-                if (fileName != null) {
-                    frame.setTitle(fileName);
-                }
-                ;
+                setTitleAndSyntax();
+
             } catch (IOException e) {
                 System.out.println("Exception was occurred while trying to write into file: " + fileName + ", exception: " + e);
             }
@@ -79,6 +77,15 @@ public class FileManager {
             writer.close();
         } catch (IOException e) {
             System.out.println("Exception was occurred while trying to write into file: " + fileName + ", exception: " + e);
+        }
+    }
+
+    private void setTitleAndSyntax() {
+        if (fileName != null) {
+            frame.setTitle(fileName);
+            int lastIndex = fileName.lastIndexOf(".");
+            String fileExtension = fileName.substring(lastIndex + 1);
+            SyntaxParser.setCurrentSyntaxByFileExtension(fileExtension);
         }
     }
 }

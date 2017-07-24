@@ -39,7 +39,17 @@ public class SyntaxParser {
         }
     }
 
-    public static boolean isTextSyntax(){
+    public static void setCurrentSyntaxByFileExtension(String extension) {
+        for (Syntax syntax : Syntax.values()) {
+            if (syntax.getFileExtension().equals(extension)) {
+                setCurrentSyntax(syntax);
+                break;
+            }
+        }
+    }
+
+
+    public static boolean isTextSyntax() {
         return getCurrentSyntax() == Syntax.TEXT;
     }
 
