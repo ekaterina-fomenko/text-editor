@@ -2,6 +2,7 @@ package com.editor;
 
 import com.editor.model.Pointer;
 import com.editor.model.TextEditorModel;
+import com.editor.parser.CommentsHighlight;
 import com.editor.parser.CommonSyntaxHighlight;
 import com.editor.parser.SyntaxParser;
 
@@ -19,6 +20,8 @@ public class DrawComponent extends JComponent {
     public static final Color CURRENT_ROW_COLOR = new Color(255, 235, 205);
     public static final Color RESERVED_WORDS_COLOR = new Color(204, 0, 153);
     public static final Color PAIRED_BRACKETS_COLOR = Color.GREEN;
+    public static final Color COMMENTS_COLOR = new Color(138,43,226);
+
     public static final int DEFAULT_Y_COORDINATE = 15;
 
     public DrawComponent(TextEditorModel model) {
@@ -48,6 +51,7 @@ public class DrawComponent extends JComponent {
         updatePreferredSize(graphics);
 
         int currentReservedWordIndex = 0;
+        int currentCommentIndex = 0;
         AffineTransform affineTransform = graphics2D.getTransform();
         List<StringBuilder> lineBuilders = model.getLineBuilders();
         int fontHeight = graphics.getFontMetrics().getHeight();
@@ -73,6 +77,7 @@ public class DrawComponent extends JComponent {
             endRow = Math.min(lineBuilders.size() - 1, (visibleBounds.y + visibleBounds.height) / fontHeight - 1);
         }
 
+        List<CommentsHighlight> lineJsCommentsList = syntaxParser.getJsLineCommentsHighlight(model, startRow, endRow);
         List<CommonSyntaxHighlight> reservedWordsList = syntaxParser.getReservedWordsHighlightByIndexes(model, startRow, endRow);
 
         for (int row = startRow; row <= endRow; row++) {
@@ -132,6 +137,16 @@ public class DrawComponent extends JComponent {
 
                     if (ch == ',' || ch == ';') {
                         charColor = RESERVED_WORDS_COLOR;
+                    }
+                }
+
+                if (currentCommentIndex < lineJsCommentsList.size()) {
+                    CommentsHighlight currentComment = lineJsCommentsList.get(currentCommentIndex);
+                    if (currentComment.isIsCommentsInProgress(row, column)) {
+                        charColor = COMMENTS_COLOR;
+                        if (column == currentComment.getEndIndex() - 1) {
+                            currentCommentIndex++;
+                        }
                     }
                 }
 

@@ -50,6 +50,7 @@ java -cp target/text-editor-1.0-SNAPSHOT.jar com.editor.Main
 * Save/saveAs menu items
 * Parsing file extension and set syntax automatically
 * Current line highlighting
+* Add line comments highlighting for js
 
 *Optional*:
 
