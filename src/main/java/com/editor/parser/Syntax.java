@@ -1,6 +1,11 @@
 package com.editor.parser;
 
+/**
+ * This class provides different syntax for text-editor and also provide file extensions and line comments symbols specific for each syntax
+ */
+
 public enum Syntax {
+
     TEXT("", ""),
     JAVASCRIPT("js", "//"),
     HASKELL("hs", "--"),

@@ -1,5 +1,9 @@
 package com.editor.parser;
 
+/**
+ * This class provides information about start and end indexes of comments
+ */
+
 public class CommentsHighlight {
     private int rowIndex;
     private int startIndex;
@@ -9,14 +13,6 @@ public class CommentsHighlight {
         this.startIndex = startIndex;
         this.rowIndex = rowIndex;
         this.endIndex = endIndex;
-    }
-
-    public int getStartIndex() {
-        return startIndex;
-    }
-
-    public int getEndIndex() {
-        return endIndex;
     }
 
     public int getRowIndex() {

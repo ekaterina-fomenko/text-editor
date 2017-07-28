@@ -5,15 +5,22 @@ import com.editor.model.TextEditorModel;
 import com.editor.parser.CommentsHighlight;
 import com.editor.parser.CommonSyntaxHighlight;
 import com.editor.parser.SyntaxParser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.util.List;
 
+/**
+ * Main class which redraw all in text area.
+ */
+
 public class DrawComponent extends JComponent {
-    public static final int POINTER_WIDTH = 2;
+
     private TextEditorModel model;
+
     public static final Color DEFAULT_CHAR_COLOR = Color.black;
 
     public static final Color SELECTOR_COLOR = new Color(250, 128, 114, 100);
@@ -23,37 +30,44 @@ public class DrawComponent extends JComponent {
     public static final Color COMMENTS_COLOR = new Color(138, 43, 226);
 
     public static final int DEFAULT_Y_COORDINATE = 15;
+    public static final int POINTER_WIDTH = 2;
 
-    public DrawComponent(TextEditorModel model) {
-        this.model = model;
-    }
+    public static Logger log = LoggerFactory.getLogger(DrawComponent.class);
 
     private Dimension preferredSize;
     private Rectangle cursorBounds;
-
     private boolean scrollToCursorOnceOnPaint;
     private Rectangle visibleBounds;
     private Pointer mouseSelectionEndPointer;
     private Pointer mouseCursorPointer;
 
+    public DrawComponent(TextEditorModel model) {
+        this.model = model;
+    }
+
+    /**
+     * Permanently redraw all text area on each action.
+     * Called by repaint() method.
+     *
+     * @param graphics
+     */
+
     @Override
     protected void paintComponent(Graphics graphics) {
         super.paintComponent(graphics);
-        System.out.println();
-        System.out.println("Paint started. VisibleBounds: " + visibleBounds);
-        long startDraw = System.currentTimeMillis();
+
+        log.debug("Paint started. VisibleBounds: " + visibleBounds);
 
         Graphics2D graphics2D = (Graphics2D) graphics;
         graphics2D.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
 
-        SyntaxParser syntaxParser = new SyntaxParser();
-
         updatePreferredSize(graphics);
 
-        int currentReservedWordIndex = 0;
-        int currentCommentIndex = 0;
+        SyntaxParser syntaxParser = new SyntaxParser();
         AffineTransform affineTransform = graphics2D.getTransform();
         List<StringBuilder> lineBuilders = model.getLineBuilders();
+
+        int currentReservedWordIndex = 0;
         int fontHeight = graphics.getFontMetrics().getHeight();
 
         handleMouseActions(graphics2D, lineBuilders, fontHeight);
@@ -69,6 +83,7 @@ public class DrawComponent extends JComponent {
         int startRow = 0;
         int endRow = lineBuilders.size() - 1;
 
+        /* Count startRow and endRow, that will be viewed to user */
         if (visibleBounds != null) {
             startRow = Math.max(0, visibleBounds.y / fontHeight - 1);
             graphics2D.translate(0, Math.max(0, visibleBounds.y - fontHeight));
@@ -77,9 +92,10 @@ public class DrawComponent extends JComponent {
             endRow = Math.min(lineBuilders.size() - 1, (visibleBounds.y + visibleBounds.height) / fontHeight - 1);
         }
 
-        List<CommentsHighlight> lineJsCommentsList = syntaxParser.getJsLineCommentsHighlight(model, startRow, endRow);
+        List<CommentsHighlight> lineJsCommentsList = syntaxParser.getLineCommentsHighlight(model, startRow, endRow);
         List<CommonSyntaxHighlight> reservedWordsList = syntaxParser.getReservedWordsHighlightByIndexes(model, startRow, endRow);
 
+        /* Go trough lines that will be painted*/
         for (int row = startRow; row <= endRow; row++) {
             StringBuilder lineBuilder = lineBuilders.get(row);
             Pointer cursorPosition = model.getCursorPosition();
@@ -88,16 +104,18 @@ public class DrawComponent extends JComponent {
                 drawLineBackground(graphics2D, CURRENT_ROW_COLOR);
             }
 
-            int startCol = 0;
-            int endCol = lineBuilder.length() - 1;
+            /* Count startColumn and endColumn, that will be viewed to user */
+            int startColumn = 0;
+            int endColumn = lineBuilder.length() - 1;
             if (visibleBounds != null) {
-                startCol = Math.max(0, getCharIndex(visibleBounds.x, lineBuilder, graphics2D));
+                startColumn = Math.max(0, getCharIndex(visibleBounds.x, lineBuilder, graphics2D));
                 graphics2D.translate(visibleBounds.x, 0);
 
-                endCol = Math.min(lineBuilder.length() - 1, getCharIndex(visibleBounds.x + visibleBounds.width, lineBuilder, graphics2D));
+                endColumn = Math.min(lineBuilder.length() - 1, getCharIndex(visibleBounds.x + visibleBounds.width, lineBuilder, graphics2D));
             }
 
-            for (int column = startCol; column <= endCol; column++) {
+            /* Go trough chars in line */
+            for (int column = startColumn; column <= endColumn; column++) {
                 char ch = lineBuilder.charAt(column);
 
                 if (cursorPosition.row == row && cursorPosition.column == column) {
@@ -107,10 +125,11 @@ public class DrawComponent extends JComponent {
                 Color charColor = DEFAULT_CHAR_COLOR;
                 Color charBackground = null;
 
+                /* Check if this char is in reserved word list */
                 if (currentReservedWordIndex < reservedWordsList.size()) {
                     CommonSyntaxHighlight currentReservedWord = reservedWordsList.get(currentReservedWordIndex);
 
-                    while (currentReservedWordIndex < reservedWordsList.size() && currentReservedWord.getRowIndex() == row && startCol > currentReservedWord.getEndIndex()) {
+                    while (currentReservedWordIndex < reservedWordsList.size() && currentReservedWord.getRowIndex() == row && startColumn > currentReservedWord.getEndIndex()) {
                         currentReservedWord = reservedWordsList.get(currentReservedWordIndex);
                         currentReservedWordIndex++;
                     }
@@ -124,6 +143,8 @@ public class DrawComponent extends JComponent {
                 }
 
                 if (!SyntaxParser.isTextSyntax()) {
+
+                    /* Check if this char is bracket */
                     Pointer startBracket = model.getStartBracket();
                     Pointer endBracket = model.getEndBracket();
                     if (startBracket != null && row == startBracket.row && column == startBracket.column ||
@@ -140,20 +161,17 @@ public class DrawComponent extends JComponent {
                     }
                 }
 
-                // if (currentCommentIndex < lineJsCommentsList.size()) {
+                /* Check if this char is comment */
                 if (!lineJsCommentsList.isEmpty()) {
                     for (CommentsHighlight currentComment : lineJsCommentsList) {
-                        // CommentsHighlight currentComment = lineJsCommentsList.get(currentCommentIndex);
                         if (currentComment.isIsCommentsInProgress(row, column)) {
                             charColor = COMMENTS_COLOR;
-                       /* if (column == currentComment.getEndIndex() - 1) {
-                            currentCommentIndex++;
-                        }*/
                             break;
                         }
                     }
                 }
 
+                /* Check if this char is in selection */
                 if (model.isSelectionInProgress()) {
                     Pointer currentCharPoint = new Pointer(row, column);
                     Pointer from = model.getSelectionFrom();
@@ -167,6 +185,7 @@ public class DrawComponent extends JComponent {
                 drawChar(graphics2D, ch, charColor, charBackground);
             }
 
+            /* Check if cursor is occurred in current position */
             if (cursorPosition.row == row && cursorPosition.column == lineBuilder.length()) {
                 drawPointer(graphics2D);
             }
@@ -178,9 +197,6 @@ public class DrawComponent extends JComponent {
             }
 
         }
-
-        System.out.println("Draw: " + (System.currentTimeMillis() - startDraw));
-
     }
 
     private void handleMouseActions(Graphics2D graphics2D, List<StringBuilder> lineBuilders, int fontHeight) {
@@ -247,8 +263,6 @@ public class DrawComponent extends JComponent {
     }
 
     private void drawChar(Graphics2D graphics2D, char currentChar, Color color, Color backgroundColor) {
-        //  graphics2D.setClip(0,0,100,100);
-        //  graphics2D.clearRect(0,0,50,50);
         if (backgroundColor != null) {
             graphics2D.setColor(backgroundColor);
             graphics2D.fillRect(0, 3, graphics2D.getFontMetrics().charWidth(currentChar), graphics2D.getFontMetrics().getHeight());
@@ -265,7 +279,6 @@ public class DrawComponent extends JComponent {
     }
 
     private void updatePreferredSize(Graphics graphics) {
-        long start = System.currentTimeMillis();
         FontMetrics fontMetrics = graphics.getFontMetrics();
         int height = fontMetrics.getHeight() * (model.getLineBuilders().size() + 1);
         int width = 0;
@@ -275,7 +288,6 @@ public class DrawComponent extends JComponent {
             width = Math.max(width, fontMetrics.stringWidth(line.toString())) + horSpaceOffset;
         }
         preferredSize = new Dimension(width, height);
-        System.out.println("updatePreferredSize: " + (System.currentTimeMillis() - start));
     }
 
     private void drawPointer(Graphics2D graphics2D) {
@@ -292,12 +304,10 @@ public class DrawComponent extends JComponent {
                 fontMetrics.getHeight() * i,
                 POINTER_WIDTH * 4,
                 fontMetrics.getHeight() * 2);
-        //        System.out.println("fontMetrics.stringWidth" + fontMetrics.stringWidth(line.substring(0, j)) + "fontMetrics.getHeight()" + fontMetrics.getHeight() * i);
     }
 
     public void setScrollToCursorOnceOnPaint(boolean scrollToCursorOnceOnPaint) {
         this.scrollToCursorOnceOnPaint = scrollToCursorOnceOnPaint;
-        //        System.out.println("scrollC:" + this.scrollToCursorOnceOnPaint);
     }
 
     public void setMouseCursorPointer(Pointer mouseCursorPointer) {

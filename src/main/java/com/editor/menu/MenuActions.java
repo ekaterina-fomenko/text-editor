@@ -8,20 +8,30 @@ import com.editor.parser.SyntaxParser;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
+/**
+ * Process all actions which made in menu bar
+ */
+
 public class MenuActions extends AbstractAction {
+
     public JComponent jComponent;
     public TextArea textArea;
     public FileManager fileManager;
 
-    public MenuActions(TextArea textArea){
+    public MenuActions(TextArea textArea) {
+
         this.textArea = textArea;
         this.jComponent = textArea.jComponent;
         this.fileManager = new FileManager(textArea);
+
     }
+
     @Override
     public void actionPerformed(ActionEvent e) {
+
         JMenuItem event = (JMenuItem) e.getSource();
         event.setSelected(false);
+
         switch (event.getText()) {
             case MenuBar.TEXT:
                 SyntaxParser.setCurrentSyntax(Syntax.TEXT);
@@ -44,6 +54,7 @@ public class MenuActions extends AbstractAction {
             case MenuBar.SAVE_AS_FILE:
                 fileManager.saveAsFile();
         }
+
         textArea.render();
     }
 }

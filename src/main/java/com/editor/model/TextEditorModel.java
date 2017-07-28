@@ -6,6 +6,14 @@ import com.editor.system.SystemConstants;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * This class process all actions that are made with text model such as:
+ * Update indexes for paired brackets
+ * Update cursor position
+ * Add text
+ * Process selected text
+ */
+
 public class TextEditorModel {
     private Pointer cursorPosition;
     private Pointer selectionEnd;
@@ -326,7 +334,6 @@ public class TextEditorModel {
     }
 
     public void setCursorPosition(Pointer cursorPosition) {
-        System.out.println("Update cursor to: " + cursorPosition);
         this.cursorPosition = cursorPosition;
         selectionEnd = null;
     }

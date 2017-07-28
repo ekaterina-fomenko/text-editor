@@ -7,6 +7,9 @@ import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
 
+/**
+ *  This class helps to insert text correctly
+ */
 public class ClipboardAdapter {
     public String getText() {
         Clipboard systemClipboard = getSystemClipboard();

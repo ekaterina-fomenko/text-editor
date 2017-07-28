@@ -9,7 +9,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * This class helps highlight the syntax of languages
+ * This class helps highlight syntax and line comments of languages
  */
 public class SyntaxParser {
 
@@ -72,7 +72,7 @@ public class SyntaxParser {
         return reservedWordsHighlights;
     }
 
-    public List<CommentsHighlight> getJsLineCommentsHighlight(TextEditorModel model, int startRow, int endRow) {
+    public List<CommentsHighlight> getLineCommentsHighlight(TextEditorModel model, int startRow, int endRow) {
         List<CommentsHighlight> commentsHighlights = new ArrayList<>();
         if (CurrentSyntax != Syntax.TEXT) {
             String lineCommentSymbols = CurrentSyntax.getLineComments();

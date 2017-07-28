@@ -6,15 +6,21 @@ import com.editor.system.ClipboardAdapter;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
+/**
+ * Process all external actions in tex area
+ */
+
 public class TextActionMap extends ActionMap {
     private final ClipboardAdapter clipboardAdapter;
     private TextEditorModel model;
     private TextArea textArea;
 
     public TextActionMap(TextEditorModel model, TextArea area) {
+
         this.model = model;
         this.textArea = area;
         this.clipboardAdapter = new ClipboardAdapter();
+
     }
 
     {
@@ -64,11 +70,8 @@ public class TextActionMap extends ActionMap {
         put(TextInputMap.LEFT, new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                long l = System.currentTimeMillis();
-                System.out.println("inside left");
                 model.movePointerLeft(true);
                 textArea.render();
-                System.out.println("LEFT: " + (System.currentTimeMillis() - l));
             }
         });
 
@@ -119,8 +122,6 @@ public class TextActionMap extends ActionMap {
             @Override
             public void actionPerformed(ActionEvent e) {
                 model.addText(clipboardAdapter.getText());
-                System.out.println(model.getCursorPosition().column + " " + model.getCursorPosition().row);
-                System.out.println(model.isSelectionInProgress());
                 textArea.render();
             }
         });

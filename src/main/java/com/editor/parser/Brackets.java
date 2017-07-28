@@ -3,6 +3,9 @@ package com.editor.parser;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * This class provide map of all kinds of brackets
+ */
 public class Brackets {
     private final Map<Character, Boolean> bracketsDirection = new HashMap<>();
     private final Map<Character, Character> bracketsOpposite = new HashMap<>();

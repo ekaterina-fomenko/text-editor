@@ -2,17 +2,26 @@ package com.editor.model;
 
 import com.editor.TextArea;
 import com.editor.parser.SyntaxParser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This class contains all info about file.
+ * And also helps to process such actions with file as: save as file, save updates in file, open file
+ */
+
 public class FileManager {
-    public String fileName;
-    public String directory;
-    public JFrame frame;
-    public TextEditorModel model;
+    private String fileName;
+    private String directory;
+    private JFrame frame;
+    private TextEditorModel model;
+
+    public static Logger log = LoggerFactory.getLogger(FileManager.class);
 
     public FileManager(TextArea textArea) {
         this.fileName = null;
@@ -42,9 +51,9 @@ public class FileManager {
                 setTitleAndSyntax();
 
             } catch (FileNotFoundException e) {
-                System.out.println("Cannot find  file " + fileName + " : " + e);
+                log.error("Cannot find  file {}", fileName, e);
             } catch (IOException e) {
-                System.out.println("Exception was occurred while trying to read file " + fileName + " from buffer: " + e);
+                log.error("Exception was occurred while trying to read file {} from buffer", fileName, e);
             }
         }
     }
@@ -60,9 +69,9 @@ public class FileManager {
                 fileName = chooser.getName(chooser.getSelectedFile());
                 directory = chooser.getCurrentDirectory().getPath();
                 setTitleAndSyntax();
-
+                log.info("File was saved successfully");
             } catch (IOException e) {
-                System.out.println("Exception was occurred while trying to write into file: " + fileName + ", exception: " + e);
+                log.error("Exception was occurred while trying to write into file {}", fileName, e);
             }
         }
     }
@@ -75,11 +84,15 @@ public class FileManager {
             FileWriter writer = new FileWriter(new File(directory + "/" + fileName));
             writer.write(model.lineBuildersToString());
             writer.close();
+            log.info("File was saved successfully");
         } catch (IOException e) {
-            System.out.println("Exception was occurred while trying to write into file: " + fileName + ", exception: " + e);
+            log.error("Exception was occurred while trying to write into file {}", fileName, e);
         }
     }
 
+    /**
+     * Set file name as title to editor frame
+     */
     private void setTitleAndSyntax() {
         if (fileName != null) {
             frame.setTitle(fileName);

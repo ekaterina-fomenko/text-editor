@@ -1,5 +1,9 @@
 package com.editor.model;
 
+/**
+ * This class provides current position of cursor
+ */
+
 public class Pointer implements Comparable<Pointer> {
     public int row;
     public int column;
@@ -9,8 +13,8 @@ public class Pointer implements Comparable<Pointer> {
         this.column = column;
     }
 
-    public Pointer(Pointer p) {
-        this(p.row, p.column);
+    public Pointer(Pointer pointer) {
+        this(pointer.row, pointer.column);
     }
 
     public Pointer() {

@@ -1,7 +1,7 @@
 package com.editor.parser;
 
 /**
- * This class helps to set the start, end and the color for highlight
+ * This class helps to set start and end indexes for reserved words
  */
 public class CommonSyntaxHighlight {
     private int rowIndex;

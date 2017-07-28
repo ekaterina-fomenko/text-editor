@@ -5,7 +5,15 @@ import com.editor.TextArea;
 import javax.swing.*;
 import java.awt.event.KeyEvent;
 
+/**
+ * Contains all menu items which user see in menu bar
+ */
+
 public class MenuBar {
+
+    private static final String SYNTAX_MENU = "Syntax";
+    private static final String FILE_MENU = "File";
+
     public static final String TEXT = "Text";
     public static final String JAVASCRIPT = "JavaScript";
     public static final String ERLANG = "Erlang";
@@ -34,21 +42,64 @@ public class MenuBar {
     private MenuActions menuListener;
 
     public MenuBar(TextArea textArea) {
+
         menuListener = new MenuActions(textArea);
         menuBar = new JMenuBar();
 
-        syntaxMenu = new JMenu("Syntax");
-        fileMenu = new JMenu("File");
+        syntaxMenu = new JMenu(SYNTAX_MENU);
+        fileMenu = new JMenu(FILE_MENU);
 
+        createSyntaxMenuItems();
+        createFileMenuItems();
+
+        addListenerToMenuItems();
+
+        setHotKeysToFileItems();
+
+        addItemsToSyntaxMenu();
+        addItemsToFileMenu();
+
+        menuBar.add(syntaxMenu);
+        menuBar.add(fileMenu);
+    }
+
+    public JMenuBar getMenuBar() {
+        return menuBar;
+    }
+
+    private void setHotKeysToFileItems() {
+        openFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, KeyEvent.CTRL_MASK));
+        saveFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_MASK));
+        saveAsFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_MASK + KeyEvent.SHIFT_MASK));
+    }
+
+    private void createSyntaxMenuItems() {
         plainTextSyntax = new JMenuItem(TEXT);
         javaScriptSyntax = new JMenuItem(JAVASCRIPT);
         haskellSyntax = new JMenuItem(HASKELL);
         erlangSyntax = new JMenuItem(ERLANG);
+    }
 
+    private void createFileMenuItems() {
         openFile = new JMenuItem(OPEN_FILE);
         saveFile = new JMenuItem(SAVE_FILE);
         saveAsFile = new JMenuItem(SAVE_AS_FILE);
+    }
 
+    private void addItemsToFileMenu() {
+        fileMenu.add(openFile);
+        fileMenu.add(saveFile);
+        fileMenu.add(saveAsFile);
+    }
+
+    private void addItemsToSyntaxMenu() {
+        syntaxMenu.add(haskellSyntax);
+        syntaxMenu.add(plainTextSyntax);
+        syntaxMenu.add(javaScriptSyntax);
+        syntaxMenu.add(erlangSyntax);
+    }
+
+    private void addListenerToMenuItems() {
         plainTextSyntax.addActionListener(menuListener);
         javaScriptSyntax.addActionListener(menuListener);
         erlangSyntax.addActionListener(menuListener);
@@ -57,25 +108,5 @@ public class MenuBar {
         openFile.addActionListener(menuListener);
         saveFile.addActionListener(menuListener);
         saveAsFile.addActionListener(menuListener);
-
-        openFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, KeyEvent.CTRL_MASK));
-        saveFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_MASK));
-        saveAsFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_MASK + KeyEvent.SHIFT_MASK));
-
-        syntaxMenu.add(haskellSyntax);
-        syntaxMenu.add(plainTextSyntax);
-        syntaxMenu.add(javaScriptSyntax);
-        syntaxMenu.add(erlangSyntax);
-
-        fileMenu.add(openFile);
-        fileMenu.add(saveFile);
-        fileMenu.add(saveAsFile);
-
-        menuBar.add(syntaxMenu);
-        menuBar.add(fileMenu);
-    }
-
-    public JMenuBar getMenuBar() {
-        return menuBar;
     }
 }

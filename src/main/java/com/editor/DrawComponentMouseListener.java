@@ -7,6 +7,10 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
+/**
+ * Process mouse actions in text area, like mouse click and select by mouse
+ */
+
 public class DrawComponentMouseListener implements MouseListener, MouseMotionListener {
     private final TextArea textArea;
     private final DrawComponent drawComponent;

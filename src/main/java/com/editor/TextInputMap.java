@@ -3,15 +3,19 @@ package com.editor;
 import javax.swing.*;
 import java.awt.event.KeyEvent;
 
+/**
+ * Contains all actions that will be processed in TextActionMap
+ */
+
 public class TextInputMap extends InputMap {
 
-    public static final String RIGHT_SHIFT = "right+SHIFT";
+    public static final String RIGHT_SHIFT = "SHIFT+right";
 
-    public static final String LEFT_SHIFT = "leftSHIFT";
+    public static final String LEFT_SHIFT = "SHIFT+left";
 
-    public static final String UP_SHIFT = "up+SHIFT";
+    public static final String UP_SHIFT = "SHIFT+up";
 
-    public static final String DOWN_SHIFT = "down+SHIFT";
+    public static final String DOWN_SHIFT = "SHIFT+down";
 
     public static final String DOWN = "down";
 
@@ -25,17 +29,17 @@ public class TextInputMap extends InputMap {
 
     public static final String DELETE = "delete";
 
-    public static final String CTRL_C = "CTRL_C";
+    public static final String CTRL_C = "CTRL+c";
 
-    public static final String CTRL_V = "CTRL_V";
+    public static final String CTRL_V = "CTRL+v";
 
-    public static final String INIT_POSITION = "ALT_UP";
+    public static final String INIT_POSITION = "ALT+up";
 
-    public static final String LAST_POSITION = "ALT_DOWN";
+    public static final String LAST_POSITION = "ALT+down";
 
-    public static final String LINE_END = "ALT_RIGHT";
+    public static final String LINE_END = "ALT+right";
 
-    public static final String LINE_START = "ALT_LEFT";
+    public static final String LINE_START = "ALT+left";
 
     {
         for (char i = ' '; i <= '~'; i++) {
