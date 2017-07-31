@@ -39,6 +39,14 @@ public class TextEditorModel {
         this.lineLengthsList.add(0);
     }
 
+    public List<StringBuilder> getLineBuilders() {
+        return lineBuilders;
+    }
+
+    public Pointer getCursorPosition() {
+        return cursorPosition;
+    }
+
     public void updatePairedBrackets() {
         startBracket = null;
         endBracket = null;
@@ -184,14 +192,6 @@ public class TextEditorModel {
         }
         this.cursorPosition = from;
         dropSelection();
-    }
-
-    public Pointer getCursorPosition() {
-        return cursorPosition;
-    }
-
-    public List<StringBuilder> getLineBuilders() {
-        return lineBuilders;
     }
 
     public void movePointerRight(boolean dropSelection) {

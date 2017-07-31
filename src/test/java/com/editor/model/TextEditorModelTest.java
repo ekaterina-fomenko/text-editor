@@ -126,6 +126,17 @@ public class TextEditorModelTest {
     }
 
     @Test
+    public void testAddNewLine() {
+        textEditorModel.addNewLine();
+
+        List<StringBuilder> resultStringBuildersList = textEditorModel.getLineBuilders();
+
+        assertEquals(2, resultStringBuildersList.size());
+        assertEquals(1, textEditorModel.getCursorPosition().row);
+        assertEquals(0, textEditorModel.getCursorPosition().column);
+    }
+
+    @Test
     public void testMovePointerToInitAndLastPositions() {
         textEditorModel.addText(defaultTextBuilder.toString());
 
@@ -163,6 +174,204 @@ public class TextEditorModelTest {
 
         assertEquals(row, resultCursorPosition.row);
         assertEquals(defaultStringBuilderList.get(row).length(), resultCursorPosition.column);
+    }
+
+    @Test
+    public void testMovePointerUp() {
+        textEditorModel.addText(defaultTextBuilder.toString());
+        int row = 2;
+        int column = 1;
+        Pointer initCursorPosition = new Pointer(row, column);
+        textEditorModel.setCursorPosition(initCursorPosition);
+
+        textEditorModel.movePointerUp(false);
+
+        Pointer resultCursorPosition = textEditorModel.getCursorPosition();
+
+        assertEquals(row - 1, resultCursorPosition.row);
+        assertEquals(column, resultCursorPosition.column);
+    }
+
+    @Test
+    public void testMovePointerUpFromFirstLine() {
+        textEditorModel.addText(defaultTextBuilder.toString());
+        int row = 0;
+        int column = 1;
+        Pointer initCursorPosition = new Pointer(row, column);
+        textEditorModel.setCursorPosition(initCursorPosition);
+
+        textEditorModel.movePointerUp(false);
+
+        Pointer resultCursorPosition = textEditorModel.getCursorPosition();
+
+        assertEquals(row, resultCursorPosition.row);
+        assertEquals(column, resultCursorPosition.column);
+    }
+
+    @Test
+    public void testMovePointerUpWhenPrevLineIsShorter() {
+        textEditorModel.addText(defaultTextBuilder.toString());
+        int row = 2;
+        int column = defaultStringBuilderList.get(row).length();
+        Pointer initCursorPosition = new Pointer(row, column);
+        textEditorModel.setCursorPosition(initCursorPosition);
+
+        textEditorModel.movePointerUp(false);
+
+        Pointer resultCursorPosition = textEditorModel.getCursorPosition();
+
+        assertEquals(row - 1, resultCursorPosition.row);
+        assertNotEquals(column, resultCursorPosition.column);
+        assertEquals(defaultStringBuilderList.get(row - 1).length(), resultCursorPosition.column);
+    }
+
+    @Test
+    public void testMovePointerDown() {
+        textEditorModel.addText(defaultTextBuilder.toString());
+        int row = 2;
+        int column = 1;
+        Pointer initCursorPosition = new Pointer(row, column);
+        textEditorModel.setCursorPosition(initCursorPosition);
+
+        textEditorModel.movePointerDown(false);
+
+        Pointer resultCursorPosition = textEditorModel.getCursorPosition();
+
+        assertEquals(row + 1, resultCursorPosition.row);
+        assertEquals(column, resultCursorPosition.column);
+    }
+
+    @Test
+    public void testMovePointerDownWhenNextLineIsShorter() {
+        String additionalString = "abc";
+        textEditorModel.addText(defaultTextBuilder.toString());
+        textEditorModel.addNewLine();
+        textEditorModel.addText(additionalString);
+        int row = 3;
+        int column = defaultStringBuilderList.get(3).length();
+        Pointer initCursorPosition = new Pointer(row, column);
+        textEditorModel.setCursorPosition(initCursorPosition);
+
+        textEditorModel.movePointerDown(false);
+
+        Pointer resultCursorPosition = textEditorModel.getCursorPosition();
+
+        assertEquals(row + 1, resultCursorPosition.row);
+        assertNotEquals(column, resultCursorPosition.column);
+        assertEquals(additionalString.length(), resultCursorPosition.column);
+    }
+
+    @Test
+    public void testMovePointerDownFromLastLine() {
+        textEditorModel.addText(defaultTextBuilder.toString());
+        int row = defaultStringBuilderList.size() - 1;
+        int column = 1;
+        Pointer initCursorPosition = new Pointer(row, column);
+        textEditorModel.setCursorPosition(initCursorPosition);
+
+        textEditorModel.movePointerDown(false);
+
+        Pointer resultCursorPosition = textEditorModel.getCursorPosition();
+
+        assertNotEquals(row + 1, resultCursorPosition.row);
+        assertEquals(row, resultCursorPosition.row);
+        assertEquals(column, resultCursorPosition.column);
+    }
+
+    @Test
+    public void testMovePointerLeft() {
+        textEditorModel.addText(defaultTextBuilder.toString());
+        int row = 2;
+        int column = 1;
+        Pointer initCursorPosition = new Pointer(row, column);
+        textEditorModel.setCursorPosition(initCursorPosition);
+
+        textEditorModel.movePointerLeft(false);
+
+        Pointer resultCursorPosition = textEditorModel.getCursorPosition();
+
+        assertEquals(row, resultCursorPosition.row);
+        assertEquals(column-1, resultCursorPosition.column);
+    }
+
+    @Test
+    public void testMovePointerLeftFromStartOfLine() {
+        textEditorModel.addText(defaultTextBuilder.toString());
+        int row = 2;
+        int column = 0;
+        Pointer initCursorPosition = new Pointer(row, column);
+        textEditorModel.setCursorPosition(initCursorPosition);
+
+        textEditorModel.movePointerLeft(false);
+
+        Pointer resultCursorPosition = textEditorModel.getCursorPosition();
+
+        assertEquals(row-1, resultCursorPosition.row);
+        assertEquals(defaultStringBuilderList.get(row-1).length(), resultCursorPosition.column);
+    }
+
+    @Test
+    public void testMovePointerLeftFromStartOfFirstLine() {
+        textEditorModel.addText(defaultTextBuilder.toString());
+        int row = 0;
+        int column = 0;
+        Pointer initCursorPosition = new Pointer(row, column);
+        textEditorModel.setCursorPosition(initCursorPosition);
+
+        textEditorModel.movePointerLeft(false);
+
+        Pointer resultCursorPosition = textEditorModel.getCursorPosition();
+
+        assertEquals(0, resultCursorPosition.row);
+        assertEquals(0, resultCursorPosition.column);
+    }
+
+    @Test
+    public void testMovePointerRight() {
+        textEditorModel.addText(defaultTextBuilder.toString());
+        int row = 2;
+        int column = 1;
+        Pointer initCursorPosition = new Pointer(row, column);
+        textEditorModel.setCursorPosition(initCursorPosition);
+
+        textEditorModel.movePointerRight(false);
+
+        Pointer resultCursorPosition = textEditorModel.getCursorPosition();
+
+        assertEquals(row, resultCursorPosition.row);
+        assertEquals(column+1, resultCursorPosition.column);
+    }
+
+    @Test
+    public void testMovePointerRightFromEndOfLine() {
+        textEditorModel.addText(defaultTextBuilder.toString());
+        int row = 2;
+        int column = defaultStringBuilderList.get(row).length();
+        Pointer initCursorPosition = new Pointer(row, column);
+        textEditorModel.setCursorPosition(initCursorPosition);
+
+        textEditorModel.movePointerRight(false);
+
+        Pointer resultCursorPosition = textEditorModel.getCursorPosition();
+
+        assertEquals(row+1, resultCursorPosition.row);
+        assertEquals(0, resultCursorPosition.column);
+    }
+
+    @Test
+    public void testMovePointerRightFromEndOfLastLine() {
+        textEditorModel.addText(defaultTextBuilder.toString());
+        int row = defaultStringBuilderList.size()-1;
+        int column = defaultStringBuilderList.get(row).length();
+        Pointer initCursorPosition = new Pointer(row, column);
+        textEditorModel.setCursorPosition(initCursorPosition);
+
+        textEditorModel.movePointerRight(false);
+
+        Pointer resultCursorPosition = textEditorModel.getCursorPosition();
+
+        assertEquals(row, resultCursorPosition.row);
+        assertEquals(column, resultCursorPosition.column);
     }
 }
 
