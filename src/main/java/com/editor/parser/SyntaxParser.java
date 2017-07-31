@@ -48,8 +48,6 @@ public class SyntaxParser {
         }
     }
 
-
-
     public static boolean isTextSyntax() {
         return getCurrentSyntax() == Syntax.TEXT;
     }
