@@ -1,7 +1,7 @@
 package com.editor.parser;
 
 /**
- * This class includes all regexp templates
+ * This class includes all regexp templates for finding reserved words for erlang, haskell,js
  */
 public class Regexp {
     public static final String BEFORE_REGEX = "(?<=^|\\s|\\(|\\{|\\[|\\)|\\}|\\]|,|\\+|\\-|\\*|\\/)";
