@@ -21,4 +21,8 @@ public class Rope {
     public Rope append(Rope rope) {
         return null;
     }
+
+    public boolean hasChildren(){
+        return (node.getLeft()!=null || node.getRight()!=null);
+    }
 }

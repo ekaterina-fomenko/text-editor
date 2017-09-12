@@ -20,6 +20,23 @@ public class RopeCommonOperations {
             return rebalance(left, right);
         }
 
+        if (!left.hasChildren() && right.hasChildren()) {
+            RopeNode node = right.node;
+
+            if (left.length + node.getLeft().getWeight() < Rope.MAX_LENGTH_IN_ROPE) {
+                //create new node and rebalance    
+            }
+
+        }
+
+        if (left.hasChildren() && !right.hasChildren()) {
+            RopeNode node = left.node;
+
+            if (right.length + node.getRight().getWeight() < Rope.MAX_LENGTH_IN_ROPE) {
+                //create new node and rebalance
+            }
+        }
+        //return rebalance
         return null;
     }
 

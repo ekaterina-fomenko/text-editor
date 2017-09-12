@@ -24,14 +24,26 @@ public class RopeNode {
         this.weight = value != null ? value.length() : 0;
     }
 
+    public int getWeight() {
+        return weight;
+    }
+
+    public RopeNode getLeft() {
+        return left;
+    }
+
+    public RopeNode getRight() {
+        return right;
+    }
+
+    public CharSequence getValue() {
+        return value;
+    }
+
     public void addChildren(RopeNode left, RopeNode right) {
         this.right = right;
         this.left = left;
         this.weight = right.weight + left.weight;
-    }
-
-    public int getWeight() {
-        return weight;
     }
 
     public boolean isLeaf() {
