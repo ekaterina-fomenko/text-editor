@@ -10,8 +10,14 @@ public class RopeNode {
     private RopeNode right;
     private int weight;
 
+    private int height;
+
     public RopeNode() {
         this(null);
+    }
+
+    public RopeNode(RopeNode left, RopeNode right) {
+        this.addChildren(left, right);
     }
 
     /*
@@ -44,6 +50,7 @@ public class RopeNode {
         this.right = right;
         this.left = left;
         this.weight = right.weight + left.weight;
+        this.height = Math.max(right.height, left.height) + this.height;
     }
 
     public boolean isLeaf() {
