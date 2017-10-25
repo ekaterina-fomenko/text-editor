@@ -8,14 +8,18 @@ public class RopeNode {
     private CharSequence value;
     private RopeNode left;
     private RopeNode right;
-    private int weight;
+    //private int weight;
+    private int length;
 
-    private int height;
+    private int depth;
 
     public RopeNode() {
         this(null);
     }
 
+    /*
+    * Create node with children
+     */
     public RopeNode(RopeNode left, RopeNode right) {
         this.addChildren(left, right);
     }
@@ -27,11 +31,17 @@ public class RopeNode {
         this.value = value;
         this.right = null;
         this.left = null;
-        this.weight = value != null ? value.length() : 0;
+        this.depth = 0;
+        this.length = value != null ? value.length() : 0;
+        //this.weight = value != null ? value.length() : 0;
     }
 
-    public int getWeight() {
-        return weight;
+    public int getLength() {
+        return length;
+    }
+
+    public int getDepth() {
+        return depth;
     }
 
     public RopeNode getLeft() {
@@ -42,15 +52,15 @@ public class RopeNode {
         return right;
     }
 
-    public CharSequence getValue() {
-        return value;
+    public String getValue() {
+        return value.toString();
     }
 
     public void addChildren(RopeNode left, RopeNode right) {
         this.right = right;
         this.left = left;
-        this.weight = right.weight + left.weight;
-        this.height = Math.max(right.height, left.height) + this.height;
+        this.length = right.length + left.length;
+        this.depth = Math.max(right.depth, left.depth) + this.depth;
     }
 
     public boolean isLeaf() {

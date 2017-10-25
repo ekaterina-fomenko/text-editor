@@ -12,67 +12,53 @@ public class RopeCommonOperations {
 
     public Rope concatenate(Rope left, Rope right) {
 
-        if (left == null || left.length == 0) {
+        if (left == null || left.getLength() == 0) {
             return right;
         }
 
-        if (right == null || right.length == 0) {
+        if (right == null || right.getLength() == 0) {
             return left;
         }
 
-        if (left.length + right.length < Rope.MAX_LENGTH_IN_ROPE) {
-            //create new node and rebalance
+        /* If length in summary less than max length in one rope then just concat two strings on one rope */
+        if (left.getLength() + right.getLength() < Rope.MAX_LENGTH_IN_ROPE) {
+            return new Rope(left.toString() + right.toString());
         }
 
-        if (!left.hasChildren() && right.hasChildren()) {
-            RopeNode node = right.node;
+        /* If right node has no children and left has children then try to analyze next level of left node over right node*/
+        if (!left.containsOneLevelOnly() && right.containsOneLevelOnly()) {
+            RopeNode leftNode = left.node;
 
-            if (left.length + node.getLeft().getWeight() < Rope.MAX_LENGTH_IN_ROPE) {
-                //create new node and rebalance
+            if (right.getLength() + leftNode.getRight().getLength() < Rope.MAX_LENGTH_IN_ROPE) {
+                RopeNode rightChild = new RopeNode(leftNode.getRight().getValue() + right.toString());
+                RopeNode ropeNode = new RopeNode(leftNode.getLeft(), rightChild);
+                return rebalance(new Rope(ropeNode));
             }
 
         }
 
-        if (left.hasChildren() && !right.hasChildren()) {
-            RopeNode node = left.node;
+        /* If left node has no children and right has children then try to analyze next level of right node regarding current left node*/
+        if (left.containsOneLevelOnly() && !right.containsOneLevelOnly()) {
+            RopeNode rightNode = right.node;
 
-            if (right.length + node.getRight().getWeight() < Rope.MAX_LENGTH_IN_ROPE) {
-                //create new node and rebalance
+            if (left.getLength() + rightNode.getLeft().getLength() < Rope.MAX_LENGTH_IN_ROPE) {
+                RopeNode leftChild = new RopeNode(left.toString() + rightNode.getLeft().getValue());
+                RopeNode newNode = new RopeNode(leftChild, rightNode.getRight());
+                return rebalance(new Rope(newNode));
             }
         }
-        //return rebalance
-        return null;
+        return rebalance(new Rope(new RopeNode(left.node, right.node)));
     }
 
-    public int getHeight(RopeNode node) {
-        if (node == null) {
-            return 0;
+    public Rope rebalance(Rope rope) {
+        if (rope.getDepth() > MAX_DEPTH) {
+            rope.node = balance(getAllTreeLeaves(rope.node));
         }
-        int left = getHeight(node.getLeft());
-        int right = getHeight(node.getRight());
-
-        if (left == -1 || right == -1) {
-            return -1;
-        }
-
-        if (Math.abs(left - right) > 1) {
-            return -1;
-        }
-
-        return Math.max(left, right) + 1;
+        return rope;
     }
 
-    private boolean isBalanced(RopeNode node) {
-        // if (getHeight(node) > MAX_DEPTH)
-        if (node != null && getHeight(node) == -1) {
-            return false;
-        }
-        return true;
-    }
-
-    public Rope rebalance(RopeNode node) {
-        List<RopeNode> leavesList = getAllTreeLeaves(node);
-        return new Rope(buildBalancedTree(leavesList, 0, leavesList.size()));
+    private RopeNode balance(List<RopeNode> leavesList) {
+        return buildBalancedTree(leavesList, 0, leavesList.size());
     }
 
     public RopeNode buildBalancedTree(List<RopeNode> leaves, int start, int end) {

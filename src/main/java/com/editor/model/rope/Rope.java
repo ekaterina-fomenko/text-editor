@@ -6,8 +6,7 @@ package com.editor.model.rope;
 public class Rope {
 
     RopeNode node;
-    int weight;
-    int length;
+
     public static final int MAX_LENGTH_IN_ROPE = 20;
 
     public Rope(CharSequence charSequence) {
@@ -18,11 +17,52 @@ public class Rope {
         this.node = node;
     }
 
+    public int getLength() {
+        return node.getLength();
+    }
+
+    public int getDepth() {
+        return node.getDepth();
+    }
+
     public Rope append(Rope rope) {
         return null;
     }
 
-    public boolean hasChildren(){
-        return (node.getLeft()!=null || node.getRight()!=null);
+    public boolean containsOneLevelOnly(){
+        return node.getDepth() == 0;
+    }
+
+    public char charAt(int index) {
+        return charAt(index, node);
+    }
+
+    private char charAt(int index, RopeNode ropeNode) {
+        if (ropeNode.isLeaf()) {
+            return ropeNode.getValue().charAt(index);
+        }
+        if (index > ropeNode.getLeft().getLength()) {
+            return charAt(index, ropeNode.getRight());
+        }
+        return charAt(index, ropeNode.getLeft());
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder();
+        appendToBuilder(stringBuilder, node);
+        return stringBuilder.toString();
+    }
+
+    private void appendToBuilder(StringBuilder builder, RopeNode ropeNode) {
+        if (ropeNode == null) {
+            return;
+        }
+        if (ropeNode.isLeaf()) {
+            builder.append(ropeNode.getValue());
+            return;
+        }
+        appendToBuilder(builder, ropeNode.getLeft());
+        appendToBuilder(builder, ropeNode.getRight());
     }
 }
