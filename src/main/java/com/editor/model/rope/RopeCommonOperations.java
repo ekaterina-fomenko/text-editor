@@ -10,7 +10,7 @@ import java.util.List;
 public class RopeCommonOperations {
     private static final int MAX_DEPTH = 100;
 
-    public Rope concatenate(Rope left, Rope right) {
+    public static Rope concatenate(Rope left, Rope right) {
 
         if (left == null || left.getLength() == 0) {
             return right;
@@ -20,7 +20,7 @@ public class RopeCommonOperations {
             return left;
         }
 
-        /* If length in summary less than max length in one rope then just concat two strings on one rope */
+        // If length in summary less than max length in one rope then just concat two strings on one rope
         if (left.getLength() + right.getLength() < Rope.MAX_LENGTH_IN_ROPE) {
             return new Rope(left.toString() + right.toString());
         }
@@ -37,7 +37,7 @@ public class RopeCommonOperations {
 
         }
 
-        /* If left node has no children and right has children then try to analyze next level of right node regarding current left node*/
+        //If left node has no children and right has children then try to analyze next level of right node regarding current left node
         if (left.containsOneLevelOnly() && !right.containsOneLevelOnly()) {
             RopeNode rightNode = right.node;
 
@@ -50,18 +50,18 @@ public class RopeCommonOperations {
         return rebalance(new Rope(new RopeNode(left.node, right.node)));
     }
 
-    public Rope rebalance(Rope rope) {
+    public static Rope rebalance(Rope rope) {
         if (rope.getDepth() > MAX_DEPTH) {
             rope.node = balance(getAllTreeLeaves(rope.node));
         }
         return rope;
     }
 
-    private RopeNode balance(List<RopeNode> leavesList) {
+    private static RopeNode balance(List<RopeNode> leavesList) {
         return buildBalancedTree(leavesList, 0, leavesList.size());
     }
 
-    public RopeNode buildBalancedTree(List<RopeNode> leaves, int start, int end) {
+    public static RopeNode buildBalancedTree(List<RopeNode> leaves, int start, int end) {
         int range = end - start;
         switch (range) {
             case 1:
@@ -78,7 +78,7 @@ public class RopeCommonOperations {
     * Return al leaves of the tree
     * @param node is a tree node
     */
-    public List<RopeNode> getAllTreeLeaves(RopeNode node) {
+    public static List<RopeNode> getAllTreeLeaves(RopeNode node) {
         List<RopeNode> leavesList = new ArrayList<>();
         storeLeafNodesInList(leavesList, node);
         return leavesList;
@@ -87,7 +87,7 @@ public class RopeCommonOperations {
     /*
     * Store tree leaf nodes in list
     */
-    public void storeLeafNodesInList(List<RopeNode> listOfNodes, RopeNode node) {
+    public static void storeLeafNodesInList(List<RopeNode> listOfNodes, RopeNode node) {
         if (node == null) {
             return;
         }
