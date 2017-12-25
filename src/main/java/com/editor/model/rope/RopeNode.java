@@ -21,7 +21,10 @@ public class RopeNode {
     * Create node with children
      */
     public RopeNode(RopeNode left, RopeNode right) {
-        this.addChildren(left, right);
+        this.right = right;
+        this.left = left;
+        this.length = right.length + left.length;
+        this.depth = Math.max(right.depth, left.depth) + 1;
     }
 
     /*
@@ -33,7 +36,6 @@ public class RopeNode {
         this.left = null;
         this.depth = 0;
         this.length = value != null ? value.length() : 0;
-        //this.weight = value != null ? value.length() : 0;
     }
 
     public int getLength() {
@@ -54,13 +56,6 @@ public class RopeNode {
 
     public String getValue() {
         return value.toString();
-    }
-
-    public void addChildren(RopeNode left, RopeNode right) {
-        this.right = right;
-        this.left = left;
-        this.length = right.length + left.length;
-        this.depth = Math.max(right.depth, left.depth) + this.depth;
     }
 
     public boolean isLeaf() {

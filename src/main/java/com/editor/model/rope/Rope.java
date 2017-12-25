@@ -5,9 +5,12 @@ package com.editor.model.rope;
  */
 public class Rope {
 
+    private static final int MAX_DEPTH = 100;
+    private static final int MAX_LENGTH_IN_ROPE = 20;
+
     RopeNode node;
 
-    public static final int MAX_LENGTH_IN_ROPE = 20;
+    private RopeCommonOperations operations = new RopeCommonOperations(MAX_DEPTH, MAX_LENGTH_IN_ROPE);
 
     public Rope(CharSequence charSequence) {
         node = new RopeNode(charSequence);
@@ -26,7 +29,7 @@ public class Rope {
     }
 
     public Rope append(Rope rope) {
-        return null;
+        return operations.concat(this, rope);
     }
 
     public boolean containsOneLevelOnly(){
@@ -64,5 +67,9 @@ public class Rope {
         }
         appendToBuilder(builder, ropeNode.getLeft());
         appendToBuilder(builder, ropeNode.getRight());
+    }
+
+    public Rope append(CharSequence str) {
+        return append(new Rope(str));
     }
 }

@@ -8,9 +8,16 @@ import java.util.List;
  */
 
 public class RopeCommonOperations {
-    private static final int MAX_DEPTH = 100;
 
-    public static Rope concatenate(Rope left, Rope right) {
+    private final int maxDepth;
+    private final int maxLengthInRope;
+
+    public RopeCommonOperations(int maxDepth, int maxLengthInRope) {
+        this.maxDepth = maxDepth;
+        this.maxLengthInRope = maxLengthInRope;
+    }
+
+    public Rope concat(Rope left, Rope right) {
 
         if (left == null || left.getLength() == 0) {
             return right;
@@ -21,7 +28,7 @@ public class RopeCommonOperations {
         }
 
         // If length in summary less than max length in one rope then just concat two strings on one rope
-        if (left.getLength() + right.getLength() < Rope.MAX_LENGTH_IN_ROPE) {
+        if (left.getLength() + right.getLength() < maxLengthInRope) {
             return new Rope(left.toString() + right.toString());
         }
 
@@ -29,7 +36,7 @@ public class RopeCommonOperations {
         if (!left.containsOneLevelOnly() && right.containsOneLevelOnly()) {
             RopeNode leftNode = left.node;
 
-            if (right.getLength() + leftNode.getRight().getLength() < Rope.MAX_LENGTH_IN_ROPE) {
+            if (right.getLength() + leftNode.getRight().getLength() < maxLengthInRope) {
                 RopeNode rightChild = new RopeNode(leftNode.getRight().getValue() + right.toString());
                 RopeNode ropeNode = new RopeNode(leftNode.getLeft(), rightChild);
                 return rebalance(new Rope(ropeNode));
@@ -41,17 +48,18 @@ public class RopeCommonOperations {
         if (left.containsOneLevelOnly() && !right.containsOneLevelOnly()) {
             RopeNode rightNode = right.node;
 
-            if (left.getLength() + rightNode.getLeft().getLength() < Rope.MAX_LENGTH_IN_ROPE) {
+            if (left.getLength() + rightNode.getLeft().getLength() < maxLengthInRope) {
                 RopeNode leftChild = new RopeNode(left.toString() + rightNode.getLeft().getValue());
                 RopeNode newNode = new RopeNode(leftChild, rightNode.getRight());
                 return rebalance(new Rope(newNode));
             }
         }
+
         return rebalance(new Rope(new RopeNode(left.node, right.node)));
     }
 
-    public static Rope rebalance(Rope rope) {
-        if (rope.getDepth() > MAX_DEPTH) {
+    public Rope rebalance(Rope rope) {
+        if (rope.getDepth() > maxDepth) {
             rope.node = balance(getAllTreeLeaves(rope.node));
         }
         return rope;
