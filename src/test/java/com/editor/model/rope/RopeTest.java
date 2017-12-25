@@ -1,8 +1,6 @@
 package com.editor.model.rope;
 
-import org.junit.Ignore;
 import org.junit.Test;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import static org.junit.Assert.assertEquals;
 
@@ -19,10 +17,16 @@ public class RopeTest {
         assertEquals(6, rope.getLength());
     }
 
-    @Ignore
     @Test
     public void testGetDepth() throws Exception {
-        throw new NotImplementedException();
+        assertEquals(0, new Rope("abc").getDepth());
+
+        RopeCommonOperations ops = new RopeCommonOperations(3, 5);
+        assertEquals(0, ops.concat(new Rope("abc"), new Rope("a")).getDepth());
+
+        assertEquals(1, ops.concat(new Rope("abc"), new Rope("de")).getDepth());
+
+        assertEquals(1, new Rope(new RopeNode(new RopeNode("a"), new RopeNode("b"))).getDepth());
     }
 
     @Test
@@ -37,12 +41,6 @@ public class RopeTest {
     @Test
     public void testAppend_deep() throws Exception {
         assertEquals("Hey! My name is Katya", (new Rope("Hey! ").append(new Rope("My "))).append(new Rope("name ").append("is").append(" Katya")).toString());
-    }
-
-    @Ignore
-    @Test
-    public void testContainsOneLevelOnly() throws Exception {
-        throw new NotImplementedException();
     }
 
     @Test
