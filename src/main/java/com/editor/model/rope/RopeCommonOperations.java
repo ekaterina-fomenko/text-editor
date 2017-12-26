@@ -33,7 +33,7 @@ public class RopeCommonOperations {
         }
 
         /* If right node has no children and left has children then try to analyze next level of left node over right node*/
-        if (!left.containsOneLevelOnly() && right.containsOneLevelOnly()) {
+        if (!left.isFlat() && right.isFlat()) {
             RopeNode leftNode = left.node;
 
             if (right.getLength() + leftNode.getRight().getLength() < maxLengthInRope) {
@@ -45,7 +45,7 @@ public class RopeCommonOperations {
         }
 
         //If left node has no children and right has children then try to analyze next level of right node regarding current left node
-        if (left.containsOneLevelOnly() && !right.containsOneLevelOnly()) {
+        if (left.isFlat() && !right.isFlat()) {
             RopeNode rightNode = right.node;
 
             if (left.getLength() + rightNode.getLeft().getLength() < maxLengthInRope) {

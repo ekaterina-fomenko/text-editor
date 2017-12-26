@@ -32,7 +32,7 @@ public class Rope {
         return operations.concat(this, rope);
     }
 
-    public boolean containsOneLevelOnly(){
+    public boolean isFlat(){
         return node.getDepth() == 0;
     }
 
