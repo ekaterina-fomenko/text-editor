@@ -28,11 +28,19 @@ public class Rope {
         return node.getDepth();
     }
 
+    public RopeNode getNode() {
+        return node;
+    }
+
     public Rope append(Rope rope) {
         return operations.concat(this, rope);
     }
 
-    public boolean isFlat(){
+    public Rope append(CharSequence str) {
+        return append(new Rope(str));
+    }
+
+    public boolean isFlat() {
         return node.getDepth() == 0;
     }
 
@@ -67,9 +75,5 @@ public class Rope {
         }
         appendToBuilder(builder, ropeNode.getLeft());
         appendToBuilder(builder, ropeNode.getRight());
-    }
-
-    public Rope append(CharSequence str) {
-        return append(new Rope(str));
     }
 }

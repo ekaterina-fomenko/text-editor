@@ -5,13 +5,11 @@ package com.editor.model.rope;
  */
 
 public class RopeNode {
-    private CharSequence value;
-    private RopeNode left;
-    private RopeNode right;
-    //private int weight;
-    private int length;
-
-    private int depth;
+    CharSequence value;
+    RopeNode left;
+    RopeNode right;
+    int length;
+    int depth;
 
     public RopeNode() {
         this(null);
@@ -55,11 +53,31 @@ public class RopeNode {
     }
 
     public String getValue() {
-        return value.toString();
+        return value == null ? null : value.toString();
     }
 
     public boolean isLeaf() {
         return left == null && right == null;
+    }
 
+    public boolean hasOneChildOnly() {
+        return (null == left) ^ (null == right);
+    }
+
+    public RopeNode getSingleChild() {
+        if (!hasOneChildOnly()) {
+            throw new IllegalStateException();
+        }
+
+        return left == null ? right : left;
+    }
+
+    public boolean isEmpty() {
+        return isLeaf() && value == null;
+    }
+
+    @Override
+    public String toString() {
+        return value.toString();
     }
 }

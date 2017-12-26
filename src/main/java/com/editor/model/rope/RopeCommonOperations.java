@@ -1,6 +1,7 @@
 package com.editor.model.rope;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -34,7 +35,7 @@ public class RopeCommonOperations {
 
         /* If right node has no children and left has children then try to analyze next level of left node over right node*/
         if (!left.isFlat() && right.isFlat()) {
-            RopeNode leftNode = left.node;
+            RopeNode leftNode = left.getNode();
 
             if (right.getLength() + leftNode.getRight().getLength() < maxLengthInRope) {
                 RopeNode rightChild = new RopeNode(leftNode.getRight().getValue() + right.toString());
@@ -46,7 +47,7 @@ public class RopeCommonOperations {
 
         //If left node has no children and right has children then try to analyze next level of right node regarding current left node
         if (left.isFlat() && !right.isFlat()) {
-            RopeNode rightNode = right.node;
+            RopeNode rightNode = right.getNode();
 
             if (left.getLength() + rightNode.getLeft().getLength() < maxLengthInRope) {
                 RopeNode leftChild = new RopeNode(left.toString() + rightNode.getLeft().getValue());
@@ -55,12 +56,36 @@ public class RopeCommonOperations {
             }
         }
 
-        return rebalance(new Rope(new RopeNode(left.node, right.node)));
+        return rebalance(new Rope(new RopeNode(left.getNode(), right.getNode())));
+    }
+
+    public static void normalize(RopeNode node) {
+        if (node == null || node.isLeaf()) {
+            return;
+        }
+
+        if (node.hasOneChildOnly()) {
+            RopeNode child = node.getSingleChild();
+            normalize(child);
+            copyNodeValues(node, child);
+        } else {
+            normalize(node.left);
+            normalize(node.right);
+            node.depth = getIncDepth(node);
+        }
+
+        if (node.right != null && node.right.isEmpty()) {
+            node.right = null;
+        }
+
+        if (node.left != null && node.left.isEmpty()) {
+            node.left = null;
+        }
     }
 
     public Rope rebalance(Rope rope) {
         if (rope.getDepth() > maxDepth) {
-            rope.node = balance(getAllTreeLeaves(rope.node));
+            rope.node = balance(getAllTreeLeaves(rope.getNode()));
         }
         return rope;
     }
@@ -80,6 +105,13 @@ public class RopeCommonOperations {
                 int middle = start + (range / 2);
                 return new RopeNode(buildBalancedTree(leaves, start, middle), buildBalancedTree(leaves, middle, end));
         }
+    }
+
+    private static void copyNodeValues(RopeNode dest, RopeNode source) {
+        dest.left = source.left;
+        dest.right = source.right;
+        dest.value = source.value;
+        dest.depth = source.depth;
     }
 
     /*
@@ -105,8 +137,67 @@ public class RopeCommonOperations {
             return;
         }
 
-        storeLeafNodesInList(listOfNodes, node.getLeft());
-        storeLeafNodesInList(listOfNodes, node.getRight());
+        storeLeafNodesInList(listOfNodes, node.left);
+        storeLeafNodesInList(listOfNodes, node.right);
     }
+
+    public static int getIncDepth(RopeNode node) {
+        return Math.max(getDepth(node.left), getDepth(node.right)) + 1;
+    }
+
+    public static int getDepth(RopeNode node) {
+        return node == null ? 0 : node.depth;
+    }
+
+    public List<Rope> split(Rope rope, int index) {
+        if (index > rope.getLength()) {
+            throw new IndexOutOfBoundsException(String.format("Index '%s' must not be higher than '%s'", index, rope.getLength()));
+        }
+
+        RopeNode leftSplit = new RopeNode();
+        RopeNode rightSplit = new RopeNode();
+
+        split(leftSplit, rightSplit, rope.node, index);
+        RopeCommonOperations.normalize(leftSplit);
+        RopeCommonOperations.normalize(rightSplit);
+
+        return Arrays.asList(new Rope(leftSplit), new Rope(rightSplit));
+    }
+
+    private void split(RopeNode leftSplit, RopeNode rightSplit, RopeNode parent, int index) {
+        if (parent.isLeaf()) {
+            String parentValue = parent.getValue();
+
+            leftSplit.value = parentValue.substring(0, index);
+            leftSplit.length = leftSplit.value.length();
+
+            leftSplit.depth = 0;
+
+            rightSplit.value = parentValue.substring(index);
+            rightSplit.length = rightSplit.value.length();
+
+            rightSplit.depth = 0;
+        } else {
+            leftSplit.length = index;
+            rightSplit.length = parent.getLength() - index;
+
+            if (index < parent.getLeft().getLength()) {
+                rightSplit.right = parent.getRight();
+                RopeNode leftChildOfRightParent = new RopeNode();
+                rightSplit.left = leftChildOfRightParent;
+
+                split(leftSplit, leftChildOfRightParent, parent.getLeft(), index);
+                rightSplit.depth = RopeCommonOperations.getIncDepth(rightSplit);
+            } else {
+                leftSplit.left = parent.getLeft();
+                RopeNode rightChildOfLeftParent = new RopeNode();
+                leftSplit.right = rightChildOfLeftParent;
+
+                split(rightChildOfLeftParent, rightSplit, parent.right, index - parent.left.getLength());
+                leftSplit.depth = RopeCommonOperations.getIncDepth(leftSplit);
+            }
+        }
+    }
+
 
 }

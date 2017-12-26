@@ -68,4 +68,23 @@ public class RopeTest {
         new Rope("abc").charAt(3);
     }
 
+//    @Test
+//    public void subsequenceTestWithOneNode() throws Exception {
+//        Rope rope = new Rope("HoHoHo! I am Santa!");
+//        rope = rope.subSequence(0, 7);
+//        assertEquals("HoHoHo!", rope.toString());
+//    }
+//
+//    @Test
+//    public void subsequenceTest() throws Exception {
+//        RopeNode left = new RopeNode("HoHoHo!");
+//        RopeNode right = new RopeNode("Who is looking for Santa?");
+//        RopeNode node = new RopeNode(left, right);
+//        Rope rope = new Rope(node);
+//        rope.setOperations(new RopeCommonOperations(5,7));
+//
+//        //assertEquals("HoHoHo!", rope.subSequence(0, 7).toString());
+//        assertEquals("Who", rope.subSequence(8,11).toString());
+//    }
+
 }
