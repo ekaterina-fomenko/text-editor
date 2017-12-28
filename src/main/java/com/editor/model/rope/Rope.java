@@ -10,7 +10,7 @@ public class Rope {
 
     RopeNode node;
 
-    private RopeCommonOperations operations = new RopeCommonOperations(MAX_DEPTH, MAX_LENGTH_IN_ROPE);
+    protected RopeCommonOperations operations = new RopeCommonOperations(MAX_DEPTH, MAX_LENGTH_IN_ROPE);
 
     public Rope(CharSequence charSequence) {
         node = new RopeNode(charSequence);
@@ -38,6 +38,23 @@ public class Rope {
 
     public Rope append(CharSequence str) {
         return append(new Rope(str));
+    }
+
+    public Rope substring(int start, int end){
+        if (start < 0 || end > getLength())
+            throw new IllegalArgumentException("Illegal subsequence (" + start + "," + end + ")");
+
+        if (start == 0)
+        {
+            return operations.split(this,end).get(0);
+        }
+        if (end == getLength())
+        {
+            return operations.split(this, start).get(1);
+        }
+
+        Rope splittedRope = operations.split(this, start).get(1);
+        return operations.split(splittedRope, end - start).get(0);
     }
 
     public boolean isFlat() {

@@ -68,23 +68,25 @@ public class RopeTest {
         new Rope("abc").charAt(3);
     }
 
-//    @Test
-//    public void subsequenceTestWithOneNode() throws Exception {
-//        Rope rope = new Rope("HoHoHo! I am Santa!");
-//        rope = rope.subSequence(0, 7);
-//        assertEquals("HoHoHo!", rope.toString());
-//    }
-//
-//    @Test
-//    public void subsequenceTest() throws Exception {
-//        RopeNode left = new RopeNode("HoHoHo!");
-//        RopeNode right = new RopeNode("Who is looking for Santa?");
-//        RopeNode node = new RopeNode(left, right);
-//        Rope rope = new Rope(node);
-//        rope.setOperations(new RopeCommonOperations(5,7));
-//
-//        //assertEquals("HoHoHo!", rope.subSequence(0, 7).toString());
-//        assertEquals("Who", rope.subSequence(8,11).toString());
-//    }
+    @Test
+    public void subStringTestWithOneNode() throws Exception {
+        Rope rope = new Rope("HoHoHo! I am Santa!");
+        rope = rope.substring(0, 7);
+        assertEquals("HoHoHo!", rope.toString());
+    }
+
+    @Test
+    public void subStringTest() throws Exception {
+        RopeNode left = new RopeNode("HoHoHo!");
+        RopeNode right = new RopeNode("Who is looking for Santa?");
+        RopeNode node = new RopeNode(left, right);
+        Rope rope = new Rope(node);
+        rope.operations = new RopeCommonOperations(5, 7);
+
+        assertEquals("HoHoHo!", rope.substring(0, 7).toString());
+        assertEquals("Who ", rope.substring(7, 11).toString());
+        assertEquals(right.getValue().substring(4, 6), rope.substring(11, 13).toString());
+        assertEquals("Ho!W", rope.substring(4, 8).toString());
+    }
 
 }
