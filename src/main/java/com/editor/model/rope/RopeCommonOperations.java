@@ -17,7 +17,6 @@ public class RopeCommonOperations {
         this.maxDepth = maxDepth;
         this.maxLengthInRope = maxLengthInRope;
     }
-
     public Rope concat(Rope left, Rope right) {
 
         if (left == null || left.getLength() == 0) {

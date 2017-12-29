@@ -1,18 +1,21 @@
 package com.editor.model.rope;
 
+import java.util.LinkedList;
+import java.util.Queue;
+
 /**
  * This class represents a rope data structure
  */
 public class Rope {
 
-    private static final int MAX_DEPTH = 100;
-    private static final int MAX_LENGTH_IN_ROPE = 20;
+    protected static int MAX_DEPTH = 100;
+    protected static int MAX_LENGTH_IN_ROPE = 20;
 
     RopeNode node;
 
     protected RopeCommonOperations operations = new RopeCommonOperations(MAX_DEPTH, MAX_LENGTH_IN_ROPE);
 
-    public Rope(CharSequence charSequence) {
+    Rope(CharSequence charSequence) {
         node = new RopeNode(charSequence);
     }
 
@@ -40,16 +43,14 @@ public class Rope {
         return append(new Rope(str));
     }
 
-    public Rope substring(int start, int end){
+    public Rope substring(int start, int end) {
         if (start < 0 || end > getLength())
             throw new IllegalArgumentException("Illegal subsequence (" + start + "," + end + ")");
 
-        if (start == 0)
-        {
-            return operations.split(this,end).get(0);
+        if (start == 0) {
+            return operations.split(this, end).get(0);
         }
-        if (end == getLength())
-        {
+        if (end == getLength()) {
             return operations.split(this, start).get(1);
         }
 
@@ -92,5 +93,29 @@ public class Rope {
         }
         appendToBuilder(builder, ropeNode.getLeft());
         appendToBuilder(builder, ropeNode.getRight());
+    }
+
+    public String printRopeNodes() {
+        StringBuilder stringBuilder = new StringBuilder();
+        Queue<RopeNode> queue = new LinkedList<>();
+        do {
+                stringBuilder.append("(");
+            if (node.getValue() != null) {
+                stringBuilder.append(node.getValue());
+            } else {
+                stringBuilder.append(node.getLength());
+            }
+                stringBuilder.append(")");
+            if (node.left != null) {
+                queue.add(node.left);
+            }
+            if (node.right != null) {
+                queue.add(node.right);
+            }
+            if (!queue.isEmpty()) {
+                node = queue.poll();
+            }
+        } while (!queue.isEmpty());
+        return stringBuilder.toString();
     }
 }
