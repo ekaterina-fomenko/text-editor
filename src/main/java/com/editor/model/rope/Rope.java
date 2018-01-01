@@ -15,7 +15,7 @@ public class Rope {
 
     protected RopeCommonOperations operations = new RopeCommonOperations(MAX_DEPTH, MAX_LENGTH_IN_ROPE);
 
-    Rope(CharSequence charSequence) {
+    public Rope(CharSequence charSequence) {
         node = new RopeNode(charSequence);
     }
 
@@ -58,12 +58,44 @@ public class Rope {
         return operations.split(splittedRope, end - start).get(0);
     }
 
-    public boolean isFlat() {
-        return node.getDepth() == 0;
+
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder();
+        appendToBuilder(stringBuilder, node);
+        return stringBuilder.toString();
+    }
+
+    public String printRopeNodes() {
+        StringBuilder stringBuilder = new StringBuilder();
+        Queue<RopeNode> queue = new LinkedList<>();
+        do {
+            stringBuilder.append("(");
+            if (node.getValue() != null) {
+                stringBuilder.append(node.getValue());
+            } else {
+                stringBuilder.append(node.getLength());
+            }
+            stringBuilder.append(")");
+            if (node.left != null) {
+                queue.add(node.left);
+            }
+            if (node.right != null) {
+                queue.add(node.right);
+            }
+            if (!queue.isEmpty()) {
+                node = queue.poll();
+            }
+        } while (!queue.isEmpty());
+        return stringBuilder.toString();
     }
 
     public char charAt(int index) {
         return charAt(index, node);
+    }
+
+    boolean isFlat() {
+        return node.getDepth() == 0;
     }
 
     private char charAt(int index, RopeNode ropeNode) {
@@ -76,13 +108,6 @@ public class Rope {
         return charAt(index, ropeNode.getLeft());
     }
 
-    @Override
-    public String toString() {
-        StringBuilder stringBuilder = new StringBuilder();
-        appendToBuilder(stringBuilder, node);
-        return stringBuilder.toString();
-    }
-
     private void appendToBuilder(StringBuilder builder, RopeNode ropeNode) {
         if (ropeNode == null) {
             return;
@@ -93,29 +118,5 @@ public class Rope {
         }
         appendToBuilder(builder, ropeNode.getLeft());
         appendToBuilder(builder, ropeNode.getRight());
-    }
-
-    public String printRopeNodes() {
-        StringBuilder stringBuilder = new StringBuilder();
-        Queue<RopeNode> queue = new LinkedList<>();
-        do {
-                stringBuilder.append("(");
-            if (node.getValue() != null) {
-                stringBuilder.append(node.getValue());
-            } else {
-                stringBuilder.append(node.getLength());
-            }
-                stringBuilder.append(")");
-            if (node.left != null) {
-                queue.add(node.left);
-            }
-            if (node.right != null) {
-                queue.add(node.right);
-            }
-            if (!queue.isEmpty()) {
-                node = queue.poll();
-            }
-        } while (!queue.isEmpty());
-        return stringBuilder.toString();
     }
 }

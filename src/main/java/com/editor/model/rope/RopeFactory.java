@@ -1,6 +1,6 @@
 package com.editor.model.rope;
 
-public class RopeCreator {
+public class RopeFactory {
     public static Rope create(String string) {
         if (string.length() <= Rope.MAX_LENGTH_IN_ROPE) {
             return new Rope(string);
