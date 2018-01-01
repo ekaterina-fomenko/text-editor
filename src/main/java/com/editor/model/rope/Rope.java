@@ -15,7 +15,7 @@ public class Rope {
 
     protected RopeCommonOperations operations = new RopeCommonOperations(MAX_DEPTH, MAX_LENGTH_IN_ROPE);
 
-    Rope(CharSequence charSequence) {
+    public Rope(CharSequence charSequence) {
         node = new RopeNode(charSequence);
     }
 
@@ -58,41 +58,12 @@ public class Rope {
         return operations.split(splittedRope, end - start).get(0);
     }
 
-    public boolean isFlat() {
-        return node.getDepth() == 0;
-    }
-
-    public char charAt(int index) {
-        return charAt(index, node);
-    }
-
-    private char charAt(int index, RopeNode ropeNode) {
-        if (ropeNode.isLeaf()) {
-            return ropeNode.getValue().charAt(index);
-        }
-        if (index > ropeNode.getLeft().getLength()) {
-            return charAt(index, ropeNode.getRight());
-        }
-        return charAt(index, ropeNode.getLeft());
-    }
 
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
         appendToBuilder(stringBuilder, node);
         return stringBuilder.toString();
-    }
-
-    private void appendToBuilder(StringBuilder builder, RopeNode ropeNode) {
-        if (ropeNode == null) {
-            return;
-        }
-        if (ropeNode.isLeaf()) {
-            builder.append(ropeNode.getValue());
-            return;
-        }
-        appendToBuilder(builder, ropeNode.getLeft());
-        appendToBuilder(builder, ropeNode.getRight());
     }
 
     public String printRopeNodes() {
@@ -120,5 +91,35 @@ public class Rope {
             }
         } while (!queue.isEmpty() || localNode != null);
         return stringBuilder.toString();
+    }
+
+    public char charAt(int index) {
+        return charAt(index, node);
+    }
+
+    boolean isFlat() {
+        return node.getDepth() == 0;
+    }
+
+    private char charAt(int index, RopeNode ropeNode) {
+        if (ropeNode.isLeaf()) {
+            return ropeNode.getValue().charAt(index);
+        }
+        if (index > ropeNode.getLeft().getLength()) {
+            return charAt(index, ropeNode.getRight());
+        }
+        return charAt(index, ropeNode.getLeft());
+    }
+
+    private void appendToBuilder(StringBuilder builder, RopeNode ropeNode) {
+        if (ropeNode == null) {
+            return;
+        }
+        if (ropeNode.isLeaf()) {
+            builder.append(ropeNode.getValue());
+            return;
+        }
+        appendToBuilder(builder, ropeNode.getLeft());
+        appendToBuilder(builder, ropeNode.getRight());
     }
 }
