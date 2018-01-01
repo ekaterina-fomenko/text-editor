@@ -11,7 +11,7 @@ public class RopeCreatorTest {
         Rope.MAX_DEPTH = 2;
        // Rope rope = RopeCreator.create("New Year is coming! Look at the snow behind your window. It is like a fairy tale.");
         Rope rope = RopeCreator.create("Hey_Mew_Cat_Albert");
-        String expectedResult = "(18)(8)(10)(Hey_)(Mew_)(Cat_)";
+        String expectedResult = "(18)(8)(10)(Hey_)(Mew_)(Cat_)(6)(Albe)(rt)";
         assertEquals(expectedResult, rope.printRopeNodes());
     }
 }

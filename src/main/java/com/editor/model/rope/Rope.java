@@ -96,26 +96,29 @@ public class Rope {
     }
 
     public String printRopeNodes() {
+        RopeNode localNode = node;
         StringBuilder stringBuilder = new StringBuilder();
         Queue<RopeNode> queue = new LinkedList<>();
         do {
-                stringBuilder.append("(");
-            if (node.getValue() != null) {
-                stringBuilder.append(node.getValue());
+            stringBuilder.append("(");
+            if (localNode.getValue() != null) {
+                stringBuilder.append(localNode.getValue());
             } else {
-                stringBuilder.append(node.getLength());
+                stringBuilder.append(localNode.getLength());
             }
-                stringBuilder.append(")");
-            if (node.left != null) {
-                queue.add(node.left);
+            stringBuilder.append(")");
+            if (localNode.left != null) {
+                queue.add(localNode.left);
             }
-            if (node.right != null) {
-                queue.add(node.right);
+            if (localNode.right != null) {
+                queue.add(localNode.right);
             }
             if (!queue.isEmpty()) {
-                node = queue.poll();
+                localNode = queue.poll();
+            } else {
+                localNode = null;
             }
-        } while (!queue.isEmpty());
+        } while (!queue.isEmpty() || localNode != null);
         return stringBuilder.toString();
     }
 }
