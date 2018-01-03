@@ -17,6 +17,7 @@ public class RopeCommonOperations {
         this.maxDepth = maxDepth;
         this.maxLengthInRope = maxLengthInRope;
     }
+
     public Rope concat(Rope left, Rope right) {
 
         if (left == null || left.getLength() == 0) {
@@ -161,6 +162,21 @@ public class RopeCommonOperations {
         RopeCommonOperations.normalize(rightSplit);
 
         return Arrays.asList(new Rope(leftSplit), new Rope(rightSplit));
+    }
+
+    public Rope create(String string) {
+        if (string.length() <= maxLengthInRope) {
+            return new Rope(string);
+        }
+        Rope rope = new Rope("");
+        for (int i = 0; i < string.length(); i = i + maxLengthInRope) {
+            if (i + maxLengthInRope <= string.length()) {
+                rope = concat(rope, create(string.substring(i, i + maxLengthInRope)));
+            } else {
+                rope = concat(rope, create(string.substring(i)));
+            }
+        }
+        return rope;
     }
 
     private void split(RopeNode leftSplit, RopeNode rightSplit, RopeNode parent, int index) {

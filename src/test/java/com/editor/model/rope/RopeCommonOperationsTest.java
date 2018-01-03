@@ -9,6 +9,22 @@ import static org.junit.Assert.assertEquals;
 public class RopeCommonOperationsTest {
 
     @Test
+    public void createShouldConstructCorrectRopeStructure() {
+        RopeCommonOperations ops = new RopeCommonOperations(2, 4);
+        Rope rope = ops.create("Hey_Mew_Cat_Albert");
+        String expectedResult = "(18)(8)(10)(Hey_)(Mew_)(Cat_)(6)(Albe)(rt)";
+        assertEquals(expectedResult, rope.printRopeNodes());
+    }
+
+    @Test
+    public void createShouldNotChangeText() {
+        RopeCommonOperations ops = new RopeCommonOperations(2, 4);
+        String text = "New Year is coming! Look at the snow behind your window. It is like a fairy tale.";
+        Rope rope = ops.create(text);
+        assertEquals(text, rope.toString());
+    }
+
+    @Test
     public void testConcatenate() throws Exception {
         RopeCommonOperations ops = new RopeCommonOperations(3, 10);
 

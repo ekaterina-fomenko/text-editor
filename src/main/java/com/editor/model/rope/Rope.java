@@ -1,5 +1,7 @@
 package com.editor.model.rope;
 
+import sun.plugin.dom.exception.InvalidStateException;
+
 import java.util.LinkedList;
 import java.util.Queue;
 
