@@ -1,5 +1,6 @@
 package com.editor.model.rope;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -93,6 +94,16 @@ public class Rope {
         }
         appendToBuilder(builder, ropeNode.getLeft());
         appendToBuilder(builder, ropeNode.getRight());
+    }
+
+    public Iterator<Character> iterator(final int start) {
+        if (start < 0 || start > this.getLength())
+            throw new IndexOutOfBoundsException("Rope index out of range: " + start);
+        if (start >= this.getNode().getLeft().getLength()) {
+            return new Rope(this.getNode().getRight()).iterator(start - this.getNode().getLeft().getLength());
+        } else {
+            return new RopeIterator(this, start);
+        }
     }
 
     public String printRopeNodes() {
