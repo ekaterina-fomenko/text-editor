@@ -2,6 +2,8 @@ package com.editor.model.rope;
 
 import org.junit.Test;
 
+import java.util.Iterator;
+
 import static org.junit.Assert.assertEquals;
 
 public class RopeTest {
@@ -87,6 +89,21 @@ public class RopeTest {
         assertEquals("Who ", rope.substring(7, 11).toString());
         assertEquals(right.getValue().substring(4, 6), rope.substring(11, 13).toString());
         assertEquals("Ho!W", rope.substring(4, 8).toString());
+    }
+
+    @Test
+    public void iteratorTest() {
+        String value = "Ho_ho_ho!_New_year_is_not_finished;)";
+        Rope.MAX_LENGTH_IN_ROPE = 4;
+        Rope.MAX_DEPTH = 2;
+        Rope rope = RopeCreator.create(value);
+        Iterator<Character> iterator = rope.iterator(10);
+        String expectedResult = value.substring(10);
+        StringBuilder result = new StringBuilder();
+        while (iterator.hasNext()) {
+            result.append(iterator.next());
+        }
+        assertEquals(expectedResult, result.toString());
     }
 
 }
