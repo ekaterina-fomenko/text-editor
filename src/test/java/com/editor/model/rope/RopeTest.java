@@ -1,5 +1,6 @@
 package com.editor.model.rope;
 
+import org.junit.After;
 import org.junit.Test;
 
 import java.util.Iterator;
@@ -48,14 +49,14 @@ public class RopeTest {
     @Test
     public void testCharAt() throws Exception {
         Rope rope = new Rope("abc");
+        rope = rope.append(new Rope("def"));
 
         assertEquals('a', rope.charAt(0));
         assertEquals('b', rope.charAt(1));
         assertEquals('c', rope.charAt(2));
 
-        rope = rope.append(new Rope("def"));
-        assertEquals('b', rope.charAt(1));
         assertEquals('d', rope.charAt(3));
+        assertEquals('e', rope.charAt(4));
         assertEquals('f', rope.charAt(5));
 
     }
@@ -94,8 +95,6 @@ public class RopeTest {
     @Test
     public void iteratorTest() {
         String value = "Ho_ho_ho!_New_year_is_not_finished;)";
-        Rope.MAX_LENGTH_IN_ROPE = 4;
-        Rope.MAX_DEPTH = 2;
         Rope rope = new RopeCommonOperations(2, 4).create(value);
         Iterator<Character> iterator = rope.iterator(10);
         String expectedResult = value.substring(10);
@@ -104,6 +103,11 @@ public class RopeTest {
             result.append(iterator.next());
         }
         assertEquals(expectedResult, result.toString());
+        RopeUtilities.resetToDefaultLengthAndDepth();
     }
 
+    @After
+    public void after(){
+        RopeUtilities.resetToDefaultLengthAndDepth();
+    }
 }
