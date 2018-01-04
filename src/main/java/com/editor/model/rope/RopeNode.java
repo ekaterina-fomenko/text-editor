@@ -1,5 +1,7 @@
 package com.editor.model.rope;
 
+import com.editor.system.SystemConstants;
+
 /**
  * This class contains information about node in rope tree
  */
@@ -30,17 +32,13 @@ public class RopeNode {
     /*
     *Create leaf node
     */
-    public RopeNode(CharSequence value) {
-        this(value, 0);
-    }
-
-    public RopeNode(CharSequence value, int linesNum) {
+    public RopeNode(String value) {
         this.value = value;
         this.right = null;
         this.left = null;
         this.depth = 0;
         this.length = value != null ? value.length() : 0;
-        this.linesNum = 1;
+        this.linesNum = value == null ? 0 : countSubstrings(value, SystemConstants.NEW_LINE);
     }
 
     public int getLength() {
@@ -81,6 +79,17 @@ public class RopeNode {
 
     public boolean isEmpty() {
         return isLeaf() && value == null;
+    }
+
+    private int countSubstrings(String text, String substring) {
+        int index = text.indexOf(substring);
+        int substringsCount = 0;
+        while (index > 0) {
+            substringsCount++;
+            index = text.indexOf(substring, index + 1);
+        }
+
+        return substringsCount;
     }
 
     @Override

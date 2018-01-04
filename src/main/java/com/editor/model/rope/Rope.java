@@ -16,7 +16,7 @@ public class Rope {
 
     protected RopeCommonOperations operations = new RopeCommonOperations(MAX_DEPTH, MAX_LENGTH_IN_ROPE);
 
-    public Rope(CharSequence charSequence) {
+    public Rope(String charSequence) {
         node = new RopeNode(charSequence);
     }
 
@@ -40,7 +40,7 @@ public class Rope {
         return operations.concat(this, rope);
     }
 
-    public Rope append(CharSequence str) {
+    public Rope append(String str) {
         return append(new Rope(str));
     }
 

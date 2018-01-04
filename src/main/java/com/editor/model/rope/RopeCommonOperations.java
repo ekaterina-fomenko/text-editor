@@ -171,20 +171,7 @@ public class RopeCommonOperations {
         return Arrays.asList(new Rope(leftSplit), new Rope(rightSplit));
     }
 
-    public Rope create(String string) {
-        return create(string, 0);
-    }
-
-    public Rope create(String text, int linesCount) {
-        /*int newLineIndex = string.indexOf(SystemConstants.NEW_LINE);
-        if (newLineIndex > -1) {
-            Rope start = create(string.substring(0, newLineIndex));
-            Rope end = create(string.substring(newLineIndex + SystemConstants.NEW_LINE.length()));
-            Rope concat = concat(start, end);
-            concat.node.linesNum++;
-            return concat;
-        }*/
-
+    public Rope create(String text) {
         if (text.length() <= maxLengthInRope) {
             return new Rope(text);
         }
@@ -195,7 +182,7 @@ public class RopeCommonOperations {
             int lastIndex = i + maxLengthInRope;
             int lastIndexNewLineAware = incIndexIfNewLineSymbolSplit(text, lastIndex);
 
-            if (lastIndex <= text.length()) {
+            if (lastIndexNewLineAware <= text.length()) {
                 rope = concat(rope, new Rope(text.substring(i, lastIndexNewLineAware)));
             } else {
                 rope = concat(rope, new Rope(text.substring(i)));
@@ -205,12 +192,6 @@ public class RopeCommonOperations {
         }
 
         return rope;
-
-//        return new Rope(new RopeNode(string, linesCount));
-    }
-
-    private boolean endsWithPart(String string, String subString) {
-        return !subString.isEmpty() && (string.endsWith(subString) || endsWithPart(string, subString.substring(0, subString.length() - 1)));
     }
 
     int incIndexIfNewLineSymbolSplit(String text, int splitIndex) {
@@ -230,18 +211,6 @@ public class RopeCommonOperations {
         }
 
         return splitIndex;
-    }
-
-    boolean endsWith(String text, int lastTextIndex, String substring) {
-        for (int i = 0; i < substring.length(); i++) {
-            int currentIndexInText = lastTextIndex - i;
-            if (currentIndexInText < 0 || currentIndexInText >= text.length() ||
-                    text.charAt(currentIndexInText) != substring.charAt(substring.length() - 1 - i)) {
-                return false;
-            }
-        }
-
-        return true;
     }
 
     private void split(RopeNode leftSplit, RopeNode rightSplit, RopeNode parent, int index) {

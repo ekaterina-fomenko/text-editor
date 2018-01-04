@@ -11,19 +11,7 @@ import java.util.List;
 import static org.junit.Assert.*;
 
 public class RopeCommonOperationsTest {
-
-    public static final int NEW_LINE_LENGTH = SystemConstants.NEW_LINE.length();
-
-    @Test
-    public void testEndsWith() {
-        RopeCommonOperations ops = new RopeCommonOperations(2, 4);
-        assertTrue(ops.endsWith("abc", 2, "c"));
-        assertTrue(ops.endsWith("abc", 1, "ab"));
-        assertTrue(ops.endsWith("abccc", 4, "bccc"));
-        assertFalse(ops.endsWith("abccc", -1, "bccc"));
-        assertFalse(ops.endsWith("abccc", 10, "bccc"));
-        assertFalse(ops.endsWith("abccc", 1, "bccc"));
-    }
+    static final int NEW_LINE_LENGTH = SystemConstants.NEW_LINE.length();
 
     @Test
     public void testIncIndexIfNewLineSymbolSplit() {
