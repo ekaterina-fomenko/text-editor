@@ -24,6 +24,10 @@ public class Rope {
         this.node = node;
     }
 
+    public int getLinesNum() {
+        return this.node.getLinesNum();
+    }
+
     public int getLength() {
         return node.getLength();
     }

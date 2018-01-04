@@ -25,7 +25,7 @@ public class RopeNode {
         this.right = right;
         this.left = left;
         this.length = right.length + left.length;
-        this.linesNum = right.linesNum + left.linesNum;
+        this.linesNum = right.linesNum + left.linesNum - 1;
         this.depth = Math.max(right.depth, left.depth) + 1;
     }
 
@@ -33,12 +33,18 @@ public class RopeNode {
     *Create leaf node
     */
     public RopeNode(String value) {
+        populateFrom(value);
+    }
+
+    public void populateFrom(String value) {
         this.value = value;
         this.right = null;
         this.left = null;
         this.depth = 0;
         this.length = value != null ? value.length() : 0;
-        this.linesNum = value == null ? 0 : countSubstrings(value, SystemConstants.NEW_LINE);
+
+        int newLinesCount = value == null ? 0 : countSubstrings(value, SystemConstants.NEW_LINE);
+        this.linesNum = newLinesCount + 1;
     }
 
     public int getLength() {
@@ -95,5 +101,9 @@ public class RopeNode {
     @Override
     public String toString() {
         return value.toString();
+    }
+
+    public int getLinesNum() {
+        return linesNum;
     }
 }

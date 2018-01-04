@@ -1,5 +1,7 @@
 package com.editor.model.rope;
 
+import com.editor.RandomTextBuilder;
+import com.editor.system.SystemConstants;
 import org.junit.Test;
 
 import java.util.Iterator;
@@ -102,5 +104,36 @@ public class RopeTest {
             result.append(iterator.next());
         }
         assertEquals(expectedResult, result.toString());
+    }
+
+    @Test
+    public void testLinesNumber() {
+        Rope rope = new Rope("1st_line" + SystemConstants.NEW_LINE + "2nd_line");
+        assertEquals(2, rope.getLinesNum());
+
+        assertEquals(2, rope.substring(3, rope.toString().length()).getLinesNum());
+        assertEquals(1, rope.substring(11, rope.toString().length()).getLinesNum());
+
+        rope = rope.append("3rd_line" + SystemConstants.NEW_LINE + "!");
+        assertEquals(3, rope.getLinesNum());
+        assertEquals(4, rope.append(SystemConstants.NEW_LINE).getLinesNum());
+    }
+
+    @Test
+    public void testLinesNumberBigSize() {
+        RandomTextBuilder randomTextBuilder = new RandomTextBuilder();
+        Rope rope = new Rope(randomTextBuilder
+                .addLetters(100)
+                .addEnters(10)
+                .addLetters(100)
+                .getText());
+
+        assertEquals(11, rope.getLinesNum());
+
+        rope = rope.append(randomTextBuilder.getText());
+        assertEquals(21, rope.getLinesNum());
+
+        rope = rope.substring(rope.toString().length() - 10, rope.toString().length());
+        assertEquals(1, rope.getLinesNum());
     }
 }
