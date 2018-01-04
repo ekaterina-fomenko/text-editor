@@ -1,12 +1,57 @@
 package com.editor.model.rope;
 
+import com.editor.system.SystemConstants;
+import org.hamcrest.CoreMatchers;
+import org.junit.Assert;
 import org.junit.Test;
+import org.omg.CORBA.Environment;
 
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class RopeCommonOperationsTest {
+
+    public static final int NEW_LINE_LENGTH = SystemConstants.NEW_LINE.length();
+
+    @Test
+    public void testEndsWith() {
+        RopeCommonOperations ops = new RopeCommonOperations(2, 4);
+        assertTrue(ops.endsWith("abc", 2, "c"));
+        assertTrue(ops.endsWith("abc", 1, "ab"));
+        assertTrue(ops.endsWith("abccc", 4, "bccc"));
+        assertFalse(ops.endsWith("abccc", -1, "bccc"));
+        assertFalse(ops.endsWith("abccc", 10, "bccc"));
+        assertFalse(ops.endsWith("abccc", 1, "bccc"));
+    }
+
+    @Test
+    public void testIncIndexIfNewLineSymbolSplit() {
+        RopeCommonOperations ops = new RopeCommonOperations(2, 4);
+        assertEquals(
+                1,
+                ops.incIndexIfNewLineSymbolSplit("ab" + SystemConstants.NEW_LINE, 1));
+
+        assertEquals(
+                2 + NEW_LINE_LENGTH,
+                ops.incIndexIfNewLineSymbolSplit("ab" + SystemConstants.NEW_LINE, 3));
+
+        assertEquals(
+                2,
+                ops.incIndexIfNewLineSymbolSplit("ab" + SystemConstants.NEW_LINE, 2));
+
+        assertEquals(
+                2 + NEW_LINE_LENGTH,
+                ops.incIndexIfNewLineSymbolSplit("Hey!" + SystemConstants.NEW_LINE + "?", 4));
+    }
+
+    @Test
+    public void newLineShouldSplitStringToDifferentNodesOnCreate() {
+        RopeCommonOperations ops = new RopeCommonOperations(2, 4);
+        Rope rope = ops.create("Hi!" + SystemConstants.NEW_LINE + "?");
+        assertThat(rope.printRopeNodes(), CoreMatchers.containsString("(Hi!" + SystemConstants.NEW_LINE + ")"));
+        assertThat(rope.printRopeNodes(), CoreMatchers.containsString("(?)"));
+    }
 
     @Test
     public void createShouldConstructCorrectRopeStructure() {

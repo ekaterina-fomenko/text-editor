@@ -10,6 +10,7 @@ public class RopeNode {
     RopeNode right;
     int length;
     int depth;
+    int linesNum;
 
     public RopeNode() {
         this(null);
@@ -22,6 +23,7 @@ public class RopeNode {
         this.right = right;
         this.left = left;
         this.length = right.length + left.length;
+        this.linesNum = right.linesNum + left.linesNum;
         this.depth = Math.max(right.depth, left.depth) + 1;
     }
 
@@ -29,11 +31,16 @@ public class RopeNode {
     *Create leaf node
     */
     public RopeNode(CharSequence value) {
+        this(value, 0);
+    }
+
+    public RopeNode(CharSequence value, int linesNum) {
         this.value = value;
         this.right = null;
         this.left = null;
         this.depth = 0;
         this.length = value != null ? value.length() : 0;
+        this.linesNum = 1;
     }
 
     public int getLength() {

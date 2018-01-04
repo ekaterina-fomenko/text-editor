@@ -96,7 +96,7 @@ public class RopeTest {
         String value = "Ho_ho_ho!_New_year_is_not_finished;)";
         Rope.MAX_LENGTH_IN_ROPE = 4;
         Rope.MAX_DEPTH = 2;
-        Rope rope = RopeCreator.create(value);
+        Rope rope = new RopeCommonOperations(2, 4).create(value);
         Iterator<Character> iterator = rope.iterator(10);
         String expectedResult = value.substring(10);
         StringBuilder result = new StringBuilder();

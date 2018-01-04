@@ -1,8 +1,15 @@
 package com.editor.model.rope;
 
+import com.editor.system.SystemConstants;
+import com.sun.deploy.util.StringUtils;
+import sun.plugin.dom.exception.InvalidStateException;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 /**
  * Describes operations with ropes
@@ -165,18 +172,76 @@ public class RopeCommonOperations {
     }
 
     public Rope create(String string) {
-        if (string.length() <= maxLengthInRope) {
-            return new Rope(string);
+        return create(string, 0);
+    }
+
+    public Rope create(String text, int linesCount) {
+        /*int newLineIndex = string.indexOf(SystemConstants.NEW_LINE);
+        if (newLineIndex > -1) {
+            Rope start = create(string.substring(0, newLineIndex));
+            Rope end = create(string.substring(newLineIndex + SystemConstants.NEW_LINE.length()));
+            Rope concat = concat(start, end);
+            concat.node.linesNum++;
+            return concat;
+        }*/
+
+        if (text.length() <= maxLengthInRope) {
+            return new Rope(text);
         }
+
         Rope rope = new Rope("");
-        for (int i = 0; i < string.length(); i = i + maxLengthInRope) {
-            if (i + maxLengthInRope <= string.length()) {
-                rope = concat(rope, create(string.substring(i, i + maxLengthInRope)));
+        int i = 0;
+        while (i < text.length()) {
+            int lastIndex = i + maxLengthInRope;
+            int lastIndexNewLineAware = incIndexIfNewLineSymbolSplit(text, lastIndex);
+
+            if (lastIndex <= text.length()) {
+                rope = concat(rope, new Rope(text.substring(i, lastIndexNewLineAware)));
             } else {
-                rope = concat(rope, create(string.substring(i)));
+                rope = concat(rope, new Rope(text.substring(i)));
+            }
+
+            i = lastIndexNewLineAware;
+        }
+
+        return rope;
+
+//        return new Rope(new RopeNode(string, linesCount));
+    }
+
+    private boolean endsWithPart(String string, String subString) {
+        return !subString.isEmpty() && (string.endsWith(subString) || endsWithPart(string, subString.substring(0, subString.length() - 1)));
+    }
+
+    int incIndexIfNewLineSymbolSplit(String text, int splitIndex) {
+        if (SystemConstants.NEW_LINE.length() == 1) {
+            return splitIndex;
+        }
+
+        if (SystemConstants.NEW_LINE.length() > 2) {
+            throw new InvalidStateException("Unkown new line symbol: " + SystemConstants.NEW_LINE);
+        }
+
+        if (splitIndex > 1
+                && splitIndex < text.length()
+                && text.charAt(splitIndex - 1) == SystemConstants.NEW_LINE.charAt(0)
+                && text.charAt(splitIndex) == SystemConstants.NEW_LINE.charAt(1)) {
+            return splitIndex + 1;
+        }
+
+        return splitIndex;
+    }
+
+    boolean endsWith(String text, int lastTextIndex, String substring) {
+        for (int i = 0; i < substring.length(); i++) {
+            int currentIndexInText = lastTextIndex - i;
+            if (currentIndexInText < 0 || currentIndexInText >= text.length() ||
+                    text.charAt(currentIndexInText) != substring.charAt(substring.length() - 1 - i)) {
+                return false;
             }
         }
-        return rope;
+
+        return true;
     }
 
     private void split(RopeNode leftSplit, RopeNode rightSplit, RopeNode parent, int index) {
