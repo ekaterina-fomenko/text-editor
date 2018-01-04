@@ -1,6 +1,5 @@
 package com.editor.model.rope;
 
-import org.junit.After;
 import org.junit.Test;
 
 import java.util.Iterator;
@@ -103,11 +102,5 @@ public class RopeTest {
             result.append(iterator.next());
         }
         assertEquals(expectedResult, result.toString());
-        RopeUtilities.resetToDefaultLengthAndDepth();
-    }
-
-    @After
-    public void after(){
-        RopeUtilities.resetToDefaultLengthAndDepth();
     }
 }
