@@ -1,5 +1,6 @@
 package com.editor;
 
+import com.editor.model.RopeTextEditorModel;
 import com.editor.model.TextEditorModel;
 import com.editor.parser.SyntaxParser;
 
@@ -8,20 +9,23 @@ import java.awt.*;
 
 public class TextArea {
     public JScrollPane jScrollPane;
-    public DrawComponent jComponent;
+//    public DrawComponent jComponent;
+    public RopeDrawComponent ropeDrawComponent;
 
-    public TextEditorModel model;
+//    public TextEditorModel model;
+    public RopeTextEditorModel ropeModel;
     public JFrame frame;
     private DrawComponentMouseListener mouseListener;
 
     public TextArea(JFrame frame) {
         this.frame = frame;
-        model = new TextEditorModel();
+//        model = new TextEditorModel();
+        ropeModel = new RopeTextEditorModel();
 
-        jComponent = new DrawComponent(model);
-        jComponent.setActionMap(new TextActionMap(model, this));
-        jComponent.setInputMap(JComponent.WHEN_FOCUSED, new TextInputMap());
-        mouseListener = new DrawComponentMouseListener(this, jComponent, model);
+        ropeDrawComponent = new RopeDrawComponent(ropeModel);
+//        ropeDrawComponent.setActionMap(new TextActionMap(ropeModel, this));
+        ropeDrawComponent.setInputMap(JComponent.WHEN_FOCUSED, new TextInputMap());
+//        mouseListener = new DrawComponentMouseListener(this, ropeDrawComponent, ropeModel);
 
         createJScRollPane();
 
@@ -29,21 +33,21 @@ public class TextArea {
 
     private void createJScRollPane() {
 
-        jScrollPane = new JScrollPane(jComponent);
+        jScrollPane = new JScrollPane(ropeDrawComponent);
         jScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         jScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 
         jScrollPane.getHorizontalScrollBar().addAdjustmentListener(listener -> {
-            jComponent.setVisibleBounds(jScrollPane.getViewport().getViewRect());
+            ropeDrawComponent.setVisibleBounds(jScrollPane.getViewport().getViewRect());
         });
 
         jScrollPane.getVerticalScrollBar().addAdjustmentListener(listener -> {
-            jComponent.setVisibleBounds(jScrollPane.getViewport().getViewRect());
+            ropeDrawComponent.setVisibleBounds(jScrollPane.getViewport().getViewRect());
         });
 
-        jComponent.addMouseListener(mouseListener);
-        jComponent.addMouseMotionListener(mouseListener);
-        jComponent.setCursor(new Cursor(Cursor.TEXT_CURSOR));
+        ropeDrawComponent.addMouseListener(mouseListener);
+        ropeDrawComponent.addMouseMotionListener(mouseListener);
+        ropeDrawComponent.setCursor(new Cursor(Cursor.TEXT_CURSOR));
     }
 
     public void render() {
@@ -58,13 +62,13 @@ public class TextArea {
      */
 
     public void render(boolean forceScrollToCursor) {
-        this.jComponent.revalidate();
-        this.jComponent.setVisibleBounds(jScrollPane.getViewport().getViewRect());
-        this.jComponent.repaint();
-        this.jComponent.setScrollToCursorOnceOnPaint(forceScrollToCursor);
+        this.ropeDrawComponent.revalidate();
+        this.ropeDrawComponent.setVisibleBounds(jScrollPane.getViewport().getViewRect());
+        this.ropeDrawComponent.repaint();
+        this.ropeDrawComponent.setScrollToCursorOnceOnPaint(forceScrollToCursor);
 
         if (!SyntaxParser.isTextSyntax()) {
-            model.updatePairedBrackets();
+            ropeModel.updatePairedBrackets();
         }
 
     }

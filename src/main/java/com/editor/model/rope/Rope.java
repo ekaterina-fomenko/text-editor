@@ -72,9 +72,11 @@ public class Rope {
     }
 
     public Iterator<Character> iterator(final int start) {
-        if (start < 0 || start > this.getLength())
+        if (start < 0 || start > getLength())
             throw new IndexOutOfBoundsException("Rope index out of range: " + start);
-        if (start >= this.getNode().getLeft().getLength()) {
+
+        RopeNode leftChild = getNode().getLeft();
+        if (leftChild != null && start >= leftChild.getLength()) {
             return new Rope(this.getNode().getRight()).iterator(start - this.getNode().getLeft().getLength());
         } else {
             return new RopeIterator(this, start);

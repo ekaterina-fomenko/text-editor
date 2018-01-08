@@ -19,7 +19,7 @@ public class FileManager {
     private String fileName;
     private String directory;
     private JFrame frame;
-    private TextEditorModel model;
+    private RopeTextEditorModel model;
 
     public static Logger log = LoggerFactory.getLogger(FileManager.class);
 
@@ -27,7 +27,7 @@ public class FileManager {
         this.fileName = null;
         this.directory = null;
         this.frame = textArea.frame;
-        this.model = textArea.model;
+        this.model = textArea.ropeModel;
     }
 
     public void openFile() {
@@ -39,13 +39,14 @@ public class FileManager {
         if (fileChooser.showOpenDialog(frame) == JFileChooser.APPROVE_OPTION) {
             File file = fileChooser.getSelectedFile();
             String line;
-            List<StringBuilder> text = new ArrayList<>();
+
+            model.clearAll();
             try {
                 BufferedReader reader = new BufferedReader(new FileReader(file));
                 while ((line = reader.readLine()) != null) {
-                    text.add(new StringBuilder(line));
+                    model.append(line);
                 }
-                model.setLineBuildersFromFile(text);
+
                 fileName = fileChooser.getName(file);
                 directory = fileChooser.getCurrentDirectory().getPath();
                 setTitleAndSyntax();
@@ -64,7 +65,7 @@ public class FileManager {
         if (chooser.showSaveDialog(frame) == JFileChooser.APPROVE_OPTION) {
             try {
                 FileWriter writer = new FileWriter(chooser.getSelectedFile());
-                writer.write(model.lineBuildersToString());
+                writer.write(model.getRope().toString());
                 writer.close();
                 fileName = chooser.getName(chooser.getSelectedFile());
                 directory = chooser.getCurrentDirectory().getPath();
@@ -82,7 +83,7 @@ public class FileManager {
         }
         try {
             FileWriter writer = new FileWriter(new File(directory + "/" + fileName));
-            writer.write(model.lineBuildersToString());
+            writer.write(model.getRope().toString());
             writer.close();
             log.info("File was saved successfully");
         } catch (IOException e) {

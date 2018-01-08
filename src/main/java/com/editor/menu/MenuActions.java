@@ -21,7 +21,7 @@ public class MenuActions extends AbstractAction {
     public MenuActions(TextArea textArea) {
 
         this.textArea = textArea;
-        this.jComponent = textArea.jComponent;
+        this.jComponent = textArea.ropeDrawComponent;
         this.fileManager = new FileManager(textArea);
 
     }

@@ -107,6 +107,16 @@ public class RopeTest {
     }
 
     @Test
+    public void shouldBeAbleToIteraterThroughSingleNodeRope() {
+        Rope rope = new RopeCommonOperations(2, 10).create("ABC");
+        Iterator<Character> iterator = rope.iterator(0);
+        assertEquals('A', (char) iterator.next());
+        assertEquals('B', (char) iterator.next());
+        assertEquals('C', (char) iterator.next());
+        assertEquals(false, iterator.hasNext());
+    }
+
+    @Test
     public void testLinesNumber() {
         Rope rope = new Rope("1st_line" + SystemConstants.NEW_LINE + "2nd_line");
         assertEquals(2, rope.getLinesNum());
