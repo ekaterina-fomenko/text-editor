@@ -39,11 +39,10 @@ public class MenuBar {
     private JMenuItem saveFile;
     private JMenuItem saveAsFile;
 
-    private MenuActions menuListener;
+    private MenuActions menuActions;
 
     public MenuBar(TextArea textArea) {
-
-        menuListener = new MenuActions(textArea);
+        menuActions = new MenuActions(textArea);
         menuBar = new JMenuBar();
 
         syntaxMenu = new JMenu(SYNTAX_MENU);
@@ -65,6 +64,10 @@ public class MenuBar {
 
     public JMenuBar getMenuBar() {
         return menuBar;
+    }
+
+    public MenuActions getMenuActions() {
+        return menuActions;
     }
 
     private void setHotKeysToFileItems() {
@@ -100,13 +103,13 @@ public class MenuBar {
     }
 
     private void addListenerToMenuItems() {
-        plainTextSyntax.addActionListener(menuListener);
-        javaScriptSyntax.addActionListener(menuListener);
-        erlangSyntax.addActionListener(menuListener);
-        haskellSyntax.addActionListener(menuListener);
+        plainTextSyntax.addActionListener(menuActions);
+        javaScriptSyntax.addActionListener(menuActions);
+        erlangSyntax.addActionListener(menuActions);
+        haskellSyntax.addActionListener(menuActions);
 
-        openFile.addActionListener(menuListener);
-        saveFile.addActionListener(menuListener);
-        saveAsFile.addActionListener(menuListener);
+        openFile.addActionListener(menuActions);
+        saveFile.addActionListener(menuActions);
+        saveAsFile.addActionListener(menuActions);
     }
 }

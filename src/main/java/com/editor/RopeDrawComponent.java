@@ -1,11 +1,13 @@
 package com.editor;
 
 import com.editor.model.RopeTextEditorModel;
+import com.editor.system.SystemConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.geom.AffineTransform;
 import java.util.Iterator;
 
 /**
@@ -43,12 +45,18 @@ public class RopeDrawComponent extends JComponent {
 
         Graphics2D graphics2D = (Graphics2D) graphics;
         graphics2D.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
+        AffineTransform affineTransform = graphics2D.getTransform();
 
         /* Go trough lines that will be painted*/
         Iterator<Character> iterator = model.getRope().iterator(0);
         while (iterator.hasNext()) {
             Character c = iterator.next();
             drawChar(graphics2D, c, DEFAULT_CHAR_COLOR, null);
+            if (c.toString().equals(SystemConstants.NEW_LINE)) {
+                graphics2D.setTransform(affineTransform);
+                graphics2D.translate(0, graphics2D.getFontMetrics().getHeight());
+                affineTransform = graphics2D.getTransform();
+            }
         }
     }
 

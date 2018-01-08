@@ -38,24 +38,27 @@ public class FileManager {
         fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         if (fileChooser.showOpenDialog(frame) == JFileChooser.APPROVE_OPTION) {
             File file = fileChooser.getSelectedFile();
-            String line;
+            openFile(file);
+        }
+    }
 
-            model.clearAll();
-            try {
-                BufferedReader reader = new BufferedReader(new FileReader(file));
-                while ((line = reader.readLine()) != null) {
-                    model.append(line);
-                }
-
-                fileName = fileChooser.getName(file);
-                directory = fileChooser.getCurrentDirectory().getPath();
-                setTitleAndSyntax();
-
-            } catch (FileNotFoundException e) {
-                log.error("Cannot find  file {}", fileName, e);
-            } catch (IOException e) {
-                log.error("Exception was occurred while trying to read file {} from buffer", fileName, e);
+    public void openFile(File file) {
+        String line;
+        model.clearAll();
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(file));
+            while ((line = reader.readLine()) != null) {
+                model.append(line);
             }
+
+            fileName = file.getName();
+            directory = file.getParentFile().getAbsolutePath();
+            setTitleAndSyntax();
+
+        } catch (FileNotFoundException e) {
+            log.error("Cannot find  file {}", fileName, e);
+        } catch (IOException e) {
+            log.error("Exception was occurred while trying to read file {} from buffer", fileName, e);
         }
     }
 
