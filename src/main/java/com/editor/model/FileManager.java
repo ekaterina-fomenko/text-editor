@@ -2,6 +2,7 @@ package com.editor.model;
 
 import com.editor.TextArea;
 import com.editor.parser.SyntaxParser;
+import com.editor.system.SystemConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,6 +50,7 @@ public class FileManager {
             BufferedReader reader = new BufferedReader(new FileReader(file));
             while ((line = reader.readLine()) != null) {
                 model.append(line);
+                model.append(SystemConstants.NEW_LINE);
             }
 
             fileName = file.getName();

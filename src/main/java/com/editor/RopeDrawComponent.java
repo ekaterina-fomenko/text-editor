@@ -9,6 +9,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.util.Iterator;
+import java.util.Optional;
 
 /**
  * Main class which redraw all in text area.
@@ -51,13 +52,24 @@ public class RopeDrawComponent extends JComponent {
         Iterator<Character> iterator = model.getRope().iterator(0);
         while (iterator.hasNext()) {
             Character c = iterator.next();
-            drawChar(graphics2D, c, DEFAULT_CHAR_COLOR, null);
-            if (c.toString().equals(SystemConstants.NEW_LINE)) {
+            Character cNext = iterator.hasNext() ? iterator.next() : null;
+
+            if (areNewLine(c, cNext)) {
                 graphics2D.setTransform(affineTransform);
                 graphics2D.translate(0, graphics2D.getFontMetrics().getHeight());
                 affineTransform = graphics2D.getTransform();
+            } else {
+                drawChar(graphics2D, c, DEFAULT_CHAR_COLOR, null);
+                if (cNext != null) {
+                    drawChar(graphics2D, cNext, DEFAULT_CHAR_COLOR, null);
+                }
             }
         }
+    }
+
+    private boolean areNewLine(Character c, Character cNext) {
+        return c == SystemConstants.NEW_LINE.charAt(0) && SystemConstants.NEW_LINE.length() == 1 ||
+                (c == SystemConstants.NEW_LINE.charAt(0) && cNext == SystemConstants.NEW_LINE.charAt(1));
     }
 
     public void setVisibleBounds(Rectangle visibleBounds) {
