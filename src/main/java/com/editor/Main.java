@@ -1,6 +1,7 @@
 package com.editor;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.stream.Stream;
 
 public class Main {
@@ -9,23 +10,24 @@ public class Main {
      *
      * @param args
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         openApplication(args);
     }
 
-    public static EditorFrame openApplication(String[] args) {
+    public static EditorFrame openApplication(String[] args) throws FileNotFoundException {
         EditorFrame frame = new EditorFrame();
         frame.setVisible(true);
-        String fileArgPrefix = "--file:";
 
-        Stream.of(args)
+        String fileArgPrefix = "--file:";
+        String fileArg = Stream.of(args)
                 .filter(i -> i.startsWith(fileArgPrefix))
                 .findAny()
-                .ifPresent(i -> {
-                    String fileName = i.substring(fileArgPrefix.length());
+                .orElse(null);
 
-                    frame.menuBar.getMenuActions().fileManager.openFile(new File(fileName));
-                });
+        if (fileArg != null) {
+            String fileName = fileArg.substring(fileArgPrefix.length());
+            frame.menuBar.getMenuActions().fileManager.openFile(new File(fileName));
+        }
 
         return frame;
     }

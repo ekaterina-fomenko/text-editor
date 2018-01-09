@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
+import java.text.MessageFormat;
 import java.util.Iterator;
 import java.util.Optional;
 
@@ -50,6 +51,7 @@ public class RopeDrawComponent extends JComponent {
 
         /* Go trough lines that will be painted*/
         Iterator<Character> iterator = model.getRope().iterator(0);
+        long drawStart = System.currentTimeMillis();
         while (iterator.hasNext()) {
             Character c = iterator.next();
             Character cNext = iterator.hasNext() ? iterator.next() : null;
@@ -65,6 +67,8 @@ public class RopeDrawComponent extends JComponent {
                 }
             }
         }
+        long drawEnd = System.currentTimeMillis();
+        log.info(MessageFormat.format("Drawn: {0} lines, {1}ms", model.getRope().getLinesNum(), drawEnd - drawStart));
     }
 
     private boolean areNewLine(Character c, Character cNext) {

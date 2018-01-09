@@ -90,17 +90,12 @@ public class RopeNode {
     private int countSubstrings(String text, String substring) {
         int index = text.indexOf(substring);
         int substringsCount = 0;
-        while (index > 0) {
+        while (index >= 0) {
             substringsCount++;
             index = text.indexOf(substring, index + 1);
         }
 
         return substringsCount;
-    }
-
-    @Override
-    public String toString() {
-        return value.toString();
     }
 
     public int getLinesNum() {

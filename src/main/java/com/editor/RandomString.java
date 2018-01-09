@@ -6,7 +6,6 @@ import java.util.Objects;
 import java.util.Random;
 
 public class RandomString {
-
     /**
      * Generate a random string.
      */

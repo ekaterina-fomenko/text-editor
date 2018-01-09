@@ -49,8 +49,7 @@ public class FileManager {
         try {
             BufferedReader reader = new BufferedReader(new FileReader(file));
             while ((line = reader.readLine()) != null) {
-                model.append(line);
-                model.append(SystemConstants.NEW_LINE);
+                model.append(line + SystemConstants.NEW_LINE);
             }
 
             fileName = file.getName();
