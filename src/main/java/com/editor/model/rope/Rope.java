@@ -8,13 +8,11 @@ import java.util.Queue;
  * This class represents a rope data structure
  */
 public class Rope {
-
-    protected static int MAX_DEPTH = 100;
-    protected static int MAX_LENGTH_IN_ROPE = 20;
+    protected static int MAX_LENGTH_IN_ROPE = 32;
 
     RopeNode node;
 
-    protected RopeCommonOperations operations = new RopeCommonOperations(MAX_DEPTH, MAX_LENGTH_IN_ROPE);
+    protected RopeCommonOperations operations = new RopeCommonOperations(MAX_LENGTH_IN_ROPE);
 
     public Rope(String charSequence) {
         node = new RopeNode(charSequence);

@@ -22,18 +22,6 @@ public class RopeTest {
     }
 
     @Test
-    public void testGetDepth() throws Exception {
-        assertEquals(0, new Rope("abc").getDepth());
-
-        RopeCommonOperations ops = new RopeCommonOperations(3, 5);
-        assertEquals(0, ops.concat(new Rope("abc"), new Rope("a")).getDepth());
-
-        assertEquals(1, ops.concat(new Rope("abc"), new Rope("de")).getDepth());
-
-        assertEquals(1, new Rope(new RopeNode(new RopeNode("a"), new RopeNode("b"))).getDepth());
-    }
-
-    @Test
     public void testAppend() throws Exception {
         Rope rope = new Rope("abc");
         rope = rope.append(new Rope("cdef\n"));
@@ -85,7 +73,7 @@ public class RopeTest {
         RopeNode right = new RopeNode("Who is looking for Santa?");
         RopeNode node = new RopeNode(left, right);
         Rope rope = new Rope(node);
-        rope.operations = new RopeCommonOperations(5, 7);
+        rope.operations = new RopeCommonOperations(7);
 
         assertEquals("HoHoHo!", rope.substring(0, 7).toString());
         assertEquals("Who ", rope.substring(7, 11).toString());
@@ -96,7 +84,7 @@ public class RopeTest {
     @Test
     public void iteratorTest() {
         String value = "Ho_ho_ho!_New_year_is_not_finished;)";
-        Rope rope = new RopeCommonOperations(2, 4).create(value);
+        Rope rope = new RopeCommonOperations(4).create(value);
         Iterator<Character> iterator = rope.iterator(10);
         String expectedResult = value.substring(10);
         StringBuilder result = new StringBuilder();
@@ -108,7 +96,7 @@ public class RopeTest {
 
     @Test
     public void shouldBeAbleToIteraterThroughSingleNodeRope() {
-        Rope rope = new RopeCommonOperations(2, 10).create("ABC");
+        Rope rope = new RopeCommonOperations(10).create("ABC");
         Iterator<Character> iterator = rope.iterator(0);
         assertEquals('A', (char) iterator.next());
         assertEquals('B', (char) iterator.next());

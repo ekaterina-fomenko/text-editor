@@ -2,9 +2,7 @@ package com.editor.model.rope;
 
 import com.editor.system.SystemConstants;
 import org.hamcrest.CoreMatchers;
-import org.junit.Assert;
 import org.junit.Test;
-import org.omg.CORBA.Environment;
 
 import java.util.List;
 
@@ -15,7 +13,7 @@ public class RopeCommonOperationsTest {
 
     @Test
     public void testIncIndexIfNewLineSymbolSplit() {
-        RopeCommonOperations ops = new RopeCommonOperations(2, 4);
+        RopeCommonOperations ops = new RopeCommonOperations(4);
         assertEquals(
                 1,
                 ops.incIndexIfNewLineSymbolSplit("ab" + SystemConstants.NEW_LINE, 1));
@@ -35,7 +33,7 @@ public class RopeCommonOperationsTest {
 
     @Test
     public void newLineShouldSplitStringToDifferentNodesOnCreate() {
-        RopeCommonOperations ops = new RopeCommonOperations(2, 4);
+        RopeCommonOperations ops = new RopeCommonOperations(4);
         Rope rope = ops.create("Hi!" + SystemConstants.NEW_LINE + "?");
         assertThat(rope.printRopeNodes(), CoreMatchers.containsString("(Hi!" + SystemConstants.NEW_LINE + ")"));
         assertThat(rope.printRopeNodes(), CoreMatchers.containsString("(?)"));
@@ -43,7 +41,7 @@ public class RopeCommonOperationsTest {
 
     @Test
     public void createShouldConstructCorrectRopeStructure() {
-        RopeCommonOperations ops = new RopeCommonOperations(2, 4);
+        RopeCommonOperations ops = new RopeCommonOperations(4);
         Rope rope = ops.create("Hey_Mew_Cat_Albert");
         String expectedResult = "(18)(8)(10)(Hey_)(Mew_)(Cat_)(6)(Albe)(rt)";
         assertEquals(expectedResult, rope.printRopeNodes());
@@ -51,7 +49,7 @@ public class RopeCommonOperationsTest {
 
     @Test
     public void createShouldNotChangeText() {
-        RopeCommonOperations ops = new RopeCommonOperations(2, 4);
+        RopeCommonOperations ops = new RopeCommonOperations(4);
         String text = "New Year is coming! Look at the snow behind your window. It is like a fairy tale.";
         Rope rope = ops.create(text);
         assertEquals(text, rope.toString());
@@ -59,7 +57,7 @@ public class RopeCommonOperationsTest {
 
     @Test
     public void testConcatenate() throws Exception {
-        RopeCommonOperations ops = new RopeCommonOperations(3, 10);
+        RopeCommonOperations ops = new RopeCommonOperations(10);
 
         Rope heyYoYoDots = ops.concat(new Rope("Hey YoYo"), new Rope(".."));
         assertEquals("Hey YoYo..", heyYoYoDots.toString());
@@ -86,7 +84,7 @@ public class RopeCommonOperationsTest {
     public void testSplit() {
         RopeNode rope = new RopeNode("HoHoHoHoHoHe!");
 
-        RopeCommonOperations ops = new RopeCommonOperations(3, 3);
+        RopeCommonOperations ops = new RopeCommonOperations(3);
 
         List<Rope> splits = ops.split(new Rope(rope), 6);
         Rope leftSplit = splits.get(0);
