@@ -16,8 +16,6 @@ public class Rope {
 
     public static Logger log = LoggerFactory.getLogger(FileManager.class);
 
-    private static int diagnosticsCounter = 0;
-
     RopeNode node;
 
     protected RopeCommonOperations operations = new RopeCommonOperations(MAX_LENGTH_IN_ROPE);
@@ -48,11 +46,6 @@ public class Rope {
 
     public Rope append(Rope rope) {
         Rope result = operations.concat(this, rope);
-
-        if (diagnosticsCounter < result.getLinesNum()) {
-            diagnosticsCounter = result.getLinesNum() + 10000;
-            log.info("Diagnostics: counter={}, length={}, depth={}, linesNum={}", diagnosticsCounter, result.getLength(), result.getDepth(), result.getLinesNum());
-        }
 
         return result;
     }

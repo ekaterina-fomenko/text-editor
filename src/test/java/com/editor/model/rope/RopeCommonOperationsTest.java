@@ -95,11 +95,11 @@ public class RopeCommonOperationsTest {
 
         // corner cases
         List<Rope> splitByZero = ops.split(new Rope(rope), 0);
-        assertEquals(rope.toString(), splitByZero.get(1).toString());
+        assertEquals(rope.getValue(), splitByZero.get(1).toString());
         assertEquals("", splitByZero.get(0).toString());
 
         List<Rope> splitByLast = ops.split(new Rope(rope), rope.length);
         assertEquals("", splitByLast.get(1).toString());
-        assertEquals(rope.toString(), splitByLast.get(0).toString());
+        assertEquals(rope.getValue(), splitByLast.get(0).toString());
     }
 }

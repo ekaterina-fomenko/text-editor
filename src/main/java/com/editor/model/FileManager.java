@@ -48,8 +48,9 @@ public class FileManager {
         try {
             BufferedReader reader = new BufferedReader(new FileReader(file));
             char[] buffer = new char[5000 * 1000];
-            while (reader.read(buffer) != -1) {
-                model.append(new String(buffer));
+            int countRead;
+            while ((countRead = reader.read(buffer)) != -1) {
+                model.append(new String(buffer, 0, countRead));
             }
 
             fileName = file.getName();

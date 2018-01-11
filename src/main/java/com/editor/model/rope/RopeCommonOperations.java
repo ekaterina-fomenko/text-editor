@@ -204,6 +204,7 @@ public class RopeCommonOperations {
         List<RopeNode> result = new ArrayList<>();
 
         if (text.length() <= maxLengthInRope) {
+            result.add(new RopeNode(text));
             return result;
         }
 
