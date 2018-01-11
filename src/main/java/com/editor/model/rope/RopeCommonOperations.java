@@ -89,7 +89,7 @@ public class RopeCommonOperations {
             return false;
         }
 
-        return rope.getLength() <= FIBONACCI[rope.getDepth() + 2];
+        return rope.getLength() >= FIBONACCI[rope.getDepth() + 2];
     }
 
     public Rope rebalance(Rope rope) {
