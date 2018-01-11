@@ -44,12 +44,12 @@ public class FileManager {
     }
 
     public void openFile(File file) {
-        String line;
         model.clearAll();
         try {
             BufferedReader reader = new BufferedReader(new FileReader(file));
-            while ((line = reader.readLine()) != null) {
-                model.append(line + SystemConstants.NEW_LINE);
+            char[] buffer = new char[5000 * 1000];
+            while (reader.read(buffer) != -1) {
+                model.append(new String(buffer));
             }
 
             fileName = file.getName();

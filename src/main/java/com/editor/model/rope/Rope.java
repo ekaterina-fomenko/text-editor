@@ -1,5 +1,9 @@
 package com.editor.model.rope;
 
+import com.editor.model.FileManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -9,6 +13,10 @@ import java.util.Queue;
  */
 public class Rope {
     protected static int MAX_LENGTH_IN_ROPE = 32;
+
+    public static Logger log = LoggerFactory.getLogger(FileManager.class);
+
+    private static int diagnosticsCounter = 0;
 
     RopeNode node;
 
@@ -39,11 +47,18 @@ public class Rope {
     }
 
     public Rope append(Rope rope) {
-        return operations.concat(this, rope);
+        Rope result = operations.concat(this, rope);
+
+        if (diagnosticsCounter < result.getLinesNum()) {
+            diagnosticsCounter = result.getLinesNum() + 10000;
+            log.info("Diagnostics: counter={}, length={}, depth={}, linesNum={}", diagnosticsCounter, result.getLength(), result.getDepth(), result.getLinesNum());
+        }
+
+        return result;
     }
 
     public Rope append(String str) {
-        return append(new Rope(str));
+        return append(operations.create(str));
     }
 
     public Rope substring(int start, int end) {
