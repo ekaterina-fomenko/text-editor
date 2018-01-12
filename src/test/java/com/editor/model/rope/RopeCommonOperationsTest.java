@@ -12,23 +12,23 @@ public class RopeCommonOperationsTest {
     static final int NEW_LINE_LENGTH = SystemConstants.NEW_LINE.length();
 
     @Test
-    public void testIncIndexIfNewLineSymbolSplit() {
+    public void testIncrementInd() {
         RopeCommonOperations ops = new RopeCommonOperations(4);
         assertEquals(
                 1,
-                ops.incIndexIfNewLineSymbolSplit("ab" + SystemConstants.NEW_LINE, 1));
+                ops.incrementInd("ab" + SystemConstants.NEW_LINE, 1));
 
         assertEquals(
                 2 + NEW_LINE_LENGTH,
-                ops.incIndexIfNewLineSymbolSplit("ab" + SystemConstants.NEW_LINE, 3));
+                ops.incrementInd("ab" + SystemConstants.NEW_LINE, 3));
 
         assertEquals(
                 2,
-                ops.incIndexIfNewLineSymbolSplit("ab" + SystemConstants.NEW_LINE, 2));
+                ops.incrementInd("ab" + SystemConstants.NEW_LINE, 2));
 
         assertEquals(
                 2 + NEW_LINE_LENGTH,
-                ops.incIndexIfNewLineSymbolSplit("Hey!" + SystemConstants.NEW_LINE + "?", 4));
+                ops.incrementInd("Hey!" + SystemConstants.NEW_LINE + "?", 4));
     }
 
     @Test
