@@ -1,6 +1,7 @@
 package com.editor.model.rope;
 
 import com.editor.model.FileManager;
+import com.editor.system.SystemConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,7 +70,6 @@ public class Rope {
         return operations.split(splittedRope, end - start).get(0);
     }
 
-
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
@@ -120,6 +120,10 @@ public class Rope {
         return charAt(index, node);
     }
 
+    public int charIndexOfLineStart(int lineIndex) {
+        return charIndexOfLineStart(lineIndex, node);
+    }
+
     boolean isFlat() {
         return node.getDepth() == 0;
     }
@@ -128,10 +132,49 @@ public class Rope {
         if (ropeNode.isLeaf()) {
             return ropeNode.getValue().charAt(index);
         }
-        if (index > ropeNode.getLeft().getLength()) {
-            return charAt(index, ropeNode.getRight());
+        if (index >= ropeNode.getLeft().getLength()) {
+            return charAt(index - ropeNode.getLeft().getLength(), ropeNode.getRight());
         }
         return charAt(index, ropeNode.getLeft());
+    }
+
+    public int charIndexOfLineStart(int lineIndex, RopeNode node) {
+        int linesNum = node.getLinesNum();
+        if (linesNum < lineIndex) {
+            return -1;
+        }
+
+        RopeNode left = node.getLeft();
+        if (left != null && left.getLinesNum() > lineIndex) {
+            return charIndexOfLineStart(lineIndex, left);
+        }
+
+        RopeNode right = node.getRight();
+        int leftLength = left == null ? 0 : left.getLength();
+        int leftLinesNum = left == null ? 0 : left.getLinesNum();
+        if (right != null && right.getLinesNum() > lineIndex - leftLinesNum + 1) {
+            return leftLength + charIndexOfLineStart(lineIndex - leftLinesNum + 1, right);
+        }
+
+        // it must be a leaf
+        if (node.getValue() == null) {
+            return -1;
+        }
+
+        if (lineIndex == 0) {
+            return 0;
+        }
+
+        int startingFrom = -1;
+        int lineCounter = 0;
+        while ((startingFrom = node.getValue().indexOf(SystemConstants.NEW_LINE, startingFrom + 1)) > -1) {
+            lineCounter++;
+            if (lineCounter == lineIndex) {
+                return startingFrom + SystemConstants.NEW_LINE.length();
+            }
+        }
+
+        return -1;
     }
 
     private void appendToBuilder(StringBuilder builder, RopeNode ropeNode) {

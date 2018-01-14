@@ -6,6 +6,7 @@ import org.junit.Test;
 
 import java.util.List;
 
+import static java.text.MessageFormat.format;
 import static org.junit.Assert.*;
 
 public class RopeCommonOperationsTest {

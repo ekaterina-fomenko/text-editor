@@ -7,7 +7,7 @@ import com.editor.system.SystemConstants;
  */
 
 public class RopeNode {
-    CharSequence value;
+    String value;
     RopeNode left;
     RopeNode right;
     int length;

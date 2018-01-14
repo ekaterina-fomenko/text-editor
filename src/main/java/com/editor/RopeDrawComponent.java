@@ -1,6 +1,7 @@
 package com.editor;
 
 import com.editor.model.RopeTextEditorModel;
+import com.editor.model.rope.Rope;
 import com.editor.system.SystemConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,12 +46,18 @@ public class RopeDrawComponent extends JComponent {
 
         log.debug("Paint started. VisibleBounds: " + visibleBounds);
 
+        Rope rope = model.getRope();
+
         Graphics2D graphics2D = (Graphics2D) graphics;
         graphics2D.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
         AffineTransform affineTransform = graphics2D.getTransform();
 
+        int fontHeight = graphics.getFontMetrics().getHeight();
+        int startRow = Math.max(0, visibleBounds.y / fontHeight - 1);
+        int endRow = Math.min(rope.getLinesNum() - 1, (visibleBounds.y + visibleBounds.height) / fontHeight - 1);
+
         /* Go trough lines that will be painted*/
-        Iterator<Character> iterator = model.getRope().iterator(0);
+        Iterator<Character> iterator = rope.iterator(0);
         long drawStart = System.currentTimeMillis();
         while (iterator.hasNext()) {
             Character c = iterator.next();
@@ -68,7 +75,7 @@ public class RopeDrawComponent extends JComponent {
             }
         }
         long drawEnd = System.currentTimeMillis();
-        log.info(MessageFormat.format("Drawn: {0} lines, {1}ms", model.getRope().getLinesNum(), drawEnd - drawStart));
+        log.info(MessageFormat.format("Drawn: {0} lines, {1}ms", rope.getLinesNum(), drawEnd - drawStart));
     }
 
     private boolean areNewLine(Character c, Character cNext) {

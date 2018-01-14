@@ -225,7 +225,7 @@ public class RopeCommonOperations {
 
     /**
      * Increment index if new line symbol splitter
-     * 
+     *
      * @param text
      * @param splitIndex
      * @return
