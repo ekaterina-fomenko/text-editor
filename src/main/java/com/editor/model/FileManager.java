@@ -44,6 +44,8 @@ public class FileManager {
     }
 
     public void openFile(File file) {
+        long openStart = System.currentTimeMillis();
+
         model.clearAll();
         try {
             BufferedReader reader = new BufferedReader(new FileReader(file));
@@ -62,6 +64,9 @@ public class FileManager {
         } catch (IOException e) {
             log.error("Exception was occurred while trying to read file {} from buffer", fileName, e);
         }
+
+        long openEnd = System.currentTimeMillis();
+        log.info("File '{}' opened in {}ms", fileName, openEnd - openStart);
     }
 
     public void saveAsFile() {

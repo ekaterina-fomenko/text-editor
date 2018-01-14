@@ -27,6 +27,7 @@ public class Main {
         if (fileArg != null) {
             String fileName = fileArg.substring(fileArgPrefix.length());
             frame.menuBar.getMenuActions().fileManager.openFile(new File(fileName));
+            frame.textArea.render();
         }
 
         return frame;

@@ -57,9 +57,13 @@ public class RopeDrawComponent extends JComponent {
         int endRow = Math.min(rope.getLinesNum() - 1, (visibleBounds.y + visibleBounds.height) / fontHeight - 1);
 
         /* Go trough lines that will be painted*/
-        Iterator<Character> iterator = rope.iterator(0);
+        int charIndexStart = rope.charIndexOfLineStart(startRow);
+        int linesCountToRender = visibleBounds.height / fontHeight;
+
+        Iterator<Character> iterator = rope.iterator(charIndexStart);
         long drawStart = System.currentTimeMillis();
-        while (iterator.hasNext()) {
+        int linesCountRendered = 0;
+        while (iterator.hasNext() && linesCountRendered < linesCountToRender) {
             Character c = iterator.next();
             Character cNext = iterator.hasNext() ? iterator.next() : null;
 
@@ -67,6 +71,7 @@ public class RopeDrawComponent extends JComponent {
                 graphics2D.setTransform(affineTransform);
                 graphics2D.translate(0, graphics2D.getFontMetrics().getHeight());
                 affineTransform = graphics2D.getTransform();
+                linesCountRendered++;
             } else {
                 drawChar(graphics2D, c, DEFAULT_CHAR_COLOR, null);
                 if (cNext != null) {
@@ -75,7 +80,7 @@ public class RopeDrawComponent extends JComponent {
             }
         }
         long drawEnd = System.currentTimeMillis();
-        log.info(MessageFormat.format("Drawn: {0} lines, {1}ms", rope.getLinesNum(), drawEnd - drawStart));
+        log.info(MessageFormat.format("Drawn: {0} lines, {1}ms", linesCountRendered, drawEnd - drawStart));
     }
 
     private boolean areNewLine(Character c, Character cNext) {
