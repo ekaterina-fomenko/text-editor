@@ -27,7 +27,7 @@ public class RopeDrawComponent extends JComponent {
 
     public static Logger log = LoggerFactory.getLogger(RopeDrawComponent.class);
 
-    private Rectangle visibleBounds;
+    private Rectangle visibleBounds = new Rectangle();
 
     public RopeDrawComponent(RopeTextEditorModel model) {
         this.model = model;
@@ -50,22 +50,32 @@ public class RopeDrawComponent extends JComponent {
 
         Graphics2D graphics2D = (Graphics2D) graphics;
         graphics2D.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
-        AffineTransform affineTransform = graphics2D.getTransform();
+
+        updatePreferredSize(graphics);
 
         int fontHeight = graphics.getFontMetrics().getHeight();
+
+        graphics2D.translate(0, Math.max(0, visibleBounds.y - fontHeight) - visibleBounds.y % fontHeight);
+        AffineTransform affineTransform = graphics2D.getTransform();
+
         int startRow = Math.max(0, visibleBounds.y / fontHeight - 1);
         int endRow = Math.min(rope.getLinesNum() - 1, (visibleBounds.y + visibleBounds.height) / fontHeight - 1);
 
         /* Go trough lines that will be painted*/
         int charIndexStart = rope.charIndexOfLineStart(startRow);
-        int linesCountToRender = visibleBounds.height / fontHeight;
+        int linesCountToRender = visibleBounds.height / fontHeight + 1;
 
         Iterator<Character> iterator = rope.iterator(charIndexStart);
         long drawStart = System.currentTimeMillis();
         int linesCountRendered = 0;
+        Character cNext = null;
         while (iterator.hasNext() && linesCountRendered < linesCountToRender) {
-            Character c = iterator.next();
-            Character cNext = iterator.hasNext() ? iterator.next() : null;
+            Character c = cNext != null ? cNext : iterator.next();
+            cNext = null;
+
+            if (c.equals(SystemConstants.NEW_LINE.charAt(0))) {
+                cNext = iterator.hasNext() ? iterator.next() : null;
+            }
 
             if (areNewLine(c, cNext)) {
                 graphics2D.setTransform(affineTransform);
@@ -81,6 +91,19 @@ public class RopeDrawComponent extends JComponent {
         }
         long drawEnd = System.currentTimeMillis();
         log.info(MessageFormat.format("Drawn: {0} lines, {1}ms", linesCountRendered, drawEnd - drawStart));
+    }
+
+    private void updatePreferredSize(Graphics graphics) {
+        FontMetrics fontMetrics = graphics.getFontMetrics();
+        int height = fontMetrics.getHeight() * (model.getRope().getLinesNum() + 1);
+        int width = 100000;
+//        for (StringBuilder line : model.getLineBuilders()) {
+//            int length = line.length();
+//            int horSpaceOffset = length > 0 ? fontMetrics.charWidth(line.charAt(length - 1)) : 0;
+//            width = Math.max(width, fontMetrics.stringWidth(line.toString())) + horSpaceOffset;
+//        }
+
+        setPreferredSize(new Dimension(width, height));
     }
 
     private boolean areNewLine(Character c, Character cNext) {

@@ -25,7 +25,7 @@ public class TextArea {
         ropeDrawComponent = new RopeDrawComponent(ropeModel);
 //        ropeDrawComponent.setActionMap(new TextActionMap(ropeModel, this));
         ropeDrawComponent.setInputMap(JComponent.WHEN_FOCUSED, new TextInputMap());
-//        mouseListener = new DrawComponentMouseListener(this, ropeDrawComponent, ropeModel);
+        mouseListener = new DrawComponentMouseListener(this, ropeDrawComponent);
 
         createJScRollPane();
 
@@ -39,10 +39,12 @@ public class TextArea {
 
         jScrollPane.getHorizontalScrollBar().addAdjustmentListener(listener -> {
             ropeDrawComponent.setVisibleBounds(jScrollPane.getViewport().getViewRect());
+            render();
         });
 
         jScrollPane.getVerticalScrollBar().addAdjustmentListener(listener -> {
             ropeDrawComponent.setVisibleBounds(jScrollPane.getViewport().getViewRect());
+            render();
         });
 
         ropeDrawComponent.addMouseListener(mouseListener);
