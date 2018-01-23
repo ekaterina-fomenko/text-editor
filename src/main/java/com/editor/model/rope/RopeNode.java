@@ -13,6 +13,7 @@ public class RopeNode {
     int length;
     int depth;
     int linesNum;
+    MaxLineLengthInfo maxLineLengthInfo;
 
     public RopeNode() {
         this(null);
@@ -27,6 +28,7 @@ public class RopeNode {
         this.length = right.length + left.length;
         this.linesNum = right.linesNum + left.linesNum - 1;
         this.depth = Math.max(right.depth, left.depth) + 1;
+        this.maxLineLengthInfo = MaxLineLengthInfo.fromChildNodes(left, right);
     }
 
     /*
@@ -42,9 +44,33 @@ public class RopeNode {
         this.left = null;
         this.depth = 0;
         this.length = value != null ? value.length() : 0;
+        if (value == null) {
+            linesNum = 1;
+            maxLineLengthInfo = new MaxLineLengthInfo(0, 0, 0);
+        } else {
+            final String NEW_LINE = SystemConstants.NEW_LINE;
 
-        int newLinesCount = value == null ? 0 : countSubstrings(value, SystemConstants.NEW_LINE);
-        this.linesNum = newLinesCount + 1;
+            int index = value.indexOf(NEW_LINE);
+            int lengthToFirstBoundary = index;
+            int substringsCount = 0;
+            int maxLineLengthInCenter = -1;
+            while (index > -1) {
+                substringsCount++;
+
+                int nextIndex = value.indexOf(NEW_LINE, index + 1);
+                if (nextIndex == -1) {
+                    break;
+                } else {
+                    maxLineLengthInCenter = Math.max(maxLineLengthInCenter, nextIndex - index - NEW_LINE.length());
+                    index = nextIndex;
+                }
+            }
+
+            int lengthFromLastBoundary = index == -1 ? -1 : value.length() - index - NEW_LINE.length();
+
+            this.linesNum = substringsCount + 1;
+            this.maxLineLengthInfo = new MaxLineLengthInfo(lengthToFirstBoundary, lengthFromLastBoundary, maxLineLengthInCenter);
+        }
     }
 
     public int getLength() {
@@ -96,6 +122,10 @@ public class RopeNode {
         }
 
         return substringsCount;
+    }
+
+    public MaxLineLengthInfo getMaxLineLengthInfo() {
+        return maxLineLengthInfo;
     }
 
     public int getLinesNum() {
