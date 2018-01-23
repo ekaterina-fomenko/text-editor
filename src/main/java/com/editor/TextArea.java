@@ -19,24 +19,26 @@ public class TextArea {
 
     public TextArea(JFrame frame) {
         this.frame = frame;
-        RopeTextEditorModel.setStringSizeProvider((text, offset, count) -> {
-            Graphics2D graphics = (Graphics2D) frame.getGraphics();
-            if (graphics == null) {
-                return 0;
-            }
+        ropeDrawComponent = new RopeDrawComponent();
 
-            FontMetrics fontMetrics = graphics.getFontMetrics();
-            return fontMetrics.charsWidth(text, offset, count);
-        });
-
-        ropeModel = new RopeTextEditorModel();
-
-        ropeDrawComponent = new RopeDrawComponent(ropeModel);
 //        ropeDrawComponent.setActionMap(new TextActionMap(ropeModel, this));
         ropeDrawComponent.setInputMap(JComponent.WHEN_FOCUSED, new TextInputMap());
         mouseListener = new DrawComponentMouseListener(this, ropeDrawComponent);
 
         createJScRollPane();
+
+        RopeTextEditorModel.setStringSizeProvider((text, offset, count) -> {
+            Graphics2D graphics = ropeDrawComponent.getLatestGraphices();
+            if (graphics == null) {
+                return 0;
+            }
+
+            FontMetrics fontMetrics = graphics.getFontMetrics();
+            int result = fontMetrics.charsWidth(text, offset, count);
+            return result;
+        });
+        ropeModel = new RopeTextEditorModel();
+        ropeDrawComponent.setModel(ropeModel);
 
     }
 

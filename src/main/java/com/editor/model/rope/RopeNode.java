@@ -16,10 +16,18 @@ public class RopeNode {
     int linesNum;
     MaxLineLengthInfo maxLineLengthInfo;
 
-    public static StringSizeProvider sizeProvider = new CountingStringSizeProvider();
+    private static StringSizeProvider sizeProvider = new CountingStringSizeProvider();
+
+    public static void setSizeProvider(StringSizeProvider value) {
+        sizeProvider = value;
+    }
+
+    public static StringSizeProvider getSizeProvider() {
+        return sizeProvider;
+    }
 
     public RopeNode() {
-        this((char[])null);
+        this((char[]) null);
     }
 
     /*

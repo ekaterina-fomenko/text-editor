@@ -1,5 +1,6 @@
 package com.editor;
 
+import java.awt.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.stream.Stream;
@@ -26,8 +27,11 @@ public class Main {
 
         if (fileArg != null) {
             String fileName = fileArg.substring(fileArgPrefix.length());
-            frame.menuBar.getMenuActions().fileManager.openFile(new File(fileName));
-            frame.textArea.render();
+
+            EventQueue.invokeLater(() -> {
+                frame.menuBar.getMenuActions().fileManager.openFile(new File(fileName));
+                frame.textArea.render();
+            });
         }
 
         return frame;

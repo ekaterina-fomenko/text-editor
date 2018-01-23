@@ -368,6 +368,6 @@ public class RopeTextEditorModel {
     }
 
     public static void setStringSizeProvider(StringSizeProvider provider) {
-        RopeNode.sizeProvider = provider;
+        RopeNode.setSizeProvider(provider);
     }
 }

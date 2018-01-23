@@ -7,6 +7,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.awt.*;
 import java.io.File;
 import java.io.PrintWriter;
 
@@ -18,12 +19,12 @@ public class ApplicationTest {
 
     @Before
     public void before() {
-        originalSizeProvider = RopeNode.sizeProvider;
+        originalSizeProvider = RopeNode.getSizeProvider();
     }
 
     @After
     public void after() {
-        RopeNode.sizeProvider = originalSizeProvider;
+        RopeNode.setSizeProvider(originalSizeProvider);
     }
 
     @Test
@@ -34,6 +35,8 @@ public class ApplicationTest {
         printWriter.close();
         EditorFrame frame = Main.openApplication(new String[]{"--file:" + tempFile.getAbsolutePath()});
 
-        assertEquals("text text text", frame.textArea.ropeModel.getRope().toString());
+        EventQueue.invokeLater(() -> {
+            assertEquals("text text text", frame.textArea.ropeModel.getRope().toString());
+        });
     }
 }

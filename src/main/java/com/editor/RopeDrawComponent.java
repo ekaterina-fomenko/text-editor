@@ -29,8 +29,9 @@ public class RopeDrawComponent extends JComponent {
 
     private Rectangle visibleBounds = new Rectangle();
 
-    public RopeDrawComponent(RopeTextEditorModel model) {
-        this.model = model;
+    private Graphics2D latestGraphices = null;
+
+    public RopeDrawComponent() {
     }
 
     /**
@@ -49,6 +50,7 @@ public class RopeDrawComponent extends JComponent {
         Rope rope = model.getRope();
 
         Graphics2D graphics2D = (Graphics2D) graphics;
+        latestGraphices = graphics2D;
         graphics2D.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
 
         updatePreferredSize(graphics);
@@ -125,5 +127,13 @@ public class RopeDrawComponent extends JComponent {
         graphics2D.setColor(color);
         graphics2D.drawString(Character.toString(currentChar), 0, DEFAULT_Y_COORDINATE);
         graphics2D.translate(graphics2D.getFontMetrics().charWidth(currentChar), 0);
+    }
+
+    public void setModel(RopeTextEditorModel model) {
+        this.model = model;
+    }
+
+    public Graphics2D getLatestGraphices() {
+        return latestGraphices;
     }
 }

@@ -196,4 +196,14 @@ public class RopeTest {
         assertEquals("G", valueOf(rope.charAt(rope.charIndexOfLineStart(5))));
         assertEquals(-1, rope.charIndexOfLineStart(6));
     }
+
+    @Test
+    public void testMultiLineMaxLineLen() {
+        String secondLine = "+ Project technologies onboarding was very quick. Overall further development performan";
+        String text = "3) Overall" +
+                SystemConstants.NEW_LINE +
+                secondLine;
+
+        assertEquals(secondLine.length(), new Rope(text).getNode().getMaxLineLength());
+    }
 }
