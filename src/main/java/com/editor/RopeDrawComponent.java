@@ -96,7 +96,8 @@ public class RopeDrawComponent extends JComponent {
     private void updatePreferredSize(Graphics graphics) {
         FontMetrics fontMetrics = graphics.getFontMetrics();
         int height = fontMetrics.getHeight() * (model.getRope().getLinesNum() + 1);
-        int width = 100000;
+        int width = model.getRope().getMaxLineLength();
+
 //        for (StringBuilder line : model.getLineBuilders()) {
 //            int length = line.length();
 //            int horSpaceOffset = length > 0 ? fontMetrics.charWidth(line.charAt(length - 1)) : 0;

@@ -52,7 +52,8 @@ public class FileManager {
             char[] buffer = new char[5000 * 1000];
             int countRead;
             while ((countRead = reader.read(buffer)) != -1) {
-                model.append(new String(buffer, 0, countRead));
+                char[] charsRead = countRead == buffer.length ? buffer : StringUtils.subArray(buffer, 0, countRead);
+                model.append(charsRead);
             }
 
             fileName = file.getName();

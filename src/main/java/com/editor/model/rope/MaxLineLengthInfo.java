@@ -26,7 +26,7 @@ public class MaxLineLengthInfo {
     }
 
     public boolean hasNoBoundaries() {
-        return maxLineLengthInCenter == -1 && lengthToFirstBoundary == -1 && lengthFromLastBoundary == -1;
+        return lengthToFirstBoundary == -1 && lengthFromLastBoundary == -1;
     }
 
     public static MaxLineLengthInfo fromChildNodes(RopeNode left, RopeNode right) {
@@ -34,20 +34,30 @@ public class MaxLineLengthInfo {
         MaxLineLengthInfo rightInfo = right.maxLineLengthInfo;
 
         if (leftInfo.hasNoBoundaries() && rightInfo.hasNoBoundaries()) {
-            return new MaxLineLengthInfo(0, 0, left.getLength() + right.getLength());
+            return new MaxLineLengthInfo(-1, -1, rightInfo.maxLineLengthInCenter + leftInfo.maxLineLengthInCenter);
         }
 
         if (leftInfo.hasNoBoundaries()) {
-            return new MaxLineLengthInfo(left.getLength() + rightInfo.lengthToFirstBoundary, rightInfo.lengthFromLastBoundary, rightInfo.maxLineLengthInCenter);
+            return new MaxLineLengthInfo(
+                    leftInfo.maxLineLengthInCenter + rightInfo.lengthToFirstBoundary,
+                    rightInfo.lengthFromLastBoundary,
+                    rightInfo.maxLineLengthInCenter);
         }
 
         if (rightInfo.hasNoBoundaries()) {
-            return new MaxLineLengthInfo(leftInfo.lengthToFirstBoundary, leftInfo.lengthFromLastBoundary + right.length, leftInfo.maxLineLengthInCenter);
+            return new MaxLineLengthInfo(
+                    leftInfo.lengthToFirstBoundary,
+                    leftInfo.lengthFromLastBoundary + rightInfo.maxLineLengthInCenter,
+                    leftInfo.maxLineLengthInCenter);
         }
 
-        int maxLength = max(leftInfo.lengthFromLastBoundary + rightInfo.lengthToFirstBoundary,
+        int maxLength = max(
+                leftInfo.lengthFromLastBoundary + rightInfo.lengthToFirstBoundary,
                 max(leftInfo.maxLineLengthInCenter, rightInfo.maxLineLengthInCenter));
 
-        return new MaxLineLengthInfo(leftInfo.lengthToFirstBoundary, rightInfo.lengthFromLastBoundary, maxLength);
+        return new MaxLineLengthInfo(
+                leftInfo.lengthToFirstBoundary,
+                rightInfo.lengthFromLastBoundary,
+                maxLength);
     }
 }

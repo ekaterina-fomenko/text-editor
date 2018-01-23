@@ -1,5 +1,10 @@
 package com.editor;
 
+import com.editor.model.rope.CountingStringSizeProvider;
+import com.editor.model.rope.RopeNode;
+import com.editor.model.rope.StringSizeProvider;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
@@ -9,6 +14,18 @@ import static org.junit.Assert.*;
 
 @E2E
 public class ApplicationTest {
+    private StringSizeProvider originalSizeProvider;
+
+    @Before
+    public void before() {
+        originalSizeProvider = RopeNode.sizeProvider;
+    }
+
+    @After
+    public void after() {
+        RopeNode.sizeProvider = originalSizeProvider;
+    }
+
     @Test
     public void passingFileArgToMainShouldOpenFileImmediately() throws Exception {
         File tempFile = File.createTempFile("tempFile", "TextEditor");

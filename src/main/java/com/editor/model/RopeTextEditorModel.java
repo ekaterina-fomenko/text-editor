@@ -1,7 +1,8 @@
 package com.editor.model;
 
 import com.editor.model.rope.Rope;
-import com.editor.parser.Brackets;
+import com.editor.model.rope.RopeNode;
+import com.editor.model.rope.StringSizeProvider;
 import com.editor.system.SystemConstants;
 
 import java.util.*;
@@ -32,7 +33,7 @@ public class RopeTextEditorModel {
 
     public RopeTextEditorModel() {
         this.cursorPosition = new Pointer();
-        rope = new Rope("");
+        rope = new Rope(new char[0]);
     }
 
     public Pointer getCursorPosition() {
@@ -110,7 +111,7 @@ public class RopeTextEditorModel {
         return true;//row > -1 && row < lineBuilders.size() && column > -1 && column < lineBuilders.get(row).length();
     }
 
-    public void addText(String text) {
+    public void addText(char[] text) {
         deleteSelection();
 
 //        List<String> lines = splitIntoLines(text);
@@ -148,7 +149,7 @@ public class RopeTextEditorModel {
 //
 //        currentRow.delete(cursorPosition.column, currentRow.length());
 //        lineBuilders.add(cursorPosition.row + 1, new StringBuilder(restOfCurrentLine));
-        rope.append(SystemConstants.NEW_LINE);//todo: to cursor position
+        rope.append(SystemConstants.NEW_LINE_CHARS);//todo: to cursor position
         cursorPosition.row++;
         cursorPosition.column = 0;
     }
@@ -358,11 +359,15 @@ public class RopeTextEditorModel {
         cursorPosition.column = 0;
     }
 
-    public void append(String line) {
+    public void append(char[] line) {
         rope = rope.append(line);
     }
 
     public void clearAll() {
-        rope = new Rope("");
+        rope = new Rope(new char[0]);
+    }
+
+    public static void setStringSizeProvider(StringSizeProvider provider) {
+        RopeNode.sizeProvider = provider;
     }
 }

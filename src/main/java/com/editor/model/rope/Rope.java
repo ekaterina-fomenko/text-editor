@@ -1,6 +1,7 @@
 package com.editor.model.rope;
 
 import com.editor.model.FileManager;
+import com.editor.model.StringUtils;
 import com.editor.system.SystemConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,12 +22,20 @@ public class Rope {
 
     protected RopeCommonOperations operations = new RopeCommonOperations(MAX_LENGTH_IN_ROPE);
 
-    public Rope(String charSequence) {
+    Rope(String str) {
+        this(str.toCharArray());
+    }
+
+    public Rope(char[] charSequence) {
         node = new RopeNode(charSequence);
     }
 
     public Rope(RopeNode node) {
         this.node = node;
+    }
+
+    public Rope() {
+        this(new char[0]);
     }
 
     public int getLinesNum() {
@@ -52,6 +61,10 @@ public class Rope {
     }
 
     public Rope append(String str) {
+        return append(str.toCharArray());
+    }
+
+    public Rope append(char[] str) {
         return append(operations.create(str));
     }
 
@@ -130,7 +143,7 @@ public class Rope {
 
     private char charAt(int index, RopeNode ropeNode) {
         if (ropeNode.isLeaf()) {
-            return ropeNode.getValue().charAt(index);
+            return ropeNode.getValue()[index];
         }
         if (index >= ropeNode.getLeft().getLength()) {
             return charAt(index - ropeNode.getLeft().getLength(), ropeNode.getRight());
@@ -167,7 +180,7 @@ public class Rope {
 
         int startingFrom = -1;
         int lineCounter = 0;
-        while ((startingFrom = node.getValue().indexOf(SystemConstants.NEW_LINE, startingFrom + 1)) > -1) {
+        while ((startingFrom = StringUtils.indexOf(node.getValue(), SystemConstants.NEW_LINE_CHARS, startingFrom + 1)) > -1) {
             lineCounter++;
             if (lineCounter == lineIndex) {
                 return startingFrom + SystemConstants.NEW_LINE.length();
@@ -187,5 +200,9 @@ public class Rope {
         }
         appendToBuilder(builder, ropeNode.getLeft());
         appendToBuilder(builder, ropeNode.getRight());
+    }
+
+    public int getMaxLineLength() {
+        return node.getMaxLineLength();
     }
 }

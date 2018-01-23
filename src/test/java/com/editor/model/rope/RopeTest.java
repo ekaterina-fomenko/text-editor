@@ -97,7 +97,7 @@ public class RopeTest {
 
         assertEquals("HoHoHo!", rope.substring(0, 7).toString());
         assertEquals("Who ", rope.substring(7, 11).toString());
-        assertEquals(right.getValue().substring(4, 6), rope.substring(11, 13).toString());
+        assertEquals(new String(right.getValue()).substring(4, 6), rope.substring(11, 13).toString());
         assertEquals("Ho!W", rope.substring(4, 8).toString());
     }
 

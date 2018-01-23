@@ -5,9 +5,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class RopeTextModel {
-    private Rope rope = new Rope("");
+    private Rope rope = new Rope();
 
-    public void addText(String text) {
+    public void addText(char[] text) {
         rope.append(text);
     }
 }

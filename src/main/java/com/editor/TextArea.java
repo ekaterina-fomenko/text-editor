@@ -1,7 +1,7 @@
 package com.editor;
 
 import com.editor.model.RopeTextEditorModel;
-import com.editor.model.TextEditorModel;
+import com.editor.model.rope.StringSizeProvider;
 import com.editor.parser.SyntaxParser;
 
 import javax.swing.*;
@@ -9,17 +9,26 @@ import java.awt.*;
 
 public class TextArea {
     public JScrollPane jScrollPane;
-//    public DrawComponent jComponent;
+    //    public DrawComponent jComponent;
     public RopeDrawComponent ropeDrawComponent;
 
-//    public TextEditorModel model;
+    //    public TextEditorModel model;
     public RopeTextEditorModel ropeModel;
     public JFrame frame;
     private DrawComponentMouseListener mouseListener;
 
     public TextArea(JFrame frame) {
         this.frame = frame;
-//        model = new TextEditorModel();
+        RopeTextEditorModel.setStringSizeProvider((text, offset, count) -> {
+            Graphics2D graphics = (Graphics2D) frame.getGraphics();
+            if (graphics == null) {
+                return 0;
+            }
+
+            FontMetrics fontMetrics = graphics.getFontMetrics();
+            return fontMetrics.charsWidth(text, offset, count);
+        });
+
         ropeModel = new RopeTextEditorModel();
 
         ropeDrawComponent = new RopeDrawComponent(ropeModel);

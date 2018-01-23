@@ -1,5 +1,6 @@
 package com.editor.model.rope;
 
+import com.editor.model.StringUtils;
 import com.editor.system.SystemConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,7 +37,7 @@ public class RopeCommonOperations {
 
         // If length in summary less than max length in one rope then just concat two strings on one rope
         if (left.getLength() + right.getLength() < maxLengthInRope) {
-            return new Rope(left.toString() + right.toString());
+            return new Rope(StringUtils.concat(left.getNode().getValue(), right.getNode().getValue()));
         }
 
         /* If right node has no children and left has children then try to analyze next level of left node over right node*/
@@ -44,7 +45,7 @@ public class RopeCommonOperations {
             RopeNode leftNode = left.getNode();
 
             if (right.getLength() + leftNode.getRight().getLength() < maxLengthInRope) {
-                RopeNode rightChild = new RopeNode(leftNode.getRight().getValue() + right.toString());
+                RopeNode rightChild = new RopeNode(StringUtils.concat(leftNode.getRight().getValue(), right.getNode().getValue()));
                 RopeNode ropeNode = new RopeNode(leftNode.getLeft(), rightChild);
                 return rebalance(new Rope(ropeNode));
             }
@@ -56,7 +57,7 @@ public class RopeCommonOperations {
             RopeNode rightNode = right.getNode();
 
             if (left.getLength() + rightNode.getLeft().getLength() < maxLengthInRope) {
-                RopeNode leftChild = new RopeNode(left.toString() + rightNode.getLeft().getValue());
+                RopeNode leftChild = new RopeNode(StringUtils.concat(left.getNode().getValue(), rightNode.getLeft().getValue()));
                 RopeNode newNode = new RopeNode(leftChild, rightNode.getRight());
                 return rebalance(new Rope(newNode));
             }
@@ -194,27 +195,31 @@ public class RopeCommonOperations {
     }
 
     public Rope create(String text) {
+        return create(text.toCharArray());
+    }
+
+    public Rope create(char[] text) {
         List<RopeNode> nodes = createNodes(text);
         return new Rope(balance(nodes));
     }
 
-    public List<RopeNode> createNodes(String text) {
+    public List<RopeNode> createNodes(char[] text) {
         List<RopeNode> result = new ArrayList<>();
 
-        if (text.length() <= maxLengthInRope) {
+        if (text.length <= maxLengthInRope) {
             result.add(new RopeNode(text));
             return result;
         }
 
         int i = 0;
-        while (i < text.length()) {
+        while (i < text.length) {
             int lastIndex = i + maxLengthInRope;
             int lastIndexNewLineAware = incrementInd(text, lastIndex);
 
-            if (lastIndexNewLineAware <= text.length()) {
-                result.add(new RopeNode(text.substring(i, lastIndexNewLineAware)));
+            if (lastIndexNewLineAware <= text.length) {
+                result.add(new RopeNode(StringUtils.subArray(text, i, lastIndexNewLineAware - i)));
             } else {
-                result.add(new RopeNode(text.substring(i)));
+                result.add(new RopeNode(StringUtils.subArray(text, i)));
             }
 
             i = lastIndexNewLineAware;
@@ -230,7 +235,7 @@ public class RopeCommonOperations {
      * @param splitIndex
      * @return
      */
-    int incrementInd(String text, int splitIndex) {
+    int incrementInd(char[] text, int splitIndex) {
         if (SystemConstants.NEW_LINE.length() == 1) {
             return splitIndex;
         }
@@ -240,21 +245,25 @@ public class RopeCommonOperations {
         }
 
         if (splitIndex > 1
-                && splitIndex < text.length()
-                && text.charAt(splitIndex - 1) == SystemConstants.NEW_LINE.charAt(0)
-                && text.charAt(splitIndex) == SystemConstants.NEW_LINE.charAt(1)) {
+                && splitIndex < text.length
+                && text[splitIndex - 1] == SystemConstants.NEW_LINE.charAt(0)
+                && text[splitIndex] == SystemConstants.NEW_LINE.charAt(1)) {
             return splitIndex + 1;
         }
 
         return splitIndex;
     }
 
+    int incrementInd(String text, int splitIndex) {
+        return incrementInd(text.toCharArray(), splitIndex);
+    }
+
     private void split(RopeNode leftSplit, RopeNode rightSplit, RopeNode parent, int index) {
         if (parent.isLeaf()) {
-            String parentValue = parent.getValue();
+            char[] parentValue = parent.getValue();
 
-            leftSplit.populateFrom(parentValue.substring(0, index));
-            rightSplit.populateFrom(parentValue.substring(index));
+            leftSplit.populateFrom(StringUtils.subArray(parentValue, 0, index));
+            rightSplit.populateFrom(StringUtils.subArray(parentValue, index));
         } else {
             leftSplit.length = index;
             rightSplit.length = parent.getLength() - index;
