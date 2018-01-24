@@ -21,6 +21,8 @@ public class RopeDrawComponent extends JComponent {
 
     private RopeTextEditorModel model;
 
+    public static final int POINTER_WIDTH = 2;
+
     public static final Color DEFAULT_CHAR_COLOR = Color.black;
 
     public static final int DEFAULT_Y_COORDINATE = 15;
@@ -71,7 +73,14 @@ public class RopeDrawComponent extends JComponent {
         long drawStart = System.currentTimeMillis();
         int linesCountRendered = 0;
         Character cNext = null;
+        int currentIndex = charIndexStart;
         while (iterator.hasNext() && linesCountRendered < linesCountToRender) {
+            if (currentIndex == model.getCursorPosition()) {
+                drawPointer(graphics2D);
+            }
+
+            currentIndex++;
+
             Character c = cNext != null ? cNext : iterator.next();
             cNext = null;
 
@@ -93,6 +102,11 @@ public class RopeDrawComponent extends JComponent {
         }
         long drawEnd = System.currentTimeMillis();
         log.info(MessageFormat.format("Drawn: {0} lines, {1}ms", linesCountRendered, drawEnd - drawStart));
+    }
+
+    private void drawPointer(Graphics2D graphics2D) {
+        graphics2D.setColor(Color.DARK_GRAY);
+        graphics2D.fillRect(0, 3, POINTER_WIDTH, graphics2D.getFontMetrics().getHeight());
     }
 
     private void updatePreferredSize(Graphics graphics) {

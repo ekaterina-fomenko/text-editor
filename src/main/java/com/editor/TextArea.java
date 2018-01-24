@@ -21,10 +21,6 @@ public class TextArea {
         this.frame = frame;
         ropeDrawComponent = new RopeDrawComponent();
 
-//        ropeDrawComponent.setActionMap(new TextActionMap(ropeModel, this));
-        ropeDrawComponent.setInputMap(JComponent.WHEN_FOCUSED, new TextInputMap());
-        mouseListener = new DrawComponentMouseListener(this, ropeDrawComponent);
-
         createJScRollPane();
 
         RopeTextEditorModel.setStringSizeProvider((text, offset, count) -> {
@@ -39,7 +35,9 @@ public class TextArea {
         });
         ropeModel = new RopeTextEditorModel();
         ropeDrawComponent.setModel(ropeModel);
-
+        ropeDrawComponent.setActionMap(new TextActionMap(ropeModel, this));
+        ropeDrawComponent.setInputMap(JComponent.WHEN_FOCUSED, new TextInputMap());
+        mouseListener = new DrawComponentMouseListener(this, ropeDrawComponent);
     }
 
     private void createJScRollPane() {
