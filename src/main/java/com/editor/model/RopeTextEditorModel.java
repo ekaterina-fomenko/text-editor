@@ -4,7 +4,7 @@ import com.editor.model.rope.Rope;
 import com.editor.model.rope.RopeApi;
 import com.editor.model.rope.RopeNode;
 import com.editor.model.rope.StringSizeProvider;
-import com.editor.system.SystemConstants;
+import com.editor.system.Constants;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -150,7 +150,7 @@ public class RopeTextEditorModel {
 //
 //        currentRow.delete(cursorPosition.column, currentRow.length());
 //        lineBuilders.add(cursorPosition.row + 1, new StringBuilder(restOfCurrentLine));
-        rope.append(SystemConstants.NEW_LINE_CHARS);//todo: to cursor position
+        rope.append(Constants.NEW_LINE);//todo: to cursor position
 //        cursorPosition.row++;
 //        cursorPosition.column = 0;
     }
@@ -240,7 +240,7 @@ public class RopeTextEditorModel {
 //    }
 
     public String convertToString(List<StringBuilder> list) {
-        return list.stream().collect(Collectors.joining(SystemConstants.NEW_LINE));
+        return list.stream().collect(Collectors.joining(Constants.NEW_LINE));
     }
 
     public List<StringBuilder> getSelectedText() {

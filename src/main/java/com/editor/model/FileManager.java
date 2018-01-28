@@ -2,14 +2,11 @@ package com.editor.model;
 
 import com.editor.TextArea;
 import com.editor.parser.SyntaxParser;
-import com.editor.system.SystemConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * This class contains all info about file.
@@ -53,7 +50,9 @@ public class FileManager {
             int countRead;
             while ((countRead = reader.read(buffer)) != -1) {
                 char[] charsRead = countRead == buffer.length ? buffer : StringUtils.subArray(buffer, 0, countRead);
-                model.append(charsRead);
+                char[] charsWithoutWinEndings = removeWindowsEndings(charsRead);
+
+                model.append(charsWithoutWinEndings);
             }
 
             fileName = file.getName();
@@ -68,6 +67,28 @@ public class FileManager {
 
         long openEnd = System.currentTimeMillis();
         log.info("File '{}' opened in {}ms", fileName, openEnd - openStart);
+    }
+
+    private char[] removeWindowsEndings(char[] charsRead) {
+        char illegalSymbol = '\r';
+        int counter = 0;
+        for (char c : charsRead) {
+            if (c == illegalSymbol) {
+                counter++;
+            }
+        }
+
+        char[] result = new char[charsRead.length - counter];
+
+        counter = 0;
+        for (char c : charsRead) {
+            if (c != illegalSymbol) {
+                result[counter] = c;
+                counter++;
+            }
+        }
+
+        return result;
     }
 
     public void saveAsFile() {

@@ -1,10 +1,9 @@
 package com.editor;
 
 import com.editor.model.RopeTextEditorModel;
-import com.editor.model.rope.Rope;
 import com.editor.model.rope.RopeApi;
 import com.editor.model.rope.RopeIterator;
-import com.editor.system.SystemConstants;
+import com.editor.system.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,8 +11,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.text.MessageFormat;
-import java.util.Iterator;
-import java.util.Optional;
 
 /**
  * Main class which redraw all in text area.
@@ -77,26 +74,17 @@ public class RopeDrawComponent extends JComponent {
         log.info("iterator: {}ms", end - start);
         long drawStart = System.currentTimeMillis();
         int linesCountRendered = 0;
-        Character cNext = null;
         int currentIndex = charIndexStart;
         while (iterator.hasNext() && linesCountRendered < linesCountToRender) {
-            Character c = cNext != null ? cNext : iterator.next();
-            cNext = null;
+            Character c = iterator.next();
 
-            if (c.equals(SystemConstants.NEW_LINE.charAt(0))) {
-                cNext = iterator.hasNext() ? iterator.next() : null;
-            }
-
-            if (areNewLine(c, cNext)) {
+            if (c.equals(Constants.NEW_LINE_CHAR)) {
                 graphics2D.setTransform(affineTransform);
                 graphics2D.translate(0, graphics2D.getFontMetrics().getHeight());
                 affineTransform = graphics2D.getTransform();
                 linesCountRendered++;
             } else {
                 drawChar(graphics2D, c, DEFAULT_CHAR_COLOR, null);
-                if (cNext != null) {
-                    drawChar(graphics2D, cNext, DEFAULT_CHAR_COLOR, null);
-                }
             }
 
             if (currentIndex == model.getCursorPosition()) {
@@ -129,8 +117,8 @@ public class RopeDrawComponent extends JComponent {
     }
 
     private boolean areNewLine(Character c, Character cNext) {
-        return c == SystemConstants.NEW_LINE.charAt(0) && SystemConstants.NEW_LINE.length() == 1 ||
-                (c == SystemConstants.NEW_LINE.charAt(0) && cNext == SystemConstants.NEW_LINE.charAt(1));
+        return c == Constants.NEW_LINE.charAt(0) && Constants.NEW_LINE.length() == 1 ||
+                (c == Constants.NEW_LINE.charAt(0) && cNext == Constants.NEW_LINE.charAt(1));
     }
 
     public void setVisibleBounds(Rectangle visibleBounds) {

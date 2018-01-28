@@ -1,13 +1,12 @@
 package com.editor.model.rope;
 
 import com.editor.RandomTextBuilder;
-import com.editor.system.SystemConstants;
-import org.hamcrest.core.StringContains;
+import com.editor.system.Constants;
 import org.junit.Test;
 
 import java.util.Iterator;
 
-import static com.editor.system.SystemConstants.*;
+import static com.editor.system.Constants.*;
 import static java.lang.String.valueOf;
 import static java.text.MessageFormat.format;
 import static org.junit.Assert.assertEquals;
@@ -188,9 +187,9 @@ public class RopeTest {
 4        E
 5        G
          */
-        assertEquals(SystemConstants.NEW_LINE.substring(0, 1), valueOf(rope.charAt(rope.charIndexOfLineStart(0))));
+        assertEquals(Constants.NEW_LINE.substring(0, 1), valueOf(rope.charAt(rope.charIndexOfLineStart(0))));
         assertEquals("B", valueOf(rope.charAt(rope.charIndexOfLineStart(1))));
-        assertEquals(SystemConstants.NEW_LINE.substring(0, 1), valueOf(rope.charAt(rope.charIndexOfLineStart(2))));
+        assertEquals(Constants.NEW_LINE.substring(0, 1), valueOf(rope.charAt(rope.charIndexOfLineStart(2))));
         assertEquals("D", valueOf(rope.charAt(rope.charIndexOfLineStart(3))));
         assertEquals("E", valueOf(rope.charAt(rope.charIndexOfLineStart(4))));
         assertEquals("G", valueOf(rope.charAt(rope.charIndexOfLineStart(5))));
@@ -201,7 +200,7 @@ public class RopeTest {
     public void testMultiLineMaxLineLen() {
         String secondLine = "+ Project technologies onboarding was very quick. Overall further development performan";
         String text = "3) Overall" +
-                SystemConstants.NEW_LINE +
+                Constants.NEW_LINE +
                 secondLine;
 
         assertEquals(secondLine.length(), new Rope(text).getNode().getMaxLineLength());

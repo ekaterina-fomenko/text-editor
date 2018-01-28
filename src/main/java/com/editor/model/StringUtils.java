@@ -54,10 +54,15 @@ public class StringUtils {
         return -1;
     }
 
-//    public static int indexOf(char[] source, int sourceOffset, int sourceCount,
-//                              char[] target) {
-//        return indexOf(source, sourceOffset, sourceCount, target, 0, target.length, 0);
-//    }
+    public static int indexOf(char[] source, char target, int fromIndex) {
+        for (int i = fromIndex; i < source.length; i++) {
+            if (source[i] == target) {
+                return i;
+            }
+        }
+
+        return -1;
+    }
 
     public static int indexOf(char[] source, char[] target, int fromIndex) {
         return indexOf(source, 0, source.length,

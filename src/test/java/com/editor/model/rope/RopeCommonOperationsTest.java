@@ -1,42 +1,21 @@
 package com.editor.model.rope;
 
-import com.editor.system.SystemConstants;
+import com.editor.system.Constants;
 import org.hamcrest.CoreMatchers;
 import org.junit.Test;
 
 import java.util.List;
 
-import static java.text.MessageFormat.format;
 import static org.junit.Assert.*;
 
 public class RopeCommonOperationsTest {
-    static final int NEW_LINE_LENGTH = SystemConstants.NEW_LINE.length();
-
-    @Test
-    public void testIncrementInd() {
-        RopeCommonOperations ops = new RopeCommonOperations(4);
-        assertEquals(
-                1,
-                ops.incrementInd("ab" + SystemConstants.NEW_LINE, 1));
-
-        assertEquals(
-                2 + NEW_LINE_LENGTH,
-                ops.incrementInd("ab" + SystemConstants.NEW_LINE, 3));
-
-        assertEquals(
-                2,
-                ops.incrementInd("ab" + SystemConstants.NEW_LINE, 2));
-
-        assertEquals(
-                2 + NEW_LINE_LENGTH,
-                ops.incrementInd("Hey!" + SystemConstants.NEW_LINE + "?", 4));
-    }
+    static final int NEW_LINE_LENGTH = Constants.NEW_LINE.length();
 
     @Test
     public void newLineShouldSplitStringToDifferentNodesOnCreate() {
         RopeCommonOperations ops = new RopeCommonOperations(4);
-        Rope rope = ops.create("Hi!" + SystemConstants.NEW_LINE + "?");
-        assertThat(rope.printRopeNodes(), CoreMatchers.containsString("(Hi!" + SystemConstants.NEW_LINE + ")"));
+        Rope rope = ops.create("Hi!" + Constants.NEW_LINE + "?");
+        assertThat(rope.printRopeNodes(), CoreMatchers.containsString("(Hi!" + Constants.NEW_LINE + ")"));
         assertThat(rope.printRopeNodes(), CoreMatchers.containsString("(?)"));
     }
 

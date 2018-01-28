@@ -1,7 +1,7 @@
 package com.editor.model;
 
 import com.editor.parser.Brackets;
-import com.editor.system.SystemConstants;
+import com.editor.system.Constants;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -294,7 +294,7 @@ public class TextEditorModel {
     }
 
     public String convertToString(List<StringBuilder> list) {
-        return list.stream().collect(Collectors.joining(SystemConstants.NEW_LINE));
+        return list.stream().collect(Collectors.joining(Constants.NEW_LINE));
     }
 
     public List<StringBuilder> getSelectedText() {

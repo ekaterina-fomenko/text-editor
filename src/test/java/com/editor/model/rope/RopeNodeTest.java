@@ -1,13 +1,8 @@
 package com.editor.model.rope;
 
-import com.editor.system.SystemConstants;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
-import java.text.MessageFormat;
-
-import static com.editor.system.SystemConstants.*;
+import static com.editor.system.Constants.*;
 import static java.text.MessageFormat.*;
 import static org.junit.Assert.assertEquals;
 

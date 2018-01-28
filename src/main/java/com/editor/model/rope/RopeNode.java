@@ -1,7 +1,7 @@
 package com.editor.model.rope;
 
 import com.editor.model.StringUtils;
-import com.editor.system.SystemConstants;
+import com.editor.system.Constants;
 
 /**
  * This class contains information about node in rope tree
@@ -75,25 +75,24 @@ public class RopeNode {
             linesNum = 1;
             maxLineLengthInfo = new MaxLineLengthInfo(0, 0, 0);
         } else {
-            final char[] NEW_LINE = SystemConstants.NEW_LINE_CHARS;
+            final char NEW_LINE = Constants.NEW_LINE_CHAR;
 
             int index = StringUtils.indexOf(value, NEW_LINE, 0);
             int lengthToFirstBoundary = index < 0 ? -1 : sizeProvider.getWidth(value, 0, index);
             int maxLineLengthInCenter = index < 0 ? sizeProvider.getWidth(value) : -1;
-            int substringsCount = 0;
+            int subStringsCount = 0;
 
             while (index > -1) {
-                substringsCount++;
+                subStringsCount++;
 
                 int nextIndex = StringUtils.indexOf(value, NEW_LINE, index + 1);
                 if (nextIndex == -1) {
                     break;
                 } else {
-//                    int nextLineSize = nextIndex - index - NEW_LINE.length;
                     int nextLineSize = sizeProvider.getWidth(
                             value,
-                            index + NEW_LINE.length,
-                            nextIndex - index - NEW_LINE.length);
+                            index + 1,
+                            nextIndex - index - 1);
                     maxLineLengthInCenter = Math.max(maxLineLengthInCenter, nextLineSize);
                     index = nextIndex;
                 }
@@ -102,10 +101,10 @@ public class RopeNode {
             int lengthFromLastBoundary = index == -1 ?
                     -1 :
                     sizeProvider.getWidth(value,
-                            index + NEW_LINE.length,
-                            value.length - index - NEW_LINE.length);
+                            index + 1,
+                            value.length - index - 1);
 
-            this.linesNum = substringsCount + 1;
+            this.linesNum = subStringsCount + 1;
             this.maxLineLengthInfo = new MaxLineLengthInfo(lengthToFirstBoundary, lengthFromLastBoundary, maxLineLengthInCenter);
         }
     }

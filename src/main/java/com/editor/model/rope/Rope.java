@@ -1,7 +1,7 @@
 package com.editor.model.rope;
 
 import com.editor.model.StringUtils;
-import com.editor.system.SystemConstants;
+import com.editor.system.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -170,10 +170,10 @@ public class Rope implements RopeApi {
 
         int startingFrom = -1;
         int lineCounter = 0;
-        while ((startingFrom = StringUtils.indexOf(node.getValue(), SystemConstants.NEW_LINE_CHARS, startingFrom + 1)) > -1) {
+        while ((startingFrom = StringUtils.indexOf(node.getValue(), Constants.NEW_LINE_CHAR, startingFrom + 1)) > -1) {
             lineCounter++;
             if (lineCounter == lineIndex) {
-                return startingFrom + SystemConstants.NEW_LINE.length();
+                return startingFrom + 1;
             }
         }
 

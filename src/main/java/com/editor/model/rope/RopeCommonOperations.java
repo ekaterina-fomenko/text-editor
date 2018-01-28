@@ -1,7 +1,7 @@
 package com.editor.model.rope;
 
 import com.editor.model.StringUtils;
-import com.editor.system.SystemConstants;
+import com.editor.system.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sun.plugin.dom.exception.InvalidStateException;
@@ -214,48 +214,16 @@ public class RopeCommonOperations {
         int i = 0;
         while (i < text.length) {
             int lastIndex = i + maxLengthInRope;
-            int lastIndexNewLineAware = incrementInd(text, lastIndex);
-
-            if (lastIndexNewLineAware <= text.length) {
-                result.add(new RopeNode(StringUtils.subArray(text, i, lastIndexNewLineAware - i)));
+            if (lastIndex <= text.length) {
+                result.add(new RopeNode(StringUtils.subArray(text, i, lastIndex - i)));
             } else {
                 result.add(new RopeNode(StringUtils.subArray(text, i)));
             }
 
-            i = lastIndexNewLineAware;
+            i = lastIndex;
         }
 
         return result;
-    }
-
-    /**
-     * Increment index if new line symbol splitter
-     *
-     * @param text
-     * @param splitIndex
-     * @return
-     */
-    int incrementInd(char[] text, int splitIndex) {
-        if (SystemConstants.NEW_LINE.length() == 1) {
-            return splitIndex;
-        }
-
-        if (SystemConstants.NEW_LINE.length() > 2) {
-            throw new InvalidStateException("Unknown new line symbol: " + SystemConstants.NEW_LINE);
-        }
-
-        if (splitIndex > 1
-                && splitIndex < text.length
-                && text[splitIndex - 1] == SystemConstants.NEW_LINE.charAt(0)
-                && text[splitIndex] == SystemConstants.NEW_LINE.charAt(1)) {
-            return splitIndex + 1;
-        }
-
-        return splitIndex;
-    }
-
-    int incrementInd(String text, int splitIndex) {
-        return incrementInd(text.toCharArray(), splitIndex);
     }
 
     private void split(RopeNode leftSplit, RopeNode rightSplit, RopeNode parent, int index) {
