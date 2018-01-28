@@ -2,6 +2,8 @@ package com.editor;
 
 import com.editor.model.RopeTextEditorModel;
 import com.editor.model.rope.Rope;
+import com.editor.model.rope.RopeApi;
+import com.editor.model.rope.RopeIterator;
 import com.editor.system.SystemConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,7 +51,7 @@ public class RopeDrawComponent extends JComponent {
 
         log.debug("Paint started. VisibleBounds: " + visibleBounds);
 
-        Rope rope = model.getRope();
+        RopeApi rope = model.getRope();
 
         Graphics2D graphics2D = (Graphics2D) graphics;
         latestGraphices = graphics2D;
@@ -69,18 +71,15 @@ public class RopeDrawComponent extends JComponent {
         int charIndexStart = rope.charIndexOfLineStart(startRow);
         int linesCountToRender = visibleBounds.height / fontHeight + 1;
 
-        Iterator<Character> iterator = rope.iterator(charIndexStart);
+        long start = System.currentTimeMillis();
+        RopeIterator iterator = rope.iterator(charIndexStart);
+        long end = System.currentTimeMillis();
+        log.info("iterator: {}ms", end - start);
         long drawStart = System.currentTimeMillis();
         int linesCountRendered = 0;
         Character cNext = null;
         int currentIndex = charIndexStart;
         while (iterator.hasNext() && linesCountRendered < linesCountToRender) {
-            if (currentIndex == model.getCursorPosition()) {
-                drawPointer(graphics2D);
-            }
-
-            currentIndex++;
-
             Character c = cNext != null ? cNext : iterator.next();
             cNext = null;
 
@@ -99,6 +98,12 @@ public class RopeDrawComponent extends JComponent {
                     drawChar(graphics2D, cNext, DEFAULT_CHAR_COLOR, null);
                 }
             }
+
+            if (currentIndex == model.getCursorPosition()) {
+                drawPointer(graphics2D);
+            }
+
+            currentIndex++;
         }
         long drawEnd = System.currentTimeMillis();
         log.info(MessageFormat.format("Drawn: {0} lines, {1}ms", linesCountRendered, drawEnd - drawStart));

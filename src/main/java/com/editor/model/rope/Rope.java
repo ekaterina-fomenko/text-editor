@@ -1,22 +1,20 @@
 package com.editor.model.rope;
 
-import com.editor.model.FileManager;
 import com.editor.model.StringUtils;
 import com.editor.system.SystemConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
 
 /**
  * This class represents a rope data structure
  */
-public class Rope {
+public class Rope implements RopeApi {
     protected static int MAX_LENGTH_IN_ROPE = 32;
 
-    public static Logger log = LoggerFactory.getLogger(FileManager.class);
+    Logger log = LoggerFactory.getLogger(Rope.class);
 
     RopeNode node;
 
@@ -26,11 +24,11 @@ public class Rope {
         this(str.toCharArray());
     }
 
-    public Rope(char[] charSequence) {
+    Rope(char[] charSequence) {
         node = new RopeNode(charSequence);
     }
 
-    public Rope(RopeNode node) {
+    Rope(RopeNode node) {
         this.node = node;
     }
 
@@ -38,14 +36,17 @@ public class Rope {
         this(new char[0]);
     }
 
+    @Override
     public int getLinesNum() {
         return this.node.getLinesNum();
     }
 
+    @Override
     public int getLength() {
         return node.getLength();
     }
 
+    @Override
     public int getDepth() {
         return node.getDepth();
     }
@@ -54,18 +55,19 @@ public class Rope {
         return node;
     }
 
+    @Override
     public Rope append(Rope rope) {
-        Rope result = operations.concat(this, rope);
-
-        return result;
+        return operations.concat(this, rope);
     }
 
-    public Rope append(String str) {
-        return append(str.toCharArray());
-    }
-
+    @Override
     public Rope append(char[] str) {
         return append(operations.create(str));
+    }
+
+    @Override
+    public Rope append(String str) {
+        return append(str.toCharArray());
     }
 
     public Rope substring(int start, int end) {
@@ -90,16 +92,9 @@ public class Rope {
         return stringBuilder.toString();
     }
 
-    public Iterator<Character> iterator(final int start) {
-        if (start < 0 || start > getLength())
-            throw new IndexOutOfBoundsException("Rope index out of range: " + start);
-
-        RopeNode leftChild = getNode().getLeft();
-        if (leftChild != null && start >= leftChild.getLength()) {
-            return new Rope(this.getNode().getRight()).iterator(start - this.getNode().getLeft().getLength());
-        } else {
-            return new RopeIterator(this, start);
-        }
+    @Override
+    public RopeIterator iterator(final int start) {
+        return node.iterator(start);
     }
 
     public String printRopeNodes() {
@@ -129,26 +124,21 @@ public class Rope {
         return stringBuilder.toString();
     }
 
-    public char charAt(int index) {
-        return charAt(index, node);
-    }
-
+    @Override
     public int charIndexOfLineStart(int lineIndex) {
-        return charIndexOfLineStart(lineIndex, node);
+        long start = System.currentTimeMillis();
+
+        int result = charIndexOfLineStart(lineIndex, node);
+
+        long end = System.currentTimeMillis();
+
+        log.info("charIndexOfLineStart: {}ms", end - start);
+
+        return result;
     }
 
     boolean isFlat() {
-        return node.getDepth() == 0;
-    }
-
-    private char charAt(int index, RopeNode ropeNode) {
-        if (ropeNode.isLeaf()) {
-            return ropeNode.getValue()[index];
-        }
-        if (index >= ropeNode.getLeft().getLength()) {
-            return charAt(index - ropeNode.getLeft().getLength(), ropeNode.getRight());
-        }
-        return charAt(index, ropeNode.getLeft());
+        return node.isFlat();
     }
 
     public int charIndexOfLineStart(int lineIndex, RopeNode node) {
@@ -202,7 +192,13 @@ public class Rope {
         appendToBuilder(builder, ropeNode.getRight());
     }
 
+    @Override
     public int getMaxLineLength() {
         return node.getMaxLineLength();
+    }
+
+    @Override
+    public char charAt(int i) {
+        return node.charAt(i);
     }
 }

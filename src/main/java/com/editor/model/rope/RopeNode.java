@@ -42,6 +42,18 @@ public class RopeNode {
         this.maxLineLengthInfo = MaxLineLengthInfo.fromChildNodes(left, right);
     }
 
+    public RopeIterator iterator(final int start) {
+        if (start < 0 || start > getLength())
+            throw new IndexOutOfBoundsException("Rope index out of range: " + start);
+
+        RopeNode leftChild = getLeft();
+        if (leftChild != null && start >= leftChild.getLength()) {
+            return getRight().iterator(start - getLeft().getLength());
+        } else {
+            return new RopeIterator(this, start);
+        }
+    }
+
     /*
     *Create leaf node
     */
@@ -146,6 +158,11 @@ public class RopeNode {
         return maxLineLengthInfo;
     }
 
+    public char charAt(int i) {
+        char result = charAt(i, this);
+        return result;
+    }
+
     public int getMaxLineLength() {
         MaxLineLengthInfo info = this.maxLineLengthInfo;
         if (info.hasNoBoundaries()) {
@@ -157,5 +174,19 @@ public class RopeNode {
 
     public int getLinesNum() {
         return linesNum;
+    }
+
+    public boolean isFlat() {
+        return getDepth() == 0;
+    }
+
+    private char charAt(int index, RopeNode ropeNode) {
+        if (ropeNode.isLeaf()) {
+            return ropeNode.getValue()[index];
+        }
+        if (index >= ropeNode.getLeft().getLength()) {
+            return charAt(index - ropeNode.getLeft().getLength(), ropeNode.getRight());
+        }
+        return charAt(index, ropeNode.getLeft());
     }
 }

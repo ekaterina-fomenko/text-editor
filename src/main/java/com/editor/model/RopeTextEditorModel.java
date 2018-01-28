@@ -1,6 +1,7 @@
 package com.editor.model;
 
 import com.editor.model.rope.Rope;
+import com.editor.model.rope.RopeApi;
 import com.editor.model.rope.RopeNode;
 import com.editor.model.rope.StringSizeProvider;
 import com.editor.system.SystemConstants;
@@ -19,7 +20,7 @@ import java.util.stream.Collectors;
 public class RopeTextEditorModel {
     private int cursorPosition;
     private Pointer selectionEnd;
-    private Rope rope;
+    private RopeApi rope;
     private Pointer startBracket;
     private Pointer endBracket;
 
@@ -33,7 +34,7 @@ public class RopeTextEditorModel {
 
     public RopeTextEditorModel() {
         this.cursorPosition = 0;
-        rope = new Rope(new char[0]);
+        rope = new RopeCached(new Rope());
     }
 
     public int getCursorPosition() {
@@ -44,7 +45,7 @@ public class RopeTextEditorModel {
         return rope.getLinesNum();
     }
 
-    public Rope getRope() {
+    public RopeApi getRope() {
         return rope;
     }
 
@@ -305,7 +306,7 @@ public class RopeTextEditorModel {
     }
 
     public void clearAll() {
-        rope = new Rope(new char[0]);
+        rope = new Rope();
     }
 
     public static void setStringSizeProvider(StringSizeProvider provider) {
