@@ -29,7 +29,7 @@ public class DrawComponentMouseListener implements MouseListener, MouseMotionLis
     @Override
     public void mousePressed(MouseEvent e) {
 //        model.dropSelection();
-//        drawComponent.setMouseCursorPointer(new Pointer(e.getY(), e.getX()));
+        drawComponent.setMouseCursorPointer(new Pointer(e.getY(), e.getX()));
         textArea.render(false);
     }
 

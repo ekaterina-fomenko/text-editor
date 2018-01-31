@@ -2,6 +2,7 @@ package com.editor;
 
 import com.editor.model.LineInfo;
 import com.editor.model.LinesBuffer;
+import com.editor.model.Pointer;
 import com.editor.model.RopeTextEditorModel;
 import com.editor.model.rope.RopeApi;
 import com.editor.model.rope.RopeIterator;
@@ -35,6 +36,7 @@ public class RopeDrawComponent extends JComponent {
     private Rectangle visibleBounds = new Rectangle();
 
     private Graphics2D latestGraphices = null;
+    private Pointer mouseCursorPointer;
 
     public RopeDrawComponent() {
     }
@@ -83,7 +85,9 @@ public class RopeDrawComponent extends JComponent {
         List<LineInfo> linesInfo = new ArrayList<>();
 
         int currentLineStartIndex = charIndexStart;
+
         int currentLineLength = 0;
+        int currentLinePixelLength = 0;
 
         while (iterator.hasNext() && linesCountRendered < linesCountToRender) {
             Character c = iterator.next();
@@ -92,6 +96,12 @@ public class RopeDrawComponent extends JComponent {
             }
 
             currentLineLength++;
+            currentLinePixelLength += graphics2D.getFontMetrics().charWidth(c);
+            updateCursorPositionFromCoordinates(
+                    graphics2D,
+                    currentLinePixelLength,
+                    currentIndex,
+                    startRow + linesCountRendered);
 
             if (currentIndex == model.getCursorPosition()) {
                 drawPointer(graphics2D);
@@ -106,6 +116,7 @@ public class RopeDrawComponent extends JComponent {
 
                 currentLineStartIndex = currentLineStartIndex + currentLineLength;
                 currentLineLength = 0;
+                currentLinePixelLength = 0;
             } else {
                 drawChar(graphics2D, c, DEFAULT_CHAR_COLOR, null);
             }
@@ -116,6 +127,19 @@ public class RopeDrawComponent extends JComponent {
         model.setLinesBuffer(new LinesBuffer(linesInfo));
         long drawEnd = System.currentTimeMillis();
         log.info(MessageFormat.format("Drawn: {0} lines, {1}ms", linesCountRendered, drawEnd - drawStart));
+    }
+
+    private void updateCursorPositionFromCoordinates(Graphics2D graphics2D,
+                                                     int distanceFromLineStart,
+                                                     int currentCharIndex,
+                                                     int currentLineIndex) {
+        int height = graphics2D.getFontMetrics().getHeight();
+        if (mouseCursorPointer != null
+                && distanceFromLineStart >= mouseCursorPointer.column
+                && (currentLineIndex + 1) * height >= mouseCursorPointer.row) {
+            model.setCursorPosition(currentCharIndex);
+            mouseCursorPointer = null;
+        }
     }
 
 
@@ -129,18 +153,7 @@ public class RopeDrawComponent extends JComponent {
         int height = fontMetrics.getHeight() * (model.getRope().getLinesNum() + 1);
         int width = model.getRope().getMaxLineLength();
 
-//        for (StringBuilder line : model.getLineBuilders()) {
-//            int length = line.length();
-//            int horSpaceOffset = length > 0 ? fontMetrics.charWidth(line.charAt(length - 1)) : 0;
-//            width = Math.max(width, fontMetrics.stringWidth(line.toString())) + horSpaceOffset;
-//        }
-
         setPreferredSize(new Dimension(width, height));
-    }
-
-    private boolean areNewLine(Character c, Character cNext) {
-        return c == Constants.NEW_LINE.charAt(0) && Constants.NEW_LINE.length() == 1 ||
-                (c == Constants.NEW_LINE.charAt(0) && cNext == Constants.NEW_LINE.charAt(1));
     }
 
     public void setVisibleBounds(Rectangle visibleBounds) {
@@ -164,5 +177,9 @@ public class RopeDrawComponent extends JComponent {
 
     public Graphics2D getLatestGraphices() {
         return latestGraphices;
+    }
+
+    public void setMouseCursorPointer(Pointer mouseCursorPointer) {
+        this.mouseCursorPointer = mouseCursorPointer;
     }
 }
