@@ -1,5 +1,7 @@
 package com.editor;
 
+import com.editor.model.LineInfo;
+import com.editor.model.LinesBuffer;
 import com.editor.model.RopeTextEditorModel;
 import com.editor.model.rope.RopeApi;
 import com.editor.model.rope.RopeIterator;
@@ -11,6 +13,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.text.MessageFormat;
+import java.util.*;
+import java.util.List;
 
 /**
  * Main class which redraw all in text area.
@@ -73,29 +77,47 @@ public class RopeDrawComponent extends JComponent {
         long end = System.currentTimeMillis();
         log.info("iterator: {}ms", end - start);
         long drawStart = System.currentTimeMillis();
+
         int linesCountRendered = 0;
         int currentIndex = charIndexStart;
+        List<LineInfo> linesInfo = new ArrayList<>();
+
+        int currentLineStartIndex = charIndexStart;
+        int currentLineLength = 0;
+
         while (iterator.hasNext() && linesCountRendered < linesCountToRender) {
             Character c = iterator.next();
+            if (c.equals('\r')) {
+                continue;
+            }
+
+            currentLineLength++;
+
+            if (currentIndex == model.getCursorPosition()) {
+                drawPointer(graphics2D);
+            }
 
             if (c.equals(Constants.NEW_LINE_CHAR)) {
                 graphics2D.setTransform(affineTransform);
                 graphics2D.translate(0, graphics2D.getFontMetrics().getHeight());
                 affineTransform = graphics2D.getTransform();
                 linesCountRendered++;
+                linesInfo.add(new LineInfo(currentLineStartIndex, currentLineLength - 1));
+
+                currentLineStartIndex = currentLineStartIndex + currentLineLength;
+                currentLineLength = 0;
             } else {
                 drawChar(graphics2D, c, DEFAULT_CHAR_COLOR, null);
             }
 
-            if (currentIndex == model.getCursorPosition()) {
-                drawPointer(graphics2D);
-            }
-
             currentIndex++;
         }
+
+        model.setLinesBuffer(new LinesBuffer(linesInfo));
         long drawEnd = System.currentTimeMillis();
         log.info(MessageFormat.format("Drawn: {0} lines, {1}ms", linesCountRendered, drawEnd - drawStart));
     }
+
 
     private void drawPointer(Graphics2D graphics2D) {
         graphics2D.setColor(Color.DARK_GRAY);

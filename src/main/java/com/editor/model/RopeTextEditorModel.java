@@ -1,9 +1,6 @@
 package com.editor.model;
 
-import com.editor.model.rope.Rope;
-import com.editor.model.rope.RopeApi;
-import com.editor.model.rope.RopeNode;
-import com.editor.model.rope.StringSizeProvider;
+import com.editor.model.rope.*;
 import com.editor.system.Constants;
 
 import java.util.*;
@@ -23,6 +20,7 @@ public class RopeTextEditorModel {
     private RopeApi rope;
     private Pointer startBracket;
     private Pointer endBracket;
+    private LinesBuffer linesBuffer = new LinesBuffer();
 
     public Pointer getStartBracket() {
         return startBracket;
@@ -39,6 +37,10 @@ public class RopeTextEditorModel {
 
     public int getCursorPosition() {
         return cursorPosition;
+    }
+
+    public void setCursorPosition(int cursorPosition) {
+        this.cursorPosition = cursorPosition;
     }
 
     public int getLinesCount() {
@@ -193,11 +195,45 @@ public class RopeTextEditorModel {
         if (dropSelection) {
             dropSelection();
         }
+
+        int currentLineIndex = linesBuffer.getLine(cursorPosition);
+        if (currentLineIndex < 0) {
+            return;
+        } else if (currentLineIndex == 0) {
+            // TODO: scroll up
+        } else {
+            List<LineInfo> linesInfo = linesBuffer.getLinesInfo();
+
+            int prevLineIndex = currentLineIndex - 1;
+            int prevLineLen = linesInfo.get(prevLineIndex).getLength();
+            int lengthToLineStart = Math.min(cursorPosition - linesInfo.get(currentLineIndex).getStartIndex(), prevLineLen);
+            cursorPosition = linesInfo.get(prevLineIndex).getStartIndex() + lengthToLineStart;
+        }
     }
 
     public void movePointerDown(boolean dropSelection) {
         if (dropSelection) {
             dropSelection();
+        }
+
+        int currentLineBufferIndex = linesBuffer.getLine(cursorPosition);
+        if (currentLineBufferIndex < 0) {
+            return;
+        } else {
+            List<LineInfo> linesInfo = linesBuffer.getLinesInfo();
+
+            if (currentLineBufferIndex >= linesInfo.size() - 1) {
+                // TODO: scroll down
+            } else {
+                int nextLineBufferIndex = currentLineBufferIndex + 1;
+                int nextLineLength = linesInfo.get(nextLineBufferIndex).getLength();
+                int currentLineStartIndex = linesInfo.get(currentLineBufferIndex).getStartIndex();
+                int lengthToStart = Math.min(
+                        cursorPosition - currentLineStartIndex,
+                        nextLineLength);
+                int nextLineStartIndex = linesInfo.get(nextLineBufferIndex).getStartIndex();
+                cursorPosition = nextLineStartIndex + lengthToStart;
+            }
         }
     }
 
@@ -311,5 +347,9 @@ public class RopeTextEditorModel {
 
     public static void setStringSizeProvider(StringSizeProvider provider) {
         RopeNode.setSizeProvider(provider);
+    }
+
+    public void setLinesBuffer(LinesBuffer linesBuffer) {
+        this.linesBuffer = linesBuffer;
     }
 }

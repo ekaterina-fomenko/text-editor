@@ -50,9 +50,7 @@ public class FileManager {
             int countRead;
             while ((countRead = reader.read(buffer)) != -1) {
                 char[] charsRead = countRead == buffer.length ? buffer : StringUtils.subArray(buffer, 0, countRead);
-                char[] charsWithoutWinEndings = removeWindowsEndings(charsRead);
-
-                model.append(charsWithoutWinEndings);
+                model.append(charsRead);
             }
 
             fileName = file.getName();
