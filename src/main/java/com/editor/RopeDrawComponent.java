@@ -101,7 +101,8 @@ public class RopeDrawComponent extends JComponent {
                     graphics2D,
                     currentLinePixelLength,
                     currentIndex,
-                    startRow + linesCountRendered);
+                    startRow + linesCountRendered,
+                    c);
 
             if (currentIndex == model.getCursorPosition()) {
                 drawPointer(graphics2D);
@@ -132,11 +133,12 @@ public class RopeDrawComponent extends JComponent {
     private void updateCursorPositionFromCoordinates(Graphics2D graphics2D,
                                                      int distanceFromLineStart,
                                                      int currentCharIndex,
-                                                     int currentLineIndex) {
+                                                     int currentLineIndex,
+                                                     Character currentChar) {
         int height = graphics2D.getFontMetrics().getHeight();
         if (mouseCursorPointer != null
-                && distanceFromLineStart >= mouseCursorPointer.column
-                && (currentLineIndex + 1) * height >= mouseCursorPointer.row) {
+                && currentLineIndex == mouseCursorPointer.row / height
+                && (distanceFromLineStart >= mouseCursorPointer.column || currentChar.equals(Constants.NEW_LINE_CHAR))) {
             model.setCursorPosition(currentCharIndex);
             mouseCursorPointer = null;
         }
