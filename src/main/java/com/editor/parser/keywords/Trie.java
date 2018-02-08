@@ -1,9 +1,12 @@
-package com.editor.parser;
+package com.editor.parser.keywords;
 
 import java.util.Map;
 import java.util.TreeMap;
 
-public class ReservedWordsTrie {
+/**
+ * Prefix Tree for constructing reserved words
+ */
+public class Trie {
 
     static class TrieNode {
         Map<Character, TrieNode> children = new TreeMap<>();
