@@ -2,16 +2,14 @@ package com.editor.parser.keywords;
 
 import com.editor.parser.Syntax;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
  * Contains list of reserved words for erlang, haskell, javascript.
  * Create trie for each list.
  */
 
-public class ReservedWords {
+public class Keywords {
     public static final List<String> js_keywords_list = Arrays.asList(
             "var",
             "new",

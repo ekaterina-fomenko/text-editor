@@ -1,6 +1,5 @@
 package com.editor.parser.keywords;
 
-import com.editor.parser.keywords.Trie;
 import org.junit.Test;
 
 import static junit.framework.TestCase.assertTrue;
