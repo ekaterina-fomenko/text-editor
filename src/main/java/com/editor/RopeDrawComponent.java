@@ -66,7 +66,7 @@ public class RopeDrawComponent extends JComponent {
 
         int startRow = Math.max(0, visibleBounds.y / fontHeight - 1);
 
-        /* Go trough lines that will be painted*/
+        /* Go trough lines that will be painted */
         int charIndexStart = rope.charIndexOfLineStart(startRow);
         int linesCountToRender = visibleBounds.height / fontHeight + 1;
 
