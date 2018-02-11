@@ -14,6 +14,10 @@ public class CommonSyntaxHighlight {
         this.endIndex = endIndex;
     }
 
+    public CommonSyntaxHighlight(int startIndex, int endIndex) {
+        new CommonSyntaxHighlight(0, startIndex, endIndex);
+    }
+
     public int getStartIndex() {
         return startIndex;
     }

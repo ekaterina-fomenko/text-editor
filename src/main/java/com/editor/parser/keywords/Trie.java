@@ -1,8 +1,11 @@
 package com.editor.parser.keywords;
 
 import com.editor.model.rope.RopeIterator;
+import com.editor.parser.CommonSyntaxHighlight;
 import com.editor.system.Constants;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -17,6 +20,7 @@ public class Trie {
         boolean isLeaf;
     }
 
+    private final List<CommonSyntaxHighlight> keywordsIndexesList = new ArrayList<>();
     private RopeIterator iterator;
     private int startLine;
     private Character currentChar;
@@ -57,16 +61,17 @@ public class Trie {
         return false;
     }
 
-    public void getKeywordsIndexes(int startLine, int endLine) {
+    public List<CommonSyntaxHighlight> getKeywordsIndexes(int startLine, int endLine) {
         TrieNode node = root;
         while (iterator.hasNext() && startLine < endLine) {
             currentChar = iterator.next();
             scanSymbol();
         }
+        return keywordsIndexesList;
     }
 
     private void moveIterator() {
-        iterator.moveForward(1);
+        currentChar = iterator.next();
     }
 
     private boolean match(char expected) {
@@ -103,20 +108,27 @@ public class Trie {
     }
 
     private void identifier() {
-        Character ch = currentChar;
         TrieNode node = root;
+        int startIndex = iterator.getPos();
 
         // See if the identifier is a reserved word.
-        while (node.isLeaf && !isAlpha(ch)) {
-            if (!node.children.containsKey(ch)) {
-                return;
+        while (!node.isLeaf) {
+            if (!node.children.containsKey(currentChar) || !isAlpha(currentChar)) {
+                break;
             } else {
-                node = node.children.get(ch);
+                node = node.children.get(currentChar);
+                moveIterator();
             }
         }
-        currentChar = ch;
-        //save start and end index and line
-        return;
+        if (node.isLeaf && !isAlpha(currentChar)) {
+            CommonSyntaxHighlight keywordIndexes = new CommonSyntaxHighlight(startIndex, iterator.getPos());
+            keywordsIndexesList.add(keywordIndexes);
+            return;
+        }
+
+        while (isAlpha(currentChar) || isDigit(currentChar)) {
+            moveIterator();
+        }
     }
 
     private void scanSymbol() {
