@@ -9,6 +9,7 @@ import java.util.Iterator;
 import static com.editor.system.Constants.*;
 import static java.lang.String.valueOf;
 import static java.text.MessageFormat.format;
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
 public class RopeTest {
@@ -213,5 +214,12 @@ public class RopeTest {
         assertEquals("ABCDE", new Rope("ABCD").insert(4, new Rope("E")).toString());
         assertEquals("ABCD", new Rope("ABCD").insert(3, new Rope("")).toString());
         assertEquals("ABCD", new Rope("ABC").insert(3, new Rope("D")).toString());
+    }
+
+    @Test
+    public void testToChars() {
+        String value = "Ho_ho_ho!_New_year_is_not_finished;)";
+        Rope rope = new RopeCommonOperations(4).create(value);
+        assertArrayEquals(value.toCharArray(), rope.toChars());
     }
 }

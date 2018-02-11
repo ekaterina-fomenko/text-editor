@@ -5,6 +5,7 @@ import com.editor.system.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -102,6 +103,30 @@ public class Rope implements RopeApi {
         StringBuilder stringBuilder = new StringBuilder();
         appendToBuilder(stringBuilder, node);
         return stringBuilder.toString();
+    }
+
+    public char[] toChars() {
+        char[] dst = new char[getLength()];
+
+        copyTo(node, dst, 0);
+
+        return dst;
+    }
+
+    private void copyTo(RopeNode node, char[] dst, int startIndex) {
+        if (node == null) {
+            return;
+        }
+
+        if (node.isLeaf()) {
+            System.arraycopy(node.getValue(), 0, dst, startIndex, node.getValue().length);
+        }
+
+        copyTo(node.getLeft(), dst, startIndex);
+
+        if (node.getLeft() != null) {
+            copyTo(node.getRight(), dst, startIndex + node.getLeft().getLength());
+        }
     }
 
     @Override

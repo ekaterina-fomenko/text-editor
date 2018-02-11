@@ -37,7 +37,7 @@ public class RopeCommonOperations {
 
         // If length in summary less than max length in one rope then just concat two strings on one rope
         if (left.getLength() + right.getLength() < maxLengthInRope) {
-            return new Rope(StringUtils.concat(left.getNode().getValue(), right.getNode().getValue()));
+            return new Rope(StringUtils.concat(left.toChars(), right.toChars()));
         }
 
         /* If right node has no children and left has children then try to analyze next level of left node over right node*/
