@@ -19,7 +19,7 @@ public class TextBuffer {
         return linesInfo;
     }
 
-    public int getLine(int charIndex) {
+    public int getLineByCharIndex(int charIndex) {
         for (int i = 0; i < linesInfo.size(); i++) {
             int startIndex = linesInfo.get(i).getStartIndex();
             if (charIndex >= startIndex
@@ -29,6 +29,16 @@ public class TextBuffer {
         }
 
         return -1;
+    }
+
+    public boolean isEOL(int charIndex) {
+        int lineIndex = getLineByCharIndex(charIndex);
+        if (lineIndex < 0) {
+            return false;
+        }
+
+        LineInfo lineInfo = linesInfo.get(0);
+        return lineInfo.getStartIndex() + lineInfo.getLength() == charIndex;
     }
 
     public Character getCursorChar() {

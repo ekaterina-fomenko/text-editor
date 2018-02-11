@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
  */
 
 public class RopeTextEditorModel {
+    public static final boolean IS_MULTI_SYMBOL_NEWLINE = System.lineSeparator().length() > 1;
     private int cursorPosition;
     private Pointer selectionEnd;
     private RopeApi rope;
@@ -192,11 +193,11 @@ public class RopeTextEditorModel {
             dropSelection();
         }
 
-        if ('\r' == textBuffer.getCursorChar()) {
+        cursorPosition--;
+
+        if (textBuffer.isEOL(cursorPosition) && IS_MULTI_SYMBOL_NEWLINE) {
             cursorPosition--;
         }
-
-        cursorPosition--;
     }
 
     public void movePointerUp(boolean dropSelection) {
@@ -204,7 +205,7 @@ public class RopeTextEditorModel {
             dropSelection();
         }
 
-        int currentLineIndex = textBuffer.getLine(cursorPosition);
+        int currentLineIndex = textBuffer.getLineByCharIndex(cursorPosition);
         if (currentLineIndex < 0) {
             return;
         } else if (currentLineIndex == 0) {
@@ -214,6 +215,10 @@ public class RopeTextEditorModel {
 
             int prevLineIndex = currentLineIndex - 1;
             int prevLineLen = linesInfo.get(prevLineIndex).getLength();
+            if (IS_MULTI_SYMBOL_NEWLINE) {
+                prevLineLen--;
+            }
+
             int lengthToLineStart = Math.min(cursorPosition - linesInfo.get(currentLineIndex).getStartIndex(), prevLineLen);
             cursorPosition = linesInfo.get(prevLineIndex).getStartIndex() + lengthToLineStart;
         }
@@ -224,7 +229,7 @@ public class RopeTextEditorModel {
             dropSelection();
         }
 
-        int currentLineBufferIndex = textBuffer.getLine(cursorPosition);
+        int currentLineBufferIndex = textBuffer.getLineByCharIndex(cursorPosition);
         if (currentLineBufferIndex < 0) {
             return;
         } else {
@@ -237,6 +242,10 @@ public class RopeTextEditorModel {
 
                 int nextLineBufferIndex = currentLineBufferIndex + 1;
                 int nextLineLength = linesInfo.get(nextLineBufferIndex).getLength();
+                if (IS_MULTI_SYMBOL_NEWLINE) {
+                    nextLineLength--;
+                }
+
                 int nextLineStartIndex = linesInfo.get(nextLineBufferIndex).getStartIndex();
 
                 int lengthToStart = Math.min(
