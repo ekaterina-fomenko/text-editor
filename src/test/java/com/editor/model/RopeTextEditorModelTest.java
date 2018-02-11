@@ -17,11 +17,11 @@ public class RopeTextEditorModelTest {
         11:1/a
         ...
          */
-        model.setLinesBuffer(new LinesBuffer(newArrayList(
+        model.setTextBuffer(new TextBuffer(newArrayList(
                 new LineInfo(0, 3),
                 new LineInfo(4, 5),
                 new LineInfo(10, 1),
-                new LineInfo(12, 100))));
+                new LineInfo(12, 100)), 'a'));
 
         // When
         model.movePointerDown(true);

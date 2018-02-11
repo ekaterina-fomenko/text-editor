@@ -29,7 +29,9 @@ public class TextActionMap extends ActionMap {
             put(Character.toString(i), new AbstractAction() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    model.append(e.getActionCommand().toCharArray());
+                    char[] chars = e.getActionCommand().toCharArray();
+                    model.insertToPointer(chars);
+                    model.setCursorPosition(model.getCursorPosition() + chars.length);
                     textArea.render();
                 }
             });

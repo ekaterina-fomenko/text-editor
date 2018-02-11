@@ -3,14 +3,16 @@ package com.editor.model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LinesBuffer {
+public class TextBuffer {
     private List<LineInfo> linesInfo = new ArrayList<>();
+    private Character cursorChar = Character.MIN_VALUE;
 
-    public LinesBuffer(List<LineInfo> linesInfo) {
+    public TextBuffer(List<LineInfo> linesInfo, Character cursorChar) {
         this.linesInfo = linesInfo;
+        this.cursorChar = cursorChar;
     }
 
-    public LinesBuffer() {
+    public TextBuffer() {
     }
 
     public List<LineInfo> getLinesInfo() {
@@ -27,5 +29,9 @@ public class LinesBuffer {
         }
 
         return -1;
+    }
+
+    public Character getCursorChar() {
+        return cursorChar;
     }
 }

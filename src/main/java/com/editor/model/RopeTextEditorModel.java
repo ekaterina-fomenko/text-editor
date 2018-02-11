@@ -20,7 +20,7 @@ public class RopeTextEditorModel {
     private RopeApi rope;
     private Pointer startBracket;
     private Pointer endBracket;
-    private LinesBuffer linesBuffer = new LinesBuffer();
+    private TextBuffer textBuffer = new TextBuffer();
 
     public Pointer getStartBracket() {
         return startBracket;
@@ -180,12 +180,20 @@ public class RopeTextEditorModel {
             dropSelection();
         }
 
+        if ('\r' == textBuffer.getCursorChar()) {
+            cursorPosition++;
+        }
+
         cursorPosition++;
     }
 
     public void movePointerLeft(boolean dropSelection) {
         if (dropSelection) {
             dropSelection();
+        }
+
+        if ('\r' == textBuffer.getCursorChar()) {
+            cursorPosition--;
         }
 
         cursorPosition--;
@@ -196,13 +204,13 @@ public class RopeTextEditorModel {
             dropSelection();
         }
 
-        int currentLineIndex = linesBuffer.getLine(cursorPosition);
+        int currentLineIndex = textBuffer.getLine(cursorPosition);
         if (currentLineIndex < 0) {
             return;
         } else if (currentLineIndex == 0) {
             // TODO: scroll up
         } else {
-            List<LineInfo> linesInfo = linesBuffer.getLinesInfo();
+            List<LineInfo> linesInfo = textBuffer.getLinesInfo();
 
             int prevLineIndex = currentLineIndex - 1;
             int prevLineLen = linesInfo.get(prevLineIndex).getLength();
@@ -216,22 +224,24 @@ public class RopeTextEditorModel {
             dropSelection();
         }
 
-        int currentLineBufferIndex = linesBuffer.getLine(cursorPosition);
+        int currentLineBufferIndex = textBuffer.getLine(cursorPosition);
         if (currentLineBufferIndex < 0) {
             return;
         } else {
-            List<LineInfo> linesInfo = linesBuffer.getLinesInfo();
+            List<LineInfo> linesInfo = textBuffer.getLinesInfo();
 
             if (currentLineBufferIndex >= linesInfo.size() - 1) {
                 // TODO: scroll down
             } else {
+                int currentLineStartIndex = linesInfo.get(currentLineBufferIndex).getStartIndex();
+
                 int nextLineBufferIndex = currentLineBufferIndex + 1;
                 int nextLineLength = linesInfo.get(nextLineBufferIndex).getLength();
-                int currentLineStartIndex = linesInfo.get(currentLineBufferIndex).getStartIndex();
+                int nextLineStartIndex = linesInfo.get(nextLineBufferIndex).getStartIndex();
+
                 int lengthToStart = Math.min(
                         cursorPosition - currentLineStartIndex,
                         nextLineLength);
-                int nextLineStartIndex = linesInfo.get(nextLineBufferIndex).getStartIndex();
                 cursorPosition = nextLineStartIndex + lengthToStart;
             }
         }
@@ -349,7 +359,11 @@ public class RopeTextEditorModel {
         RopeNode.setSizeProvider(provider);
     }
 
-    public void setLinesBuffer(LinesBuffer linesBuffer) {
-        this.linesBuffer = linesBuffer;
+    public void setTextBuffer(TextBuffer textBuffer) {
+        this.textBuffer = textBuffer;
+    }
+
+    public void insertToPointer(char[] chars) {
+        rope = rope.insert(cursorPosition, chars);
     }
 }

@@ -11,6 +11,10 @@ public interface RopeApi {
 
     Rope append(char[] str);
 
+    Rope insert(int index, Rope text);
+
+    Rope insert(int index, char[] text);
+
     RopeIterator iterator(int start);
 
     int charIndexOfLineStart(int lineIndex);

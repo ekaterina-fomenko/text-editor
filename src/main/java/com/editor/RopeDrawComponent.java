@@ -1,9 +1,6 @@
 package com.editor;
 
-import com.editor.model.LineInfo;
-import com.editor.model.LinesBuffer;
-import com.editor.model.Pointer;
-import com.editor.model.RopeTextEditorModel;
+import com.editor.model.*;
 import com.editor.model.rope.RopeApi;
 import com.editor.model.rope.RopeIterator;
 import com.editor.system.Constants;
@@ -68,7 +65,6 @@ public class RopeDrawComponent extends JComponent {
         AffineTransform affineTransform = graphics2D.getTransform();
 
         int startRow = Math.max(0, visibleBounds.y / fontHeight - 1);
-        int endRow = Math.min(rope.getLinesNum() - 1, (visibleBounds.y + visibleBounds.height) / fontHeight - 1);
 
         /* Go trough lines that will be painted*/
         int charIndexStart = rope.charIndexOfLineStart(startRow);
@@ -78,25 +74,21 @@ public class RopeDrawComponent extends JComponent {
         RopeIterator iterator = rope.iterator(charIndexStart);
         long end = System.currentTimeMillis();
         log.info("iterator: {}ms", end - start);
-        long drawStart = System.currentTimeMillis();
 
         int linesCountRendered = 0;
         int currentIndex = charIndexStart;
-        List<LineInfo> linesInfo = new ArrayList<>();
 
         int currentLineStartIndex = charIndexStart;
 
         int currentLineLength = 0;
         int currentLinePixelLength = 0;
+        TextBufferBuilder textBufferBuilder = new TextBufferBuilder();
 
         while (iterator.hasNext() && linesCountRendered < linesCountToRender) {
             Character c = iterator.next();
-            if (c.equals('\r')) {
-                continue;
-            }
-
             currentLineLength++;
             currentLinePixelLength += graphics2D.getFontMetrics().charWidth(c);
+
             updateCursorPositionFromCoordinates(
                     graphics2D,
                     currentLinePixelLength,
@@ -105,29 +97,33 @@ public class RopeDrawComponent extends JComponent {
                     c);
 
             if (currentIndex == model.getCursorPosition()) {
+                textBufferBuilder.withCursorChar(c);
+
                 drawPointer(graphics2D);
             }
 
-            if (c.equals(Constants.NEW_LINE_CHAR)) {
-                graphics2D.setTransform(affineTransform);
-                graphics2D.translate(0, graphics2D.getFontMetrics().getHeight());
-                affineTransform = graphics2D.getTransform();
-                linesCountRendered++;
-                linesInfo.add(new LineInfo(currentLineStartIndex, currentLineLength - 1));
+            if (!c.equals('\r')/* && model.getCursorPosition() == currentIndex*/) {
+                if (c.equals(Constants.NEW_LINE_CHAR)) {
+                    graphics2D.setTransform(affineTransform);
+                    graphics2D.translate(0, graphics2D.getFontMetrics().getHeight());
+                    affineTransform = graphics2D.getTransform();
+                    linesCountRendered++;
+                    textBufferBuilder.addLine(new LineInfo(currentLineStartIndex, currentLineLength - 1));
 
-                currentLineStartIndex = currentLineStartIndex + currentLineLength;
-                currentLineLength = 0;
-                currentLinePixelLength = 0;
-            } else {
-                drawChar(graphics2D, c, DEFAULT_CHAR_COLOR, null);
+                    currentLineStartIndex = currentLineStartIndex + currentLineLength;
+                    currentLineLength = 0;
+                    currentLinePixelLength = 0;
+                } else {
+                    drawChar(graphics2D, c, DEFAULT_CHAR_COLOR, null);
+                }
             }
 
             currentIndex++;
         }
 
-        model.setLinesBuffer(new LinesBuffer(linesInfo));
-        long drawEnd = System.currentTimeMillis();
-        log.info(MessageFormat.format("Drawn: {0} lines, {1}ms", linesCountRendered, drawEnd - drawStart));
+        model.setTextBuffer(textBufferBuilder.build());
+//        long drawEnd = System.currentTimeMillis();
+//        log.info(MessageFormat.format("Drawn: {0} lines, {1}ms", linesCountRendered, drawEnd - drawStart));
     }
 
     private void updateCursorPositionFromCoordinates(Graphics2D graphics2D,

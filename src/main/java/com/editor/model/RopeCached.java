@@ -54,6 +54,16 @@ public class RopeCached implements RopeApi {
     }
 
     @Override
+    public Rope insert(int index, Rope text) {
+        return rope.insert(index, text);
+    }
+
+    @Override
+    public Rope insert(int index, char[] text) {
+        return rope.insert(index, text);
+    }
+
+    @Override
     public RopeIterator iterator(int start) {
         return rope.iterator(start);
     }

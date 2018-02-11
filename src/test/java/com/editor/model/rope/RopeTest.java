@@ -205,4 +205,13 @@ public class RopeTest {
 
         assertEquals(secondLine.length(), new Rope(text).getNode().getMaxLineLength());
     }
+
+    @Test
+    public void testInsert() {
+        assertEquals("AA2BCD", new Rope("ABCD").insert(1, new Rope("A2")).toString());
+        assertEquals("123ABCD", new Rope("ABCD").insert(0, new Rope("123")).toString());
+        assertEquals("ABCDE", new Rope("ABCD").insert(4, new Rope("E")).toString());
+        assertEquals("ABCD", new Rope("ABCD").insert(3, new Rope("")).toString());
+        assertEquals("ABCD", new Rope("ABC").insert(3, new Rope("D")).toString());
+    }
 }

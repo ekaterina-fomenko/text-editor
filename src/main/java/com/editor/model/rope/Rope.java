@@ -86,6 +86,18 @@ public class Rope implements RopeApi {
     }
 
     @Override
+    public Rope insert(int index, char[] text) {
+        return insert(index, operations.create(text));
+    }
+
+    public Rope insert(int index, Rope text) {
+        Rope start = substring(0, index);
+        Rope end = substring(index, getLength());
+
+        return start.append(text).append(end);
+    }
+
+    @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
         appendToBuilder(stringBuilder, node);
