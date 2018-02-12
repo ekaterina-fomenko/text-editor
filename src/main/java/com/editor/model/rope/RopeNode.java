@@ -179,6 +179,30 @@ public class RopeNode {
         return getDepth() == 0;
     }
 
+    public char[] toChars() {
+        char[] dst = new char[getLength()];
+
+        copyTo(this, dst, 0);
+
+        return dst;
+    }
+
+    private void copyTo(RopeNode node, char[] dst, int startIndex) {
+        if (node == null) {
+            return;
+        }
+
+        if (node.isLeaf()) {
+            System.arraycopy(node.getValue(), 0, dst, startIndex, node.getValue().length);
+        }
+
+        copyTo(node.getLeft(), dst, startIndex);
+
+        if (node.getLeft() != null) {
+            copyTo(node.getRight(), dst, startIndex + node.getLeft().getLength());
+        }
+    }
+
     private char charAt(int index, RopeNode ropeNode) {
         if (ropeNode.isLeaf()) {
             return ropeNode.getValue()[index];

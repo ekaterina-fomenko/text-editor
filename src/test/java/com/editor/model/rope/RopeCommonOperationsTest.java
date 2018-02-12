@@ -82,4 +82,27 @@ public class RopeCommonOperationsTest {
         assertEquals("", splitByLast.get(1).toString());
         assertEquals(rope.getValueString(), splitByLast.get(0).toString());
     }
+
+    @Test
+    public void splitMustKeepLinesCount() {
+        Rope r1 = new Rope("a\nb\nccc\nd\nefg\nk");
+        RopeCommonOperations ops = new RopeCommonOperations(4);
+        List<Rope> split = ops.split(r1, 2);
+
+        assertEquals(split.get(0).toString(), "a\n");
+        assertEquals(2, split.get(0).getLinesNum());
+
+        Rope r2 = split.get(1);
+        assertEquals(r2.toString(), "b\nccc\nd\nefg\nk");
+        assertEquals(5, r2.getLinesNum());
+
+        List<Rope> split2 = ops.split(r2, 4);
+        assertEquals(split2.get(0).toString(), "b\ncc");
+        assertEquals(split2.get(0).getLinesNum(), 2);
+
+        assertEquals(split2.get(1).toString(), "c\nd\nefg\nk");
+        assertEquals(split2.get(1).getLinesNum(), 4);
+
+
+    }
 }

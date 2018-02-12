@@ -45,7 +45,7 @@ public class RopeCommonOperations {
             RopeNode leftNode = left.getNode();
 
             if (right.getLength() + leftNode.getRight().getLength() < maxLengthInRope) {
-                RopeNode rightChild = new RopeNode(StringUtils.concat(leftNode.getRight().getValue(), right.getNode().getValue()));
+                RopeNode rightChild = new RopeNode(StringUtils.concat(leftNode.getRight().toChars(), right.getNode().toChars()));
                 RopeNode ropeNode = new RopeNode(leftNode.getLeft(), rightChild);
                 return rebalance(new Rope(ropeNode));
             }
@@ -57,7 +57,7 @@ public class RopeCommonOperations {
             RopeNode rightNode = right.getNode();
 
             if (left.getLength() + rightNode.getLeft().getLength() < maxLengthInRope) {
-                RopeNode leftChild = new RopeNode(StringUtils.concat(left.getNode().getValue(), rightNode.getLeft().getValue()));
+                RopeNode leftChild = new RopeNode(StringUtils.concat(left.getNode().toChars(), rightNode.getLeft().toChars()));
                 RopeNode newNode = new RopeNode(leftChild, rightNode.getRight());
                 return rebalance(new Rope(newNode));
             }
@@ -251,7 +251,7 @@ public class RopeCommonOperations {
 
                 split(rightChildOfLeftParent, rightSplit, parent.right, index - parent.left.getLength());
                 leftSplit.depth = getIncDepth(leftSplit);
-                leftSplit.linesNum = getLinesNumFromChildren(rightSplit);
+                leftSplit.linesNum = getLinesNumFromChildren(leftSplit);
             }
         }
     }

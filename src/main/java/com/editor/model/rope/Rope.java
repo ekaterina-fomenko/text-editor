@@ -106,27 +106,7 @@ public class Rope implements RopeApi {
     }
 
     public char[] toChars() {
-        char[] dst = new char[getLength()];
-
-        copyTo(node, dst, 0);
-
-        return dst;
-    }
-
-    private void copyTo(RopeNode node, char[] dst, int startIndex) {
-        if (node == null) {
-            return;
-        }
-
-        if (node.isLeaf()) {
-            System.arraycopy(node.getValue(), 0, dst, startIndex, node.getValue().length);
-        }
-
-        copyTo(node.getLeft(), dst, startIndex);
-
-        if (node.getLeft() != null) {
-            copyTo(node.getRight(), dst, startIndex + node.getLeft().getLength());
-        }
+        return node.toChars();
     }
 
     @Override
