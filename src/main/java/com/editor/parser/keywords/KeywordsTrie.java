@@ -1,6 +1,7 @@
 package com.editor.parser.keywords;
 
 import com.editor.parser.Syntax;
+import com.editor.parser.SyntaxParser;
 
 import java.util.*;
 
@@ -9,7 +10,7 @@ import java.util.*;
  * Create trie for each list.
  */
 
-public class Keywords {
+public class KeywordsTrie {
     public static final List<String> js_keywords_list = Arrays.asList(
             "var",
             "new",
@@ -137,7 +138,8 @@ public class Keywords {
             "ignore"
     );
 
-    public static Trie getKeyWordsTrie(Syntax syntax) {
+    public static Trie getKeyWordsTrie() {
+        Syntax syntax = SyntaxParser.getCurrentSyntax();
         List<String> keyWords;
         Trie js_keywords_trie = new Trie();
         switch (syntax) {
@@ -157,4 +159,5 @@ public class Keywords {
         keyWords.forEach(js_keywords_trie::put);
         return js_keywords_trie;
     }
+
 }

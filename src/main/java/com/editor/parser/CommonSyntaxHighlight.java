@@ -15,7 +15,7 @@ public class CommonSyntaxHighlight {
     }
 
     public CommonSyntaxHighlight(int startIndex, int endIndex) {
-        new CommonSyntaxHighlight(0, startIndex, endIndex);
+        this(0, startIndex, endIndex);
     }
 
     public int getStartIndex() {

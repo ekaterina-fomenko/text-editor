@@ -54,7 +54,7 @@ public class SyntaxParser {
 
     public List<CommonSyntaxHighlight> getReservedWordsHighlightByIndexes(TextEditorModel model, int startRow, int endRow) {
         List<CommonSyntaxHighlight> reservedWordsHighlights = new ArrayList<>();
-        if (getCurrentSyntax() != Syntax.TEXT) {
+        if (!isTextSyntax()) {
             List<StringBuilder> lineBuilders = model.getLineBuilders();
             for (int i = startRow; i <= endRow; i++) {
                 StringBuilder stringBuilder = lineBuilders.get(i);

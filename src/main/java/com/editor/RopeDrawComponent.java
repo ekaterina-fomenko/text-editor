@@ -1,8 +1,13 @@
 package com.editor;
 
-import com.editor.model.*;
+import com.editor.model.LineInfo;
+import com.editor.model.Pointer;
+import com.editor.model.RopeTextEditorModel;
+import com.editor.model.TextBufferBuilder;
 import com.editor.model.rope.RopeApi;
 import com.editor.model.rope.RopeIterator;
+import com.editor.parser.keywords.KeywordsTrie;
+import com.editor.parser.keywords.Trie;
 import com.editor.system.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,9 +15,8 @@ import org.slf4j.LoggerFactory;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
-import java.text.MessageFormat;
-import java.util.*;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Main class which redraw all in text area.
@@ -25,6 +29,7 @@ public class RopeDrawComponent extends JComponent {
     public static final int POINTER_WIDTH = 2;
 
     public static final Color DEFAULT_CHAR_COLOR = Color.black;
+    public static final Color KEYWORDS_COLOR = new Color(204, 0, 153);
 
     public static final int DEFAULT_Y_COORDINATE = 15;
 
@@ -65,15 +70,23 @@ public class RopeDrawComponent extends JComponent {
         AffineTransform affineTransform = graphics2D.getTransform();
 
         int startRow = Math.max(0, visibleBounds.y / fontHeight - 1);
+        int endRow = Math.min(rope.getLinesNum() - 1, (visibleBounds.y + visibleBounds.height) / fontHeight - 1);
+
 
         /* Go trough lines that will be painted */
         int charIndexStart = rope.charIndexOfLineStart(startRow);
         int linesCountToRender = visibleBounds.height / fontHeight + 1;
 
+        Trie keywordsTree = KeywordsTrie.getKeyWordsTrie();
+        keywordsTree.setIterator(rope.iterator(charIndexStart));
+        Set<Integer> reservedWordsSet = keywordsTree.isEmpty() ? new HashSet<>() : keywordsTree.getKeywordsIndexes(startRow, endRow);
+
         long start = System.currentTimeMillis();
         RopeIterator iterator = rope.iterator(charIndexStart);
         long end = System.currentTimeMillis();
         log.info("iterator: {}ms", end - start);
+
+        Color charColor = DEFAULT_CHAR_COLOR;
 
         int linesCountRendered = 0;
         int currentIndex = charIndexStart;
@@ -114,7 +127,12 @@ public class RopeDrawComponent extends JComponent {
                     currentLineLength = 0;
                     currentLinePixelLength = 0;
                 } else {
-                    drawChar(graphics2D, c, DEFAULT_CHAR_COLOR, null);
+                    if (reservedWordsSet.contains(iterator.getPos())) {
+                        charColor = KEYWORDS_COLOR;
+                    } else {
+                        charColor = DEFAULT_CHAR_COLOR;
+                    }
+                    drawChar(graphics2D, c, charColor, null);
                 }
             }
 

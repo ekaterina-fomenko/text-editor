@@ -1,13 +1,14 @@
 package com.editor.parser.keywords;
 
 import com.editor.model.rope.RopeIterator;
-import com.editor.parser.CommonSyntaxHighlight;
 import com.editor.system.Constants;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * Prefix Tree for constructing reserved words
@@ -20,7 +21,7 @@ public class Trie {
         boolean isLeaf;
     }
 
-    private final List<CommonSyntaxHighlight> keywordsIndexesList = new ArrayList<>();
+    private final Set<Integer> keywordsIndexesSet = new HashSet<>();
     private RopeIterator iterator;
     private int startLine;
     private Character currentChar;
@@ -33,6 +34,10 @@ public class Trie {
 
     public void setStartLine(int startLine) {
         this.startLine = startLine;
+    }
+
+    public boolean isEmpty() {
+        return root.children.size() == 0;
     }
 
     public void put(String string) {
@@ -61,17 +66,19 @@ public class Trie {
         return false;
     }
 
-    public List<CommonSyntaxHighlight> getKeywordsIndexes(int startLine, int endLine) {
-        TrieNode node = root;
+    public Set<Integer> getKeywordsIndexes(int startLineInd, int endLine) {
+        startLine = startLineInd;
         while (iterator.hasNext() && startLine < endLine) {
             currentChar = iterator.next();
             scanSymbol();
         }
-        return keywordsIndexesList;
+        return keywordsIndexesSet;
     }
 
     private void moveIterator() {
-        currentChar = iterator.next();
+        if (!isAtEnd()) {
+            currentChar = iterator.next();
+        }
     }
 
     private boolean match(char expected) {
@@ -85,12 +92,16 @@ public class Trie {
         return true;
     }
 
-    private boolean isAtEnd() {
+    private boolean isAtEndOfLine() {
         return currentChar == Constants.NEW_LINE_CHAR;
     }
 
+    private boolean isAtEnd() {
+        return !iterator.hasNext();
+    }
+
     private void string() {
-        while (currentChar != '"' && !isAtEnd()) {
+        while (currentChar != '"' && !isAtEndOfLine()) {
             if (currentChar == '\n') {
                 startLine++;
             }
@@ -121,8 +132,8 @@ public class Trie {
             }
         }
         if (node.isLeaf && !isAlpha(currentChar)) {
-            CommonSyntaxHighlight keywordIndexes = new CommonSyntaxHighlight(startIndex, iterator.getPos());
-            keywordsIndexesList.add(keywordIndexes);
+            Set<Integer> keywordIndexes = IntStream.rangeClosed(startIndex, iterator.getPos()).boxed().collect(Collectors.toSet());
+            keywordsIndexesSet.addAll(keywordIndexes);
             return;
         }
 
@@ -179,7 +190,7 @@ public class Trie {
             case '/':
                 if (match('/')) {
                     // A comment goes until the end of the line.
-                    while (currentChar != '\n' && !isAtEnd()) {
+                    while (currentChar != '\n' && !isAtEndOfLine()) {
                         moveIterator();
                     }
                 } else {
