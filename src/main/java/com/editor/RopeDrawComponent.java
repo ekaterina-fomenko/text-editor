@@ -7,6 +7,7 @@ import com.editor.model.TextBufferBuilder;
 import com.editor.model.rope.RopeApi;
 import com.editor.model.rope.RopeIterator;
 import com.editor.parser.keywords.KeywordsTrie;
+import com.editor.parser.keywords.TokenType;
 import com.editor.parser.keywords.Trie;
 import com.editor.system.Constants;
 import org.slf4j.Logger;
@@ -15,8 +16,8 @@ import org.slf4j.LoggerFactory;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Main class which redraw all in text area.
@@ -29,7 +30,6 @@ public class RopeDrawComponent extends JComponent {
     public static final int POINTER_WIDTH = 2;
 
     public static final Color DEFAULT_CHAR_COLOR = Color.black;
-    public static final Color KEYWORDS_COLOR = new Color(204, 0, 153);
 
     public static final int DEFAULT_Y_COORDINATE = 15;
 
@@ -79,7 +79,7 @@ public class RopeDrawComponent extends JComponent {
 
         Trie keywordsTree = KeywordsTrie.getKeyWordsTrie();
         keywordsTree.setIterator(rope.iterator(charIndexStart));
-        Set<Integer> reservedWordsSet = keywordsTree.isEmpty() ? new HashSet<>() : keywordsTree.getKeywordsIndexes(startRow, endRow);
+        Map<Integer, TokenType> reservedWordsSet = keywordsTree.isEmpty() ? new HashMap<>() : keywordsTree.getKeywordsIndexes(startRow, endRow);
 
         long start = System.currentTimeMillis();
         RopeIterator iterator = rope.iterator(charIndexStart);
@@ -127,8 +127,8 @@ public class RopeDrawComponent extends JComponent {
                     currentLineLength = 0;
                     currentLinePixelLength = 0;
                 } else {
-                    if (reservedWordsSet.contains(iterator.getPos())) {
-                        charColor = KEYWORDS_COLOR;
+                    if (reservedWordsSet.containsKey(iterator.getPos())) {
+                        charColor = reservedWordsSet.get(iterator.getPos()).getColor();
                     } else {
                         charColor = DEFAULT_CHAR_COLOR;
                     }

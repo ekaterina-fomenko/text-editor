@@ -46,6 +46,7 @@ public class MenuActions extends AbstractAction {
                 SyntaxParser.setCurrentSyntax(Syntax.HASKELL);
                 break;
             case MenuBar.OPEN_FILE:
+                //Todo: open file extension is broken - if open js and then java - syntax still js
                 fileManager.openFile();
                 break;
             case MenuBar.SAVE_FILE:

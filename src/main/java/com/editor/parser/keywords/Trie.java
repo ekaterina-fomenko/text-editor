@@ -3,10 +3,10 @@ package com.editor.parser.keywords;
 import com.editor.model.rope.RopeIterator;
 import com.editor.system.Constants;
 
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -21,9 +21,10 @@ public class Trie {
         boolean isLeaf;
     }
 
-    private final Set<Integer> keywordsIndexesSet = new HashSet<>();
+    private final Map<Integer, TokenType> keywordsIndexesSet = new HashMap<>();
     private RopeIterator iterator;
     private int startLine;
+    private int endLine;
     private Character currentChar;
     TrieNode root = new TrieNode();
 
@@ -66,8 +67,9 @@ public class Trie {
         return false;
     }
 
-    public Set<Integer> getKeywordsIndexes(int startLineInd, int endLine) {
+    public Map<Integer, TokenType> getKeywordsIndexes(int startLineInd, int endLineInd) {
         startLine = startLineInd;
+        endLine = endLineInd;
         while (iterator.hasNext() && startLine < endLine) {
             currentChar = iterator.next();
             scanSymbol();
@@ -101,12 +103,16 @@ public class Trie {
     }
 
     private void string() {
-        while (currentChar != '"' && !isAtEndOfLine()) {
+        int startIndex = iterator.getPos();
+        moveIterator();
+        while (currentChar != '"' && !isAtEnd()) {
             if (currentChar == '\n') {
                 startLine++;
             }
-            currentChar = iterator.next();
+            moveIterator();
         }
+        Map<Integer, TokenType> keywordIndexes = IntStream.rangeClosed(startIndex, iterator.getPos()).boxed().collect(Collectors.toMap(Function.identity(), v -> TokenType.STRING));
+        keywordsIndexesSet.putAll(keywordIndexes);
     }
 
     private boolean isAlpha(char c) {
@@ -132,12 +138,19 @@ public class Trie {
             }
         }
         if (node.isLeaf && !isAlpha(currentChar)) {
-            Set<Integer> keywordIndexes = IntStream.rangeClosed(startIndex, iterator.getPos()).boxed().collect(Collectors.toSet());
-            keywordsIndexesSet.addAll(keywordIndexes);
+            Map<Integer, TokenType> keywordIndexes = IntStream.rangeClosed(startIndex, iterator.getPos()).boxed().collect(Collectors.toMap(Function.identity(), v -> TokenType.RESERVED_WORD));
+            keywordsIndexesSet.putAll(keywordIndexes);
             return;
         }
 
         while (isAlpha(currentChar) || isDigit(currentChar)) {
+            moveIterator();
+        }
+    }
+
+    void number() {
+        while (isDigit(currentChar)) {
+            keywordsIndexesSet.put(iterator.getPos(), TokenType.DIGIT);
             moveIterator();
         }
     }
@@ -189,10 +202,7 @@ public class Trie {
             //for js only
             case '/':
                 if (match('/')) {
-                    // A comment goes until the end of the line.
-                    while (currentChar != '\n' && !isAtEndOfLine()) {
-                        moveIterator();
-                    }
+                    comment();
                 } else {
                     moveIterator();
                 }
@@ -211,11 +221,21 @@ public class Trie {
                 break;
             default:
                 if (isDigit(currentChar)) {
-                    moveIterator();
+                    number();
                 } else if (isAlpha(currentChar)) {
                     identifier();
                 }
                 break;
         }
+    }
+
+    private void comment() {
+        int startIndex = iterator.getPos() - 2;
+        // A comment goes until the end of the line.
+        while (currentChar != '\n' && !isAtEndOfLine()) {
+            moveIterator();
+        }
+        Map<Integer, TokenType> keywordIndexes = IntStream.rangeClosed(startIndex, iterator.getPos()).boxed().collect(Collectors.toMap(Function.identity(), v -> TokenType.COMMENT));
+        keywordsIndexesSet.putAll(keywordIndexes);
     }
 }
