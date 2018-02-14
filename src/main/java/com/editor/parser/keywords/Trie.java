@@ -105,7 +105,8 @@ public class Trie {
     private void string() {
         int startIndex = iterator.getPos();
         moveIterator();
-        while (currentChar != '"' && !isAtEnd()) {
+        // Only for single line strings for now
+        while (currentChar != '"' && !isAtEndOfLine()) {
             if (currentChar == '\n') {
                 startLine++;
             }

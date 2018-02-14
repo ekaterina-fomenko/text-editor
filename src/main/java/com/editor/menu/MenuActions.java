@@ -2,7 +2,7 @@ package com.editor.menu;
 
 import com.editor.TextArea;
 import com.editor.model.FileManager;
-import com.editor.parser.Syntax;
+import com.editor.parser.SyntaxType;
 import com.editor.parser.SyntaxParser;
 
 import javax.swing.*;
@@ -34,19 +34,18 @@ public class MenuActions extends AbstractAction {
 
         switch (event.getText()) {
             case MenuBar.TEXT:
-                SyntaxParser.setCurrentSyntax(Syntax.TEXT);
+                SyntaxParser.setCurrentSyntax(SyntaxType.TEXT);
                 break;
             case MenuBar.JAVASCRIPT:
-                SyntaxParser.setCurrentSyntax(Syntax.JAVASCRIPT);
+                SyntaxParser.setCurrentSyntax(SyntaxType.JAVASCRIPT);
                 break;
             case MenuBar.ERLANG:
-                SyntaxParser.setCurrentSyntax(Syntax.ERLANG);
+                SyntaxParser.setCurrentSyntax(SyntaxType.ERLANG);
                 break;
             case MenuBar.HASKELL:
-                SyntaxParser.setCurrentSyntax(Syntax.HASKELL);
+                SyntaxParser.setCurrentSyntax(SyntaxType.HASKELL);
                 break;
             case MenuBar.OPEN_FILE:
-                //Todo: open file extension is broken - if open js and then java - syntax still js
                 fileManager.openFile();
                 break;
             case MenuBar.SAVE_FILE:

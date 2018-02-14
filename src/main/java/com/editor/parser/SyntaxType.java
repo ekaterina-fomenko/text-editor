@@ -4,7 +4,7 @@ package com.editor.parser;
  * This class provides different syntax for text-editor and also provide file extensions and line comments symbols specific for each syntax
  */
 
-public enum Syntax {
+public enum SyntaxType {
 
     TEXT("", ""),
     JAVASCRIPT("js", "//"),
@@ -14,7 +14,7 @@ public enum Syntax {
     private String fileExtension;
     private String lineComments;
 
-    Syntax(String fileExtension, String lineComments) {
+    SyntaxType(String fileExtension, String lineComments) {
         this.fileExtension = fileExtension;
         this.lineComments = lineComments;
     }

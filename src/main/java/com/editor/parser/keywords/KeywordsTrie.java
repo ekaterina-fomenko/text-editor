@@ -1,6 +1,6 @@
 package com.editor.parser.keywords;
 
-import com.editor.parser.Syntax;
+import com.editor.parser.SyntaxType;
 import com.editor.parser.SyntaxParser;
 
 import java.util.*;
@@ -139,7 +139,7 @@ public class KeywordsTrie {
     );
 
     public static Trie getKeyWordsTrie() {
-        Syntax syntax = SyntaxParser.getCurrentSyntax();
+        SyntaxType syntax = SyntaxParser.getCurrentSyntax();
         List<String> keyWords;
         Trie js_keywords_trie = new Trie();
         switch (syntax) {

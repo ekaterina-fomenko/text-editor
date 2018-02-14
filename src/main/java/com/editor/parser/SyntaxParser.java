@@ -13,14 +13,14 @@ import java.util.regex.Pattern;
  */
 public class SyntaxParser {
 
-    private static Syntax CurrentSyntax = Syntax.TEXT;
+    private static SyntaxType CurrentSyntax = SyntaxType.TEXT;
     private static String CurrentSyntaxRegex = Regexp.PLAIN_TEXT_WORDS;
 
-    public static Syntax getCurrentSyntax() {
+    public static SyntaxType getCurrentSyntax() {
         return CurrentSyntax;
     }
 
-    public static void setCurrentSyntax(Syntax syntax) {
+    public static void setCurrentSyntax(SyntaxType syntax) {
         CurrentSyntax = syntax;
 
         switch (syntax) {
@@ -40,16 +40,18 @@ public class SyntaxParser {
     }
 
     public static void setCurrentSyntaxByFileExtension(String extension) {
-        for (Syntax syntax : Syntax.values()) {
+        for (SyntaxType syntax : SyntaxType.values()) {
             if (syntax.getFileExtension().equals(extension)) {
                 setCurrentSyntax(syntax);
                 break;
+            } else {
+                setCurrentSyntax(SyntaxType.TEXT);
             }
         }
     }
 
     public static boolean isTextSyntax() {
-        return getCurrentSyntax() == Syntax.TEXT;
+        return getCurrentSyntax() == SyntaxType.TEXT;
     }
 
     public List<CommonSyntaxHighlight> getReservedWordsHighlightByIndexes(TextEditorModel model, int startRow, int endRow) {
@@ -72,7 +74,7 @@ public class SyntaxParser {
 
     public List<CommentsHighlight> getLineCommentsHighlight(TextEditorModel model, int startRow, int endRow) {
         List<CommentsHighlight> commentsHighlights = new ArrayList<>();
-        if (CurrentSyntax != Syntax.TEXT) {
+        if (CurrentSyntax != SyntaxType.TEXT) {
             String lineCommentSymbols = CurrentSyntax.getLineComments();
             List<StringBuilder> lineBuilders = model.getLineBuilders();
             for (int i = startRow; i <= endRow; i++) {

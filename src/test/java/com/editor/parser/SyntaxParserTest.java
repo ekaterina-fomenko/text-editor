@@ -47,7 +47,7 @@ public class SyntaxParserTest {
 
     @Test
     public void testGetJsReservedWords() {
-        SyntaxParser.setCurrentSyntax(Syntax.JAVASCRIPT);
+        SyntaxParser.setCurrentSyntax(SyntaxType.JAVASCRIPT);
         List<CommonSyntaxHighlight> jsReservedWordsResult = syntaxParser.getReservedWordsHighlightByIndexes(textEditorModel, 0, testText.size() - 1);
         List<CommonSyntaxHighlight> jsReservedWordsExpected = getExpectedJsSyntaxHighlight();
         int resultSize = jsReservedWordsResult.size();
@@ -67,7 +67,7 @@ public class SyntaxParserTest {
 
     @Test
     public void testGetHsReservedWords() {
-        SyntaxParser.setCurrentSyntax(Syntax.HASKELL);
+        SyntaxParser.setCurrentSyntax(SyntaxType.HASKELL);
         List<CommonSyntaxHighlight> hsReservedWordsResult = syntaxParser.getReservedWordsHighlightByIndexes(textEditorModel, 0, testText.size() - 1);
         List<CommonSyntaxHighlight> hsReservedWordsExpected = getExpectedHsSyntaxHighlight();
         int resultSize = hsReservedWordsResult.size();
@@ -87,7 +87,7 @@ public class SyntaxParserTest {
 
     @Test
     public void testGetErReservedWords() {
-        SyntaxParser.setCurrentSyntax(Syntax.ERLANG);
+        SyntaxParser.setCurrentSyntax(SyntaxType.ERLANG);
         List<CommonSyntaxHighlight> erReservedWordsResult = syntaxParser.getReservedWordsHighlightByIndexes(textEditorModel, 0, testText.size() - 1);
         List<CommonSyntaxHighlight> erReservedWordsExpected = getExpectedErSyntaxHighlight();
         int resultSize = erReservedWordsResult.size();
