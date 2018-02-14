@@ -30,6 +30,7 @@ public class RopeDrawComponent extends JComponent {
     public static final int POINTER_WIDTH = 2;
 
     public static final Color DEFAULT_CHAR_COLOR = Color.black;
+    public static final Color SELECTOR_COLOR = new Color(250, 128, 114, 100);
     public static final Color CURRENT_ROW_COLOR = new Color(255, 235, 205);
 
     public static final int DEFAULT_Y_COORDINATE = 15;
@@ -95,11 +96,12 @@ public class RopeDrawComponent extends JComponent {
 
         int currentLineLength = 0;
         int currentLinePixelLength = 0;
+
         TextBufferBuilder textBufferBuilder = new TextBufferBuilder();
 
         while (iterator.hasNext() && linesCountRendered < linesCountToRender) {
             if (currentIndex == model.getCursorPosition()) {
-                //todo: fix it
+                //TODO: Draw background starting from line start, not from cursor
                 drawLineBackground(graphics2D, CURRENT_ROW_COLOR);
             }
             Character c = iterator.next();
@@ -119,7 +121,7 @@ public class RopeDrawComponent extends JComponent {
                 drawPointer(graphics2D);
             }
 
-            if (!c.equals('\r')/* && model.getCursorPosition() == currentIndex*/) {
+            if (!c.equals('\r')) {
                 if (c.equals(Constants.NEW_LINE_CHAR)) {
                     graphics2D.setTransform(affineTransform);
                     graphics2D.translate(0, graphics2D.getFontMetrics().getHeight());
@@ -136,7 +138,7 @@ public class RopeDrawComponent extends JComponent {
                     } else {
                         charColor = DEFAULT_CHAR_COLOR;
                     }
-                    drawChar(graphics2D, c, charColor, null);
+                    drawChar(graphics2D, c, charColor, isInSelection(currentIndex) ? SELECTOR_COLOR : null);
                 }
             }
 
@@ -194,6 +196,18 @@ public class RopeDrawComponent extends JComponent {
         graphics2D.setColor(color);
         graphics2D.drawString(Character.toString(currentChar), 0, DEFAULT_Y_COORDINATE);
         graphics2D.translate(graphics2D.getFontMetrics().charWidth(currentChar), 0);
+    }
+
+    private boolean isInSelection(int position) {
+        if (!model.isSelectionInProgress()) {
+            return false;
+        }
+
+        int selectionEnd = model.getSelectionEnd();
+        int cursorPosition = model.getCursorPosition();
+
+        return (selectionEnd <= position && position < cursorPosition) ||
+                (cursorPosition <= position && position < selectionEnd);
     }
 
     public void setModel(RopeTextEditorModel model) {

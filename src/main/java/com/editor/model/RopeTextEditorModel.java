@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 public class RopeTextEditorModel {
     public static final boolean IS_MULTI_SYMBOL_NEWLINE = System.lineSeparator().length() > 1;
     private int cursorPosition;
-    private Pointer selectionEnd;
+    private int selectionEnd;
     private RopeApi rope;
     private Pointer startBracket;
     private Pointer endBracket;
@@ -35,6 +35,10 @@ public class RopeTextEditorModel {
     public RopeTextEditorModel() {
         this.cursorPosition = 0;
         rope = new RopeCached(new Rope());
+    }
+
+    public int getSelectionEnd() {
+        return selectionEnd;
     }
 
     public int getCursorPosition() {
@@ -234,17 +238,17 @@ public class RopeTextEditorModel {
     }
 
     public void dropSelection() {
-        selectionEnd = null;
+        selectionEnd = -1;
     }
 
     public void startOrContinueSelection() {
         if (!isSelectionInProgress()) {
-//            selectionEnd = new Pointer(cursorPosition.row, cursorPosition.column);
+            selectionEnd = cursorPosition;
         }
     }
 
     public boolean isSelectionInProgress() {
-        return selectionEnd != null;
+        return selectionEnd > 0;
     }
 
 //    public Pointer getSelectionFrom() {
@@ -315,7 +319,7 @@ public class RopeTextEditorModel {
 //        selectionEnd = null;
 //    }
 
-    public void setSelectionEnd(Pointer selectionEnd) {
+    public void setSelectionEnd(int selectionEnd) {
         this.selectionEnd = selectionEnd;
     }
 
