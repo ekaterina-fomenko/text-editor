@@ -1,6 +1,8 @@
 package com.editor.parser.keywords;
 
 import com.editor.model.rope.RopeIterator;
+import com.editor.parser.SyntaxParser;
+import com.editor.parser.SyntaxType;
 import com.editor.system.Constants;
 
 import java.util.HashMap;
@@ -176,9 +178,6 @@ public class Trie {
             case '.':
                 moveIterator();
                 break;
-            case '-':
-                moveIterator();
-                break;
             case '+':
                 moveIterator();
                 break;
@@ -202,12 +201,25 @@ public class Trie {
                 break;
             //for js only
             case '/':
-                if (match('/')) {
-                    comment();
+                if (isJsSyntax() && match('/')) {
+                    comment(2);
                 } else {
                     moveIterator();
                 }
                 break;
+            case '-':
+                if (isHsSyntax() && match('-')) {
+                    comment(2);
+                } else {
+                    moveIterator();
+                }
+                break;
+            case '%':
+                if (isErSyntax()) {
+                    comment(1);
+                } else {
+                    moveIterator();
+                }
             case ' ':
             case '\r':
             case '\t':
@@ -229,9 +241,20 @@ public class Trie {
                 break;
         }
     }
+    private boolean isJsSyntax() {
+        return SyntaxParser.getCurrentSyntax() == SyntaxType.JAVASCRIPT;
+    }
 
-    private void comment() {
-        int startIndex = iterator.getPos() - 2;
+    private boolean isHsSyntax() {
+        return SyntaxParser.getCurrentSyntax() == SyntaxType.HASKELL;
+    }
+
+    private boolean isErSyntax() {
+        return SyntaxParser.getCurrentSyntax() == SyntaxType.ERLANG;
+    }
+
+    private void comment(int commentSymbolsNumber) {
+        int startIndex = iterator.getPos() - commentSymbolsNumber;
         // A comment goes until the end of the line.
         while (currentChar != '\n' && !isAtEndOfLine()) {
             moveIterator();
