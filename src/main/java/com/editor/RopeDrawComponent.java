@@ -30,6 +30,7 @@ public class RopeDrawComponent extends JComponent {
     public static final int POINTER_WIDTH = 2;
 
     public static final Color DEFAULT_CHAR_COLOR = Color.black;
+    public static final Color CURRENT_ROW_COLOR = new Color(255, 235, 205);
 
     public static final int DEFAULT_Y_COORDINATE = 15;
 
@@ -57,6 +58,7 @@ public class RopeDrawComponent extends JComponent {
         log.debug("Paint started. VisibleBounds: " + visibleBounds);
 
         RopeApi rope = model.getRope();
+        Color charColor;
 
         Graphics2D graphics2D = (Graphics2D) graphics;
         latestGraphices = graphics2D;
@@ -86,8 +88,6 @@ public class RopeDrawComponent extends JComponent {
         long end = System.currentTimeMillis();
         log.info("iterator: {}ms", end - start);
 
-        Color charColor = DEFAULT_CHAR_COLOR;
-
         int linesCountRendered = 0;
         int currentIndex = charIndexStart;
 
@@ -98,6 +98,10 @@ public class RopeDrawComponent extends JComponent {
         TextBufferBuilder textBufferBuilder = new TextBufferBuilder();
 
         while (iterator.hasNext() && linesCountRendered < linesCountToRender) {
+            if (currentIndex == model.getCursorPosition()) {
+                //todo: fix it
+                drawLineBackground(graphics2D, CURRENT_ROW_COLOR);
+            }
             Character c = iterator.next();
             currentLineLength++;
             currentLinePixelLength += graphics2D.getFontMetrics().charWidth(c);
@@ -142,6 +146,11 @@ public class RopeDrawComponent extends JComponent {
         model.setTextBuffer(textBufferBuilder.build());
 //        long drawEnd = System.currentTimeMillis();
 //        log.info(MessageFormat.format("Drawn: {0} lines, {1}ms", linesCountRendered, drawEnd - drawStart));
+    }
+
+    private void drawLineBackground(Graphics graphics2D, Color backgroundColor) {
+        graphics2D.setColor(backgroundColor);
+        graphics2D.fillRect(0, 3, visibleBounds.x + visibleBounds.width, graphics2D.getFontMetrics().getHeight());
     }
 
     private void updateCursorPositionFromCoordinates(Graphics2D graphics2D,
