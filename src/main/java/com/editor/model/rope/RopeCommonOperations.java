@@ -172,7 +172,19 @@ public class RopeCommonOperations {
     }
 
     public int getLinesNumFromChildren(RopeNode node) {
-        return getDepth(node.left) + getDepth(node.right);
+        int result = 1;
+
+        RopeNode left = node.left;
+        if (left != null) {
+            result += left.getLinesNum();
+        }
+
+        RopeNode right = node.right;
+        if (right != null) {
+            result += right.getLinesNum();
+        }
+
+        return result - 1;
     }
 
     public static int getDepth(RopeNode node) {
