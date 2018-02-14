@@ -251,30 +251,6 @@ public class RopeTextEditorModel {
         return selectionEnd > 0;
     }
 
-//    public Pointer getSelectionFrom() {
-//        int comparison = cursorPosition.compareTo(selectionEnd);
-
-//        Pointer leftMostPointer = comparison < 0 ? cursorPosition : selectionEnd;
-//
-//        return new Pointer(leftMostPointer);
-//    }
-
-//    public Pointer getSelectionTo() {
-//        int comparison = cursorPosition.compareTo(selectionEnd);
-//
-//        Pointer rightMostPointerExcluded = comparison > 0 ? cursorPosition : selectionEnd;
-//
-//        return new Pointer(rightMostPointerExcluded.row, rightMostPointerExcluded.column);
-//    }
-
-//    private StringBuilder getCurrentRow() {
-//        return lineBuilders.get(cursorPosition.row);
-//    }
-
-//    private int getCurrentRowLength() {
-//        return getCurrentRow().length();
-//    }
-
     public String convertToString(List<StringBuilder> list) {
         return list.stream().collect(Collectors.joining(Constants.NEW_LINE));
     }
