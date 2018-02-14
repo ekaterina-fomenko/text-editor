@@ -2,6 +2,7 @@ package com.editor.model;
 
 import com.editor.model.rope.*;
 import com.editor.system.Constants;
+import com.sun.deploy.Environment;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -115,47 +116,22 @@ public class RopeTextEditorModel {
         return true;//row > -1 && row < lineBuilders.size() && column > -1 && column < lineBuilders.get(row).length();
     }
 
-    public void addText(char[] text) {
+    public void onTextInput(char[] text) {
         deleteSelection();
 
-//        List<String> lines = splitIntoLines(text);
-//        for (int i = 0; i < lines.size(); i++) {
-//            String line = lines.get(i);
-//            this.lineBuilders.get(cursorPosition.row).insert(cursorPosition.column, line);
-//            cursorPosition.column += line.length();
-//
-//            if (i < lines.size() - 1) {
-//                cursorPosition.row++;
-//                lineBuilders.add(cursorPosition.row, new StringBuilder());
-//                cursorPosition.column = 0;
-//            }
-//        }
-        rope = rope.append(text);
+        rope = rope.insert(cursorPosition, text);
+        cursorPosition += text.length;
     }
 
-    private List<String> splitIntoLines(String text) {
-        List<String> lines = new ArrayList<>();
-        Scanner sc = new Scanner(text);
-        while (sc.hasNextLine()) {
-            lines.add(sc.nextLine());
-        }
-
-        return lines;
-    }
-
-    public void addNewLine() {
+    public void onEnter() {
         if (isSelectionInProgress()) {
             onBackspace();
 
         }
-//        StringBuilder currentRow = this.lineBuilders.get(cursorPosition.row);
-//        String restOfCurrentLine = currentRow.substring(cursorPosition.column);
-//
-//        currentRow.delete(cursorPosition.column, currentRow.length());
-//        lineBuilders.add(cursorPosition.row + 1, new StringBuilder(restOfCurrentLine));
-        rope.append(Constants.NEW_LINE);//todo: to cursor position
-//        cursorPosition.row++;
-//        cursorPosition.column = 0;
+
+        char[] text = System.lineSeparator().toCharArray();
+        rope = rope.insert(cursorPosition, text);
+        cursorPosition += text.length;
     }
 
     public void onBackspace() {
@@ -210,6 +186,7 @@ public class RopeTextEditorModel {
             return;
         } else if (currentLineIndex == 0) {
             // TODO: scroll up
+//            .setVisibleBounds(jScrollPane.getViewport().getViewRect());
         } else {
             List<LineInfo> linesInfo = textBuffer.getLinesInfo();
 

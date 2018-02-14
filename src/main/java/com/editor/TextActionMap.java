@@ -1,7 +1,6 @@
 package com.editor;
 
 import com.editor.model.RopeTextEditorModel;
-import com.editor.model.TextEditorModel;
 import com.editor.system.ClipboardAdapter;
 
 import javax.swing.*;
@@ -17,11 +16,9 @@ public class TextActionMap extends ActionMap {
     private TextArea textArea;
 
     public TextActionMap(RopeTextEditorModel model, TextArea area) {
-
         this.model = model;
         this.textArea = area;
         this.clipboardAdapter = new ClipboardAdapter();
-
     }
 
     {
@@ -30,8 +27,8 @@ public class TextActionMap extends ActionMap {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     char[] chars = e.getActionCommand().toCharArray();
-                    model.insertToPointer(chars);
-                    model.setCursorPosition(model.getCursorPosition() + chars.length);
+
+                    model.onTextInput(chars);
                     textArea.render();
                 }
             });
@@ -48,7 +45,7 @@ public class TextActionMap extends ActionMap {
         put(TextInputMap.NEW_LINE, new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                model.addNewLine();
+                model.onEnter();
                 textArea.render();
             }
         });
@@ -124,7 +121,7 @@ public class TextActionMap extends ActionMap {
         put(TextInputMap.CTRL_V, new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                model.addText(clipboardAdapter.getText().toCharArray());
+                model.onTextInput(clipboardAdapter.getText().toCharArray());
                 textArea.render();
             }
         });
