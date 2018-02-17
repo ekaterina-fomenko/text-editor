@@ -2,8 +2,11 @@ package com.editor;
 
 import com.editor.model.RopeTextEditorModel;
 import com.editor.system.ClipboardAdapter;
+import javafx.geometry.VerticalDirection;
+import javafx.scene.control.ScrollBar;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 
 /**
@@ -87,8 +90,12 @@ public class TextActionMap extends ActionMap {
         put(TextInputMap.UP, new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                model.movePointerUp(true);
-                textArea.render();
+                boolean scrollUp = model.movePointerUp(false);
+                if (scrollUp) {
+                    scrollOnLine(VerticalDirection.UP);
+                }
+
+                textArea.render(true);
             }
         });
 
@@ -104,8 +111,11 @@ public class TextActionMap extends ActionMap {
         put(TextInputMap.DOWN, new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                model.movePointerDown(true);
-                textArea.render();
+                boolean scrollDown = model.movePointerDown(true);
+                if (scrollDown) {
+                    scrollOnLine(VerticalDirection.DOWN);
+                }
+                textArea.render(true);
             }
         });
 
@@ -166,5 +176,22 @@ public class TextActionMap extends ActionMap {
 //                textArea.render();
             }
         });
+    }
+
+    private void scrollOnLine(VerticalDirection direction) {
+        RopeDrawComponent ropeDrawComponent = this.textArea.ropeDrawComponent;
+        Graphics2D graphices = ropeDrawComponent.getLatestGraphices();
+        Rectangle cursorRect = model.getCursorRect();
+        int charHeight = graphices.getFontMetrics().getHeight();
+
+        int newY = direction == VerticalDirection.DOWN
+                ? cursorRect.y + charHeight
+                : cursorRect.y - charHeight;
+
+        model.setCursorRect(new Rectangle(
+                cursorRect.x,
+                newY,
+                cursorRect.width,
+                cursorRect.height));
     }
 }

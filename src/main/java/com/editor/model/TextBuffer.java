@@ -44,4 +44,20 @@ public class TextBuffer {
     public Character getCursorChar() {
         return cursorChar;
     }
+
+    public int getBufferStartIndex() {
+        if (linesInfo.size() == 0) {
+            return -1;
+        }
+
+        return linesInfo.get(0).getStartIndex();
+    }
+
+    public int getBufferEndIndex() {
+        if (linesInfo.size() == 0) {
+            return -1;
+        }
+
+        return linesInfo.get(linesInfo.size() - 1).getEndIndex();
+    }
 }

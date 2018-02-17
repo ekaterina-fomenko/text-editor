@@ -48,12 +48,12 @@ public class TextArea {
 
         jScrollPane.getHorizontalScrollBar().addAdjustmentListener(listener -> {
             ropeDrawComponent.setVisibleBounds(jScrollPane.getViewport().getViewRect());
-            render();
+            render(false);
         });
 
         jScrollPane.getVerticalScrollBar().addAdjustmentListener(listener -> {
             ropeDrawComponent.setVisibleBounds(jScrollPane.getViewport().getViewRect());
-            render();
+            render(false);
         });
 
         ropeDrawComponent.addMouseListener(mouseListener);
@@ -76,7 +76,7 @@ public class TextArea {
         this.ropeDrawComponent.revalidate();
         this.ropeDrawComponent.setVisibleBounds(jScrollPane.getViewport().getViewRect());
         this.ropeDrawComponent.repaint();
-//        this.ropeDrawComponent.setScrollToCursorOnceOnPaint(forceScrollToCursor);
+        this.ropeDrawComponent.setScrollToCursorOnceOnPaint(forceScrollToCursor);
 
         if (!SyntaxParser.isTextSyntax()) {
             ropeModel.updatePairedBrackets();

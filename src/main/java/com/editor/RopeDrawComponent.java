@@ -41,6 +41,7 @@ public class RopeDrawComponent extends JComponent {
 
     private Graphics2D latestGraphices = null;
     private Pointer mouseCursorPointer;
+    private boolean scrollToCursorOnceOnPaint;
 
     public RopeDrawComponent() {
     }
@@ -67,18 +68,23 @@ public class RopeDrawComponent extends JComponent {
 
         updatePreferredSize(graphics);
 
+        if (scrollToCursorOnceOnPaint) {
+            revalidate();
+            scrollRectToVisible(model.getCursorRect());
+            scrollToCursorOnceOnPaint = false;
+        }
+
         int fontHeight = graphics.getFontMetrics().getHeight();
 
-        graphics2D.translate(0, Math.max(0, visibleBounds.y - fontHeight) - visibleBounds.y % fontHeight);
+        graphics2D.translate(0, Math.max(0, visibleBounds.y) - visibleBounds.y % fontHeight);
         AffineTransform affineTransform = graphics2D.getTransform();
 
-        int startRow = Math.max(0, visibleBounds.y / fontHeight - 1);
-        int endRow = Math.min(rope.getLinesNum() - 1, (visibleBounds.y + visibleBounds.height) / fontHeight - 1);
-
+        int startRow = Math.max(0, visibleBounds.y / fontHeight);
+        int endRow = Math.min(rope.getLinesNum() - 1, (visibleBounds.y + visibleBounds.height) / fontHeight);
 
         /* Go trough lines that will be painted */
         int charIndexStart = rope.charIndexOfLineStart(startRow);
-        int linesCountToRender = visibleBounds.height / fontHeight + 1;
+        int linesCountToRender = visibleBounds.height / fontHeight;
 
         Trie keywordsTree = KeywordsTrie.getKeyWordsTrie();
         keywordsTree.setIterator(rope.iterator(charIndexStart));
@@ -96,6 +102,8 @@ public class RopeDrawComponent extends JComponent {
 
         int currentLineLength = 0;
         int currentLinePixelLength = 0;
+
+        final int charHeight = graphics2D.getFontMetrics().getHeight();
 
         TextBufferBuilder textBufferBuilder = new TextBufferBuilder();
 
@@ -119,12 +127,18 @@ public class RopeDrawComponent extends JComponent {
                 textBufferBuilder.withCursorChar(c);
 
                 drawPointer(graphics2D);
+                model.setCursorRect(new Rectangle(
+                        currentLinePixelLength,
+                        visibleBounds.y + linesCountRendered * charHeight,
+                        POINTER_WIDTH,
+                        charHeight
+                ));
             }
 
             if (!c.equals('\r')) {
                 if (c.equals(Constants.NEW_LINE_CHAR)) {
                     graphics2D.setTransform(affineTransform);
-                    graphics2D.translate(0, graphics2D.getFontMetrics().getHeight());
+                    graphics2D.translate(0, charHeight);
                     affineTransform = graphics2D.getTransform();
                     linesCountRendered++;
                     textBufferBuilder.addLine(new LineInfo(currentLineStartIndex, currentLineLength - 1));
@@ -146,8 +160,6 @@ public class RopeDrawComponent extends JComponent {
         }
 
         model.setTextBuffer(textBufferBuilder.build());
-//        long drawEnd = System.currentTimeMillis();
-//        log.info(MessageFormat.format("Drawn: {0} lines, {1}ms", linesCountRendered, drawEnd - drawStart));
     }
 
     private void drawLineBackground(Graphics graphics2D, Color backgroundColor) {
@@ -177,7 +189,7 @@ public class RopeDrawComponent extends JComponent {
 
     private void updatePreferredSize(Graphics graphics) {
         FontMetrics fontMetrics = graphics.getFontMetrics();
-        int height = fontMetrics.getHeight() * (model.getRope().getLinesNum() + 1);
+        int height = fontMetrics.getHeight() * model.getRope().getLinesNum();
         int width = model.getRope().getMaxLineLength();
 
         setPreferredSize(new Dimension(width, height));
@@ -220,5 +232,9 @@ public class RopeDrawComponent extends JComponent {
 
     public void setMouseCursorPointer(Pointer mouseCursorPointer) {
         this.mouseCursorPointer = mouseCursorPointer;
+    }
+
+    public void setScrollToCursorOnceOnPaint(boolean scrollToCursorOnceOnPaint) {
+        this.scrollToCursorOnceOnPaint = scrollToCursorOnceOnPaint;
     }
 }
