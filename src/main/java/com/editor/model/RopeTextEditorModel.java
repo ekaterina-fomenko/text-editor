@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 public class RopeTextEditorModel {
     public static final boolean IS_MULTI_SYMBOL_NEWLINE = System.lineSeparator().length() > 1;
     private int cursorPosition;
+    private int cursorLine;
     private Rectangle cursorRect = new Rectangle();
     private int selectionEnd;
     private RopeApi rope;

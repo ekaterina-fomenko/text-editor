@@ -31,7 +31,7 @@ public class RopeDrawComponent extends JComponent {
 
     public static final Color DEFAULT_CHAR_COLOR = Color.black;
     public static final Color SELECTOR_COLOR = new Color(250, 128, 114, 100);
-    public static final Color CURRENT_ROW_COLOR = new Color(255, 235, 205);
+    public static final Color CURSOR_ROW_BACKGROUND_COLOR = new Color(255, 235, 205, 192);
 
     public static final int DEFAULT_Y_COORDINATE = 15;
 
@@ -102,64 +102,94 @@ public class RopeDrawComponent extends JComponent {
 
         int currentLineLength = 0;
         int currentLinePixelLength = 0;
-
         final int charHeight = graphics2D.getFontMetrics().getHeight();
 
         TextBufferBuilder textBufferBuilder = new TextBufferBuilder();
 
         while (iterator.hasNext() && linesCountRendered < linesCountToRender) {
-            if (currentIndex == model.getCursorPosition()) {
-                //TODO: Draw background starting from line start, not from cursor
-                drawLineBackground(graphics2D, CURRENT_ROW_COLOR);
+            PreReadLineInfo preReadLineInfo = readLine(iterator, currentIndex);
+            String line = preReadLineInfo.getStringBuilder().toString();
+            if (preReadLineInfo.isCursorLine) {
+                AffineTransform transform = graphics2D.getTransform();
+                drawLineBackground(graphics2D, CURSOR_ROW_BACKGROUND_COLOR);
+                graphics2D.setTransform(transform);
             }
-            Character c = iterator.next();
-            currentLineLength++;
-            currentLinePixelLength += graphics2D.getFontMetrics().charWidth(c);
 
-            updateCursorPositionFromCoordinates(
-                    graphics2D,
-                    currentLinePixelLength,
-                    currentIndex,
-                    startRow + linesCountRendered,
-                    c);
+            for (int i = 0; i < line.length(); i++) {
+                Character c = line.charAt(i);
+                currentLineLength++;
+                currentLinePixelLength += graphics2D.getFontMetrics().charWidth(c);
 
-            if (currentIndex == model.getCursorPosition()) {
-                textBufferBuilder.withCursorChar(c);
-
-                drawPointer(graphics2D);
-                model.setCursorRect(new Rectangle(
+                updateCursorPositionFromCoordinates(
+                        graphics2D,
                         currentLinePixelLength,
-                        visibleBounds.y + linesCountRendered * charHeight,
-                        POINTER_WIDTH,
-                        charHeight
-                ));
-            }
+                        currentIndex,
+                        startRow + linesCountRendered,
+                        c);
 
-            if (!c.equals('\r')) {
-                if (c.equals(Constants.NEW_LINE_CHAR)) {
-                    graphics2D.setTransform(affineTransform);
-                    graphics2D.translate(0, charHeight);
-                    affineTransform = graphics2D.getTransform();
-                    linesCountRendered++;
-                    textBufferBuilder.addLine(new LineInfo(currentLineStartIndex, currentLineLength - 1));
+                if (currentIndex == model.getCursorPosition()) {
+                    textBufferBuilder.withCursorChar(c);
 
-                    currentLineStartIndex = currentLineStartIndex + currentLineLength;
-                    currentLineLength = 0;
-                    currentLinePixelLength = 0;
-                } else {
-                    if (reservedWordsSet.containsKey(iterator.getPos())) {
-                        charColor = reservedWordsSet.get(iterator.getPos()).getColor();
-                    } else {
-                        charColor = DEFAULT_CHAR_COLOR;
-                    }
-                    drawChar(graphics2D, c, charColor, isInSelection(currentIndex) ? SELECTOR_COLOR : null);
+                    drawPointer(graphics2D);
+                    model.setCursorRect(new Rectangle(
+                            currentLinePixelLength,
+                            visibleBounds.y + linesCountRendered * charHeight,
+                            POINTER_WIDTH,
+                            charHeight
+                    ));
                 }
-            }
 
-            currentIndex++;
+                if (!c.equals('\r')) {
+                    if (c.equals('\n')) {
+                        graphics2D.setTransform(affineTransform);
+                        graphics2D.translate(0, charHeight);
+                        affineTransform = graphics2D.getTransform();
+                        linesCountRendered++;
+                        textBufferBuilder.addLine(new LineInfo(currentLineStartIndex, currentLineLength - 1));
+
+                        currentLineStartIndex = currentLineStartIndex + currentLineLength;
+                        currentLineLength = 0;
+                        currentLinePixelLength = 0;
+                    } else {
+                        if (reservedWordsSet.containsKey(iterator.getPos())) {
+                            charColor = reservedWordsSet.get(iterator.getPos()).getColor();
+                        } else {
+                            charColor = DEFAULT_CHAR_COLOR;
+                        }
+                        drawChar(graphics2D, c, charColor, isInSelection(currentIndex) ? SELECTOR_COLOR : null);
+                    }
+                }
+
+                currentIndex++;
+            }
         }
 
         model.setTextBuffer(textBufferBuilder.build());
+    }
+
+    private PreReadLineInfo readLine(RopeIterator iterator, int currentIndex) {
+        StringBuilder stringBuilder = new StringBuilder();
+        boolean isCursorLine = false;
+        Character c;
+        int counter = 0;
+        boolean newLineMet = false;
+        while (iterator.hasNext() && !newLineMet) {
+            c = iterator.next();
+
+            if (c.equals('\n')) {
+                newLineMet = true;
+            }
+
+            stringBuilder.append(c);
+
+            if (currentIndex + counter == model.getCursorPosition()) {
+                isCursorLine = true;
+            }
+
+            counter++;
+        }
+
+        return new PreReadLineInfo(stringBuilder, isCursorLine);
     }
 
     private void drawLineBackground(Graphics graphics2D, Color backgroundColor) {
@@ -236,5 +266,23 @@ public class RopeDrawComponent extends JComponent {
 
     public void setScrollToCursorOnceOnPaint(boolean scrollToCursorOnceOnPaint) {
         this.scrollToCursorOnceOnPaint = scrollToCursorOnceOnPaint;
+    }
+
+    static class PreReadLineInfo {
+        private StringBuilder stringBuilder;
+        private boolean isCursorLine;
+
+        PreReadLineInfo(StringBuilder stringBuilder, boolean isCursorLine) {
+            this.stringBuilder = stringBuilder;
+            this.isCursorLine = isCursorLine;
+        }
+
+        public StringBuilder getStringBuilder() {
+            return stringBuilder;
+        }
+
+        public boolean isCursorLine() {
+            return isCursorLine;
+        }
     }
 }
