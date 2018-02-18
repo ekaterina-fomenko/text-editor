@@ -44,6 +44,11 @@ public class RopeCached implements RopeApi {
     }
 
     @Override
+    public Rope substring(int start, int end) {
+        return rope.substring(start, end);
+    }
+
+    @Override
     public Rope append(Rope rope) {
         return rope.append(rope);
     }

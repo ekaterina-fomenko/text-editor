@@ -9,7 +9,7 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 
 /**
- * Process all actions which made in menu bar
+ * Process all actions from menu bar
  */
 
 public class MenuActions extends AbstractAction {

@@ -7,6 +7,8 @@ public interface RopeApi {
 
     int getDepth();
 
+    Rope substring(int start, int end);
+
     Rope append(Rope rope);
 
     Rope append(char[] str);

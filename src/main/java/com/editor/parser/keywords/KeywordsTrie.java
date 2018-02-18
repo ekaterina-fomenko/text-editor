@@ -1,10 +1,11 @@
 package com.editor.parser.keywords;
 
-import com.editor.model.rope.RopeApi;
-import com.editor.parser.SyntaxType;
 import com.editor.parser.SyntaxParser;
+import com.editor.parser.SyntaxType;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Contains list of reserved words for erlang, haskell, javascript.
@@ -12,7 +13,7 @@ import java.util.*;
  */
 
 public class KeywordsTrie {
-    public static final List<String> js_keywords_list = Arrays.asList(
+    private static final List<String> js_keywords_list = Arrays.asList(
             "var",
             "new",
             "class",
@@ -71,7 +72,7 @@ public class KeywordsTrie {
             "transient"
     );
 
-    public static final List<String> hs_keywords_list = Arrays.asList(
+    private static final List<String> hs_keywords_list = Arrays.asList(
             "return",
             "case",
             "class",
@@ -100,7 +101,7 @@ public class KeywordsTrie {
             "qualified"
     );
 
-    public static final List<String> er_keywords_list = Arrays.asList(
+    private static final List<String> er_keywords_list = Arrays.asList(
             "fun",
             "module",
             "export",
@@ -139,25 +140,29 @@ public class KeywordsTrie {
             "ignore"
     );
 
-    public static Trie getKeyWordsTrie(RopeApi rope, int startIndex) {
+    public static Trie js_keywords_trie = getKeyWordsTrie(js_keywords_list);
+    public static Trie er_keywords_trie = getKeyWordsTrie(er_keywords_list);
+    public static Trie hs_keywords_trie = getKeyWordsTrie(hs_keywords_list);
+    public static Trie text_keywords_trie = getKeyWordsTrie(new ArrayList<>());
+
+    private static Trie getKeyWordsTrie(List<String> keyWords) {
+        Trie keywords_trie = new Trie();
+        keyWords.forEach(keywords_trie::registerReservedWord);
+        return keywords_trie;
+    }
+
+    public static Trie getCurrentSyntaxTrie() {
         SyntaxType syntax = SyntaxParser.getCurrentSyntax();
-        List<String> keyWords;
-        Trie js_keywords_trie = new Trie(rope, startIndex);
         switch (syntax) {
             case JAVASCRIPT:
-                keyWords = js_keywords_list;
-                break;
+                return js_keywords_trie;
             case HASKELL:
-                keyWords = hs_keywords_list;
-                break;
+                return hs_keywords_trie;
             case ERLANG:
-                keyWords = er_keywords_list;
-                break;
+                return er_keywords_trie;
             case TEXT:
             default:
-                keyWords = new ArrayList<>();
+                return text_keywords_trie;
         }
-        keyWords.forEach(js_keywords_trie::registerReservedWord);
-        return js_keywords_trie;
     }
 }

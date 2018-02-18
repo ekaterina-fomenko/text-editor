@@ -1,7 +1,5 @@
 package com.editor.parser.keywords;
 
-import com.editor.model.rope.Rope;
-import com.editor.model.rope.RopeApi;
 import com.editor.parser.SyntaxParser;
 import com.editor.parser.SyntaxType;
 import com.editor.system.Constants;
@@ -17,37 +15,23 @@ import java.util.stream.IntStream;
  * Prefix Tree for constructing reserved words
  */
 public class Trie {
-
-    private final RopeApi rope;
-    private final int startIndex;
-
     static class TrieNode {
 
         Map<Character, TrieNode> children = new TreeMap<>();
         boolean isLeaf;
     }
 
-    private final Map<Integer, TokenType> keywordsIndexesSet = new HashMap<>();
-    private int startLine;
-    private int endLine;
-    private Character currentChar;
+    private Map<Integer, TokenType> keywordsIndexesSet;
+    private char currentChar;
     private int currentIndex;
     TrieNode root = new TrieNode();
-
-    public Trie(RopeApi rope, int startIndex) {
-        this.rope = rope;
-        this.startIndex = startIndex;
-    }
-
-    public void setStartLine(int startLine) {
-        this.startLine = startLine;
-    }
+    private char[] chars;
 
     public boolean isEmpty() {
         return root.children.size() == 0;
     }
 
-    public void registerReservedWord(String string) {
+    void registerReservedWord(String string) {
         TrieNode node = root;
         for (char ch : string.toLowerCase().toCharArray()) {
             if (!node.children.containsKey(ch)) {
@@ -58,25 +42,25 @@ public class Trie {
         node.isLeaf = true;
     }
 
-    public Map<Integer, TokenType> getKeywordsIndexes(int startLineInd, int endLineInd) {
-        startLine = startLineInd;
-        endLine = endLineInd;
-        while (hasNext() && startLine < endLine) {
-            currentChar = rope.charAt(currentIndex);
-            currentIndex++;
+    public Map<Integer, TokenType> getKeywordsIndexes(char[] charArray) {
+        keywordsIndexesSet = new HashMap<>();
+        chars = charArray;
+        currentIndex = 0;
+        //for (int i = 0; i < chars.length; i++) {
+        while (currentIndex < chars.length) {
+            currentChar = chars[currentIndex];
             scanSymbol();
+            if (isAtEndOfLine()) {
+                break;
+            }
         }
         return keywordsIndexesSet;
     }
 
-    private boolean hasNext() {
-        return currentIndex < rope.getLength() - 1;
-    }
-
     private char moveIterator() {
         if (!isAtEnd()) {
-            currentChar = rope.charAt(currentIndex);
             currentIndex++;
+            currentChar = chars[currentIndex];
         }
 
         return currentChar;
@@ -98,7 +82,7 @@ public class Trie {
     }
 
     private boolean isAtEnd() {
-        return !hasNext();
+        return currentIndex >= chars.length - 1;
     }
 
     private void string() {
@@ -106,9 +90,6 @@ public class Trie {
         moveIterator();
         // Only for single line strings for now
         while (currentChar != '"' && !isAtEndOfLine()) {
-            if (currentChar == '\n') {
-                startLine++;
-            }
             moveIterator();
         }
         Map<Integer, TokenType> keywordIndexes = IntStream.rangeClosed(startIndex, currentIndex).boxed().collect(Collectors.toMap(Function.identity(), v -> TokenType.STRING));
@@ -128,7 +109,7 @@ public class Trie {
         TrieNode node = root;
         int startIndex = currentIndex;
 
-        // See if the identifier is a reserved word.
+        // See if identifier is a reserved word
         while (!node.isLeaf) {
             if (!node.children.containsKey(currentChar) || !isAlpha(currentChar)) {
                 break;
@@ -217,14 +198,17 @@ public class Trie {
                 } else {
                     moveIterator();
                 }
+                break;
             case ' ':
             case '\r':
             case '\t':
                 // Ignore whitespace.
+                moveIterator();
                 break;
 
             case '\n':
-                startLine++;
+                //startLine++;  --- need for cases with several lines
+                moveIterator();
                 break;
             case '"':
                 string();
@@ -232,12 +216,16 @@ public class Trie {
             default:
                 if (isDigit(currentChar)) {
                     number();
+                    break;
                 } else if (isAlpha(currentChar)) {
                     identifier();
+                    break;
                 }
+                moveIterator();
                 break;
         }
     }
+
     private boolean isJsSyntax() {
         return SyntaxParser.getCurrentSyntax() == SyntaxType.JAVASCRIPT;
     }
