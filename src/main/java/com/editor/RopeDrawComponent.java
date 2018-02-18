@@ -151,8 +151,8 @@ public class RopeDrawComponent extends JComponent {
                         currentLineLength = 0;
                         currentLinePixelLength = 0;
                     } else {
-                        if (reservedWordsSet.containsKey(iterator.getPos())) {
-                            charColor = reservedWordsSet.get(iterator.getPos()).getColor();
+                        if (reservedWordsSet.containsKey(currentIndex)) {
+                            charColor = reservedWordsSet.get(currentIndex).getColor();
                         } else {
                             charColor = DEFAULT_CHAR_COLOR;
                         }
