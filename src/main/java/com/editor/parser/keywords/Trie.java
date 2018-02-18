@@ -1,6 +1,7 @@
 package com.editor.parser.keywords;
 
-import com.editor.model.rope.RopeIterator;
+import com.editor.model.rope.Rope;
+import com.editor.model.rope.RopeApi;
 import com.editor.parser.SyntaxParser;
 import com.editor.parser.SyntaxType;
 import com.editor.system.Constants;
@@ -17,6 +18,9 @@ import java.util.stream.IntStream;
  */
 public class Trie {
 
+    private final RopeApi rope;
+    private final int startIndex;
+
     static class TrieNode {
 
         Map<Character, TrieNode> children = new TreeMap<>();
@@ -24,15 +28,15 @@ public class Trie {
     }
 
     private final Map<Integer, TokenType> keywordsIndexesSet = new HashMap<>();
-    private RopeIterator iterator;
     private int startLine;
     private int endLine;
     private Character currentChar;
+    private int currentIndex;
     TrieNode root = new TrieNode();
 
-
-    public void setIterator(RopeIterator iterator) {
-        this.iterator = iterator;
+    public Trie(RopeApi rope, int startIndex) {
+        this.rope = rope;
+        this.startIndex = startIndex;
     }
 
     public void setStartLine(int startLine) {
@@ -43,7 +47,7 @@ public class Trie {
         return root.children.size() == 0;
     }
 
-    public void put(String string) {
+    public void registerReservedWord(String string) {
         TrieNode node = root;
         for (char ch : string.toLowerCase().toCharArray()) {
             if (!node.children.containsKey(ch)) {
@@ -54,39 +58,32 @@ public class Trie {
         node.isLeaf = true;
     }
 
-    public boolean find(String string) {
-        TrieNode node = root;
-        for (char ch : string.toLowerCase().toCharArray()) {
-            if (!node.children.containsKey(ch)) {
-                return false;
-            } else {
-                node = node.children.get(ch);
-            }
-        }
-        if (node.isLeaf) {
-            return true;
-        }
-        return false;
-    }
-
     public Map<Integer, TokenType> getKeywordsIndexes(int startLineInd, int endLineInd) {
         startLine = startLineInd;
         endLine = endLineInd;
-        while (iterator.hasNext() && startLine < endLine) {
-            currentChar = iterator.next();
+        while (hasNext() && startLine < endLine) {
+            currentChar = rope.charAt(currentIndex);
+            currentIndex++;
             scanSymbol();
         }
         return keywordsIndexesSet;
     }
 
-    private void moveIterator() {
+    private boolean hasNext() {
+        return currentIndex < rope.getLength() - 1;
+    }
+
+    private char moveIterator() {
         if (!isAtEnd()) {
-            currentChar = iterator.next();
+            currentChar = rope.charAt(currentIndex);
+            currentIndex++;
         }
+
+        return currentChar;
     }
 
     private boolean match(char expected) {
-        currentChar = iterator.next();
+        currentChar = moveIterator();
         if (currentChar == Constants.NEW_LINE_CHAR) {
             return false;
         }
@@ -101,11 +98,11 @@ public class Trie {
     }
 
     private boolean isAtEnd() {
-        return !iterator.hasNext();
+        return !hasNext();
     }
 
     private void string() {
-        int startIndex = iterator.getPos();
+        int startIndex = currentIndex;
         moveIterator();
         // Only for single line strings for now
         while (currentChar != '"' && !isAtEndOfLine()) {
@@ -114,7 +111,7 @@ public class Trie {
             }
             moveIterator();
         }
-        Map<Integer, TokenType> keywordIndexes = IntStream.rangeClosed(startIndex, iterator.getPos()).boxed().collect(Collectors.toMap(Function.identity(), v -> TokenType.STRING));
+        Map<Integer, TokenType> keywordIndexes = IntStream.rangeClosed(startIndex, currentIndex).boxed().collect(Collectors.toMap(Function.identity(), v -> TokenType.STRING));
         keywordsIndexesSet.putAll(keywordIndexes);
     }
 
@@ -129,7 +126,7 @@ public class Trie {
 
     private void identifier() {
         TrieNode node = root;
-        int startIndex = iterator.getPos();
+        int startIndex = currentIndex;
 
         // See if the identifier is a reserved word.
         while (!node.isLeaf) {
@@ -141,7 +138,7 @@ public class Trie {
             }
         }
         if (node.isLeaf && !isAlpha(currentChar)) {
-            Map<Integer, TokenType> keywordIndexes = IntStream.rangeClosed(startIndex, iterator.getPos()).boxed().collect(Collectors.toMap(Function.identity(), v -> TokenType.RESERVED_WORD));
+            Map<Integer, TokenType> keywordIndexes = IntStream.rangeClosed(startIndex, currentIndex).boxed().collect(Collectors.toMap(Function.identity(), v -> TokenType.RESERVED_WORD));
             keywordsIndexesSet.putAll(keywordIndexes);
             return;
         }
@@ -153,7 +150,7 @@ public class Trie {
 
     void number() {
         while (isDigit(currentChar)) {
-            keywordsIndexesSet.put(iterator.getPos(), TokenType.DIGIT);
+            keywordsIndexesSet.put(currentIndex, TokenType.DIGIT);
             moveIterator();
         }
     }
@@ -254,12 +251,12 @@ public class Trie {
     }
 
     private void comment(int commentSymbolsNumber) {
-        int startIndex = iterator.getPos() - commentSymbolsNumber;
+        int startIndex = currentIndex - commentSymbolsNumber;
         // A comment goes until the end of the line.
         while (currentChar != '\n' && !isAtEndOfLine()) {
             moveIterator();
         }
-        Map<Integer, TokenType> keywordIndexes = IntStream.rangeClosed(startIndex, iterator.getPos()).boxed().collect(Collectors.toMap(Function.identity(), v -> TokenType.COMMENT));
+        Map<Integer, TokenType> keywordIndexes = IntStream.rangeClosed(startIndex, currentIndex).boxed().collect(Collectors.toMap(Function.identity(), v -> TokenType.COMMENT));
         keywordsIndexesSet.putAll(keywordIndexes);
     }
 }

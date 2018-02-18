@@ -5,7 +5,6 @@ import com.editor.model.Pointer;
 import com.editor.model.RopeTextEditorModel;
 import com.editor.model.TextBufferBuilder;
 import com.editor.model.rope.RopeApi;
-import com.editor.model.rope.RopeIterator;
 import com.editor.parser.keywords.KeywordsTrie;
 import com.editor.parser.keywords.TokenType;
 import com.editor.parser.keywords.Trie;
@@ -58,6 +57,7 @@ public class RopeDrawComponent extends JComponent {
         super.paintComponent(graphics);
 
         log.debug("Paint started. VisibleBounds: " + visibleBounds);
+        long paintStart = System.currentTimeMillis();
 
         RopeApi rope = model.getRope();
         Color charColor;
@@ -86,14 +86,20 @@ public class RopeDrawComponent extends JComponent {
         int charIndexStart = rope.charIndexOfLineStart(startRow);
         int linesCountToRender = visibleBounds.height / fontHeight;
 
-        Trie keywordsTree = KeywordsTrie.getKeyWordsTrie();
-        keywordsTree.setIterator(rope.iterator(charIndexStart));
+        long startTrie = System.currentTimeMillis();
+        Trie keywordsTree = KeywordsTrie.getKeyWordsTrie(rope, charIndexStart);
         Map<Integer, TokenType> reservedWordsSet = keywordsTree.isEmpty() ? new HashMap<>() : keywordsTree.getKeywordsIndexes(startRow, endRow);
+        long endTrie = System.currentTimeMillis();
+        log.info("Trie iterator: {}ms", endTrie - startTrie);
 
-        long start = System.currentTimeMillis();
-        RopeIterator iterator = rope.iterator(charIndexStart);
-        long end = System.currentTimeMillis();
-        log.info("iterator: {}ms", end - start);
+        long startCharAt = System.currentTimeMillis();
+        int length = rope.getLength();
+        if (length > 0) {
+            log.info(String.valueOf(rope.charAt(2 * length / 3)));
+        }
+        long endCharAt = System.currentTimeMillis();
+        log.info("char at center: {}ms", endCharAt - startCharAt);
+
 
         int linesCountRendered = 0;
         int currentIndex = charIndexStart;
@@ -106,8 +112,8 @@ public class RopeDrawComponent extends JComponent {
 
         TextBufferBuilder textBufferBuilder = new TextBufferBuilder();
 
-        while (iterator.hasNext() && linesCountRendered < linesCountToRender) {
-            PreReadLineInfo preReadLineInfo = readLine(iterator, currentIndex);
+        while (currentIndex < rope.getLength() && linesCountRendered < linesCountToRender) {
+            PreReadLineInfo preReadLineInfo = readLine(currentIndex);
             String line = preReadLineInfo.getStringBuilder().toString();
             if (preReadLineInfo.isCursorLine) {
                 AffineTransform transform = graphics2D.getTransform();
@@ -154,7 +160,7 @@ public class RopeDrawComponent extends JComponent {
                         if (reservedWordsSet.containsKey(currentIndex)) {
                             charColor = reservedWordsSet.get(currentIndex).getColor();
                         } else {
-                            charColor = DEFAULT_CHAR_COLOR;
+                        charColor = DEFAULT_CHAR_COLOR;
                         }
                         drawChar(graphics2D, c, charColor, isInSelection(currentIndex) ? SELECTOR_COLOR : null);
                     }
@@ -165,16 +171,18 @@ public class RopeDrawComponent extends JComponent {
         }
 
         model.setTextBuffer(textBufferBuilder.build());
+
+        long paintEnd = System.currentTimeMillis();
+        log.info("Paint: {}ms", paintEnd - paintStart);
     }
 
-    private PreReadLineInfo readLine(RopeIterator iterator, int currentIndex) {
+    private PreReadLineInfo readLine(int currentIndex) {
         StringBuilder stringBuilder = new StringBuilder();
         boolean isCursorLine = false;
         Character c;
-        int counter = 0;
         boolean newLineMet = false;
-        while (iterator.hasNext() && !newLineMet) {
-            c = iterator.next();
+        while (currentIndex < model.getRope().getLength() && !newLineMet) {
+            c = model.getRope().charAt(currentIndex);
 
             if (c.equals('\n')) {
                 newLineMet = true;
@@ -182,11 +190,11 @@ public class RopeDrawComponent extends JComponent {
 
             stringBuilder.append(c);
 
-            if (currentIndex + counter == model.getCursorPosition()) {
+            if (currentIndex == model.getCursorPosition()) {
                 isCursorLine = true;
             }
 
-            counter++;
+            currentIndex++;
         }
 
         return new PreReadLineInfo(stringBuilder, isCursorLine);

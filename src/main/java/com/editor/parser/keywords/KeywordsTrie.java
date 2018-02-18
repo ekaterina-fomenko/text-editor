@@ -1,5 +1,6 @@
 package com.editor.parser.keywords;
 
+import com.editor.model.rope.RopeApi;
 import com.editor.parser.SyntaxType;
 import com.editor.parser.SyntaxParser;
 
@@ -138,10 +139,10 @@ public class KeywordsTrie {
             "ignore"
     );
 
-    public static Trie getKeyWordsTrie() {
+    public static Trie getKeyWordsTrie(RopeApi rope, int startIndex) {
         SyntaxType syntax = SyntaxParser.getCurrentSyntax();
         List<String> keyWords;
-        Trie js_keywords_trie = new Trie();
+        Trie js_keywords_trie = new Trie(rope, startIndex);
         switch (syntax) {
             case JAVASCRIPT:
                 keyWords = js_keywords_list;
@@ -156,8 +157,7 @@ public class KeywordsTrie {
             default:
                 keyWords = new ArrayList<>();
         }
-        keyWords.forEach(js_keywords_trie::put);
+        keyWords.forEach(js_keywords_trie::registerReservedWord);
         return js_keywords_trie;
     }
-
 }
