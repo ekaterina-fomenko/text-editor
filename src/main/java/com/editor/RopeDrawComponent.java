@@ -42,9 +42,6 @@ public class RopeDrawComponent extends JComponent {
     private Pointer mouseCursorPointer;
     private boolean scrollToCursorOnceOnPaint;
 
-    public RopeDrawComponent() {
-    }
-
     /**
      * Permanently redraw all text area on each action.
      * Called by repaint() method.
@@ -82,15 +79,9 @@ public class RopeDrawComponent extends JComponent {
         int startRow = Math.max(0, visibleBounds.y / fontHeight);
         int endRow = Math.min(rope.getLinesNum() - 1, (visibleBounds.y + visibleBounds.height) / fontHeight);
 
-        /* Go trough lines that will be painted */
+        // Go trough lines that will be painted
         int charIndexStart = rope.charIndexOfLineStart(startRow);
         int linesCountToRender = visibleBounds.height / fontHeight;
-
-        long startTrie = System.currentTimeMillis();
-        Trie keywordsTree = KeywordsTrie.getKeyWordsTrie(rope, charIndexStart);
-        Map<Integer, TokenType> reservedWordsSet = keywordsTree.isEmpty() ? new HashMap<>() : keywordsTree.getKeywordsIndexes(startRow, endRow);
-        long endTrie = System.currentTimeMillis();
-        log.info("Trie iterator: {}ms", endTrie - startTrie);
 
         long startCharAt = System.currentTimeMillis();
         int length = rope.getLength();
@@ -111,6 +102,7 @@ public class RopeDrawComponent extends JComponent {
         final int charHeight = graphics2D.getFontMetrics().getHeight();
 
         TextBufferBuilder textBufferBuilder = new TextBufferBuilder();
+        Trie keywordsTree = KeywordsTrie.getCurrentSyntaxTrie();
 
         while (currentIndex < rope.getLength() && linesCountRendered < linesCountToRender) {
             PreReadLineInfo preReadLineInfo = readLine(currentIndex);
@@ -120,6 +112,11 @@ public class RopeDrawComponent extends JComponent {
                 drawLineBackground(graphics2D, CURSOR_ROW_BACKGROUND_COLOR);
                 graphics2D.setTransform(transform);
             }
+
+            long startTrie = System.currentTimeMillis();
+            Map<Integer, TokenType> reservedWordsSet = keywordsTree.isEmpty() ? new HashMap<>() : keywordsTree.getKeywordsIndexes(line.toCharArray());
+            long endTrie = System.currentTimeMillis();
+            log.info("Trie iterator: {}ms", endTrie - startTrie);
 
             for (int i = 0; i < line.length(); i++) {
                 Character c = line.charAt(i);
@@ -157,8 +154,8 @@ public class RopeDrawComponent extends JComponent {
                         currentLineLength = 0;
                         currentLinePixelLength = 0;
                     } else {
-                        if (reservedWordsSet.containsKey(currentIndex)) {
-                            charColor = reservedWordsSet.get(currentIndex).getColor();
+                        if (reservedWordsSet.containsKey(i)) {
+                            charColor = reservedWordsSet.get(i).getColor();
                         } else {
                         charColor = DEFAULT_CHAR_COLOR;
                         }
