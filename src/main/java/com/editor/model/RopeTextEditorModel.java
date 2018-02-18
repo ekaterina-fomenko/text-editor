@@ -1,11 +1,13 @@
 package com.editor.model;
 
-import com.editor.model.rope.*;
+import com.editor.model.rope.Rope;
+import com.editor.model.rope.RopeApi;
+import com.editor.model.rope.RopeNode;
+import com.editor.model.rope.StringSizeProvider;
 import com.editor.system.Constants;
-import com.sun.deploy.Environment;
 
 import java.awt.*;
-import java.util.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -157,6 +159,18 @@ public class RopeTextEditorModel {
             return;
         }
 
+        int end = Math.max(selectionEnd, cursorPosition);
+        int start = Math.min(selectionEnd, cursorPosition);
+
+        if (end == start) {
+            return;
+        }
+
+        Rope ropeStart = rope.substring(0, start);
+        Rope ropeEnd = rope.substring(end, rope.getLength());
+        Rope ropeResult = ropeStart.append(ropeEnd);
+        rope = ropeResult;
+        cursorPosition = start;
         dropSelection();
     }
 
