@@ -90,11 +90,13 @@ public class RopeCommonOperations {
     }
 
     public boolean isBalanced(Rope rope) {
-        if (rope.getDepth() >= FIBONACCI.length - 2) {
+        int maxLengthIndex = rope.getDepth() + 1;
+        if (maxLengthIndex >= FIBONACCI.length - 1) {
             return false;
         }
 
-        return rope.getLength() >= FIBONACCI[rope.getDepth() + 1];
+        long balanceValue = rope.getLength() - FIBONACCI[maxLengthIndex];
+        return balanceValue >= 0;
     }
 
     public Rope rebalance(Rope rope) {
@@ -184,28 +186,16 @@ public class RopeCommonOperations {
     }
 
     public List<Rope> split(Rope rope, int index) {
-        return LoggingUtils.loggedTiming("split-" + index, () -> {
-            if (index > rope.getLength()) {
-                throw new IndexOutOfBoundsException(String.format("Index '%s' must not be higher than '%s'", index, rope.getLength()));
-            }
+        if (index > rope.getLength()) {
+            throw new IndexOutOfBoundsException(String.format("Index '%s' must not be higher than '%s'", index, rope.getLength()));
+        }
 
-            RopeNode leftSplit = new RopeNode();
-            RopeNode rightSplit = new RopeNode();
+        RopeNode leftSplit = new RopeNode();
+        RopeNode rightSplit = new RopeNode();
 
-            LoggingUtils.logTiming("splitInner-" + index, () -> {
-                split(leftSplit, rightSplit, rope.node, index);
-            });
+        split(leftSplit, rightSplit, rope.node, index);
 
-            LoggingUtils.logTiming("normLeft" + index, () -> {
-                normalize(leftSplit);
-            });
-
-            LoggingUtils.logTiming("normRight" + index, () -> {
-                normalize(rightSplit);
-            });
-
-            return Arrays.asList(new Rope(leftSplit), new Rope(rightSplit));
-        });
+        return Arrays.asList(new Rope(leftSplit), new Rope(rightSplit));
     }
 
     public Rope create(String text) {
