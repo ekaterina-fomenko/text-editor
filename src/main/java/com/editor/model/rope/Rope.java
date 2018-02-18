@@ -1,13 +1,14 @@
 package com.editor.model.rope;
 
-import com.editor.model.StringUtils;
+import com.editor.utils.StringUtils;
 import com.editor.system.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
+
+import static com.editor.utils.LoggingUtils.*;
 
 /**
  * This class represents a rope data structure
@@ -92,10 +93,11 @@ public class Rope implements RopeApi {
     }
 
     public Rope insert(int index, Rope text) {
-        Rope start = substring(0, index);
-        Rope end = substring(index, getLength());
-
-        return start.append(text).append(end);
+        return loggedTiming("insert", () -> {
+            Rope start = loggedTiming("subs0", () -> substring(0, index));
+            Rope end = loggedTiming("subs1", () -> substring(index, getLength()));
+            return loggedTiming("append", () -> start.append(text).append(end));
+        });
     }
 
     @Override

@@ -1,10 +1,9 @@
 package com.editor.model.rope;
 
-import com.editor.model.StringUtils;
-import com.editor.system.Constants;
+import com.editor.utils.LoggingUtils;
+import com.editor.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sun.plugin.dom.exception.InvalidStateException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -74,7 +73,7 @@ public class RopeCommonOperations {
         if (node.hasOneChildOnly()) {
             RopeNode child = node.getSingleChild();
             normalize(child);
-            copyNodeValues(node, child);
+            node.setNodeValuesFrom(child);
         } else {
             normalize(node.left);
             normalize(node.right);
@@ -133,13 +132,6 @@ public class RopeCommonOperations {
         }
     }
 
-    private static void copyNodeValues(RopeNode dest, RopeNode source) {
-        dest.left = source.left;
-        dest.right = source.right;
-        dest.value = source.value;
-        dest.depth = source.depth;
-    }
-
     /*
     * Return al leaves of the tree
     * @param node is a tree node
@@ -192,18 +184,28 @@ public class RopeCommonOperations {
     }
 
     public List<Rope> split(Rope rope, int index) {
-        if (index > rope.getLength()) {
-            throw new IndexOutOfBoundsException(String.format("Index '%s' must not be higher than '%s'", index, rope.getLength()));
-        }
+        return LoggingUtils.loggedTiming("split-" + index, () -> {
+            if (index > rope.getLength()) {
+                throw new IndexOutOfBoundsException(String.format("Index '%s' must not be higher than '%s'", index, rope.getLength()));
+            }
 
-        RopeNode leftSplit = new RopeNode();
-        RopeNode rightSplit = new RopeNode();
+            RopeNode leftSplit = new RopeNode();
+            RopeNode rightSplit = new RopeNode();
 
-        split(leftSplit, rightSplit, rope.node, index);
-        normalize(leftSplit);
-        normalize(rightSplit);
+            LoggingUtils.logTiming("splitInner-" + index, () -> {
+                split(leftSplit, rightSplit, rope.node, index);
+            });
 
-        return Arrays.asList(new Rope(leftSplit), new Rope(rightSplit));
+            LoggingUtils.logTiming("normLeft" + index, () -> {
+                normalize(leftSplit);
+            });
+
+            LoggingUtils.logTiming("normRight" + index, () -> {
+                normalize(rightSplit);
+            });
+
+            return Arrays.asList(new Rope(leftSplit), new Rope(rightSplit));
+        });
     }
 
     public Rope create(String text) {

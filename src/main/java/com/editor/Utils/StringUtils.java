@@ -1,4 +1,4 @@
-package com.editor.model;
+package com.editor.utils;
 
 public class StringUtils {
     /**

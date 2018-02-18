@@ -1,6 +1,7 @@
 package com.editor.model;
 
 import com.editor.TextArea;
+import com.editor.utils.StringUtils;
 import com.editor.parser.SyntaxParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
