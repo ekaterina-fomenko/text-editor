@@ -1,11 +1,10 @@
 package com.editor.model.rope;
 
-import com.editor.model.StringUtils;
+import com.editor.utils.StringUtils;
 import com.editor.system.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -13,7 +12,7 @@ import java.util.Queue;
  * This class represents a rope data structure
  */
 public class Rope implements RopeApi {
-    protected static int MAX_LENGTH_IN_ROPE = 32;
+    protected static int MAX_LENGTH_IN_ROPE = 256;
 
     Logger log = LoggerFactory.getLogger(Rope.class);
 

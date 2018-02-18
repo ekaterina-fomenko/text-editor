@@ -1,6 +1,6 @@
 package com.editor.model.rope;
 
-import com.editor.model.StringUtils;
+import com.editor.utils.StringUtils;
 import com.editor.system.Constants;
 
 /**
@@ -211,5 +211,14 @@ public class RopeNode {
             return charAt(index - ropeNode.getLeft().getLength(), ropeNode.getRight());
         }
         return charAt(index, ropeNode.getLeft());
+    }
+
+    public void setNodeValuesFrom(RopeNode source) {
+        left = source.left;
+        right = source.right;
+        value = source.value;
+        depth = source.depth;
+        linesNum = source.linesNum;
+        length = source.length;
     }
 }

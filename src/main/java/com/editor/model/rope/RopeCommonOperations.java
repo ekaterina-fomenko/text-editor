@@ -1,10 +1,9 @@
 package com.editor.model.rope;
 
-import com.editor.model.StringUtils;
-import com.editor.system.Constants;
+import com.editor.utils.LoggingUtils;
+import com.editor.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sun.plugin.dom.exception.InvalidStateException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -74,7 +73,7 @@ public class RopeCommonOperations {
         if (node.hasOneChildOnly()) {
             RopeNode child = node.getSingleChild();
             normalize(child);
-            copyNodeValues(node, child);
+            node.setNodeValuesFrom(child);
         } else {
             normalize(node.left);
             normalize(node.right);
@@ -91,11 +90,13 @@ public class RopeCommonOperations {
     }
 
     public boolean isBalanced(Rope rope) {
-        if (rope.getDepth() >= FIBONACCI.length - 2) {
+        int maxLengthIndex = rope.getDepth() + 1;
+        if (maxLengthIndex >= FIBONACCI.length - 1) {
             return false;
         }
 
-        return rope.getLength() >= FIBONACCI[rope.getDepth() + 1];
+        long balanceValue = rope.getLength() - FIBONACCI[maxLengthIndex];
+        return balanceValue >= 0;
     }
 
     public Rope rebalance(Rope rope) {
@@ -131,13 +132,6 @@ public class RopeCommonOperations {
                 int middle = start + (range / 2);
                 return new RopeNode(buildBalancedTree(leaves, start, middle), buildBalancedTree(leaves, middle, end));
         }
-    }
-
-    private static void copyNodeValues(RopeNode dest, RopeNode source) {
-        dest.left = source.left;
-        dest.right = source.right;
-        dest.value = source.value;
-        dest.depth = source.depth;
     }
 
     /*
@@ -200,8 +194,6 @@ public class RopeCommonOperations {
         RopeNode rightSplit = new RopeNode();
 
         split(leftSplit, rightSplit, rope.node, index);
-        normalize(leftSplit);
-        normalize(rightSplit);
 
         return Arrays.asList(new Rope(leftSplit), new Rope(rightSplit));
     }

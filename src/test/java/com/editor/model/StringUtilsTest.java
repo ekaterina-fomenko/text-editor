@@ -1,5 +1,6 @@
 package com.editor.model;
 
+import com.editor.utils.StringUtils;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
