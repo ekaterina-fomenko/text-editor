@@ -270,7 +270,7 @@ public class RopeTextEditorModel {
     }
 
     public boolean isSelectionInProgress() {
-        return selectionEnd > 0;
+        return selectionEnd >= 0;
     }
 
     public String convertToString(List<StringBuilder> list) {
