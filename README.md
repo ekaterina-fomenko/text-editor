@@ -54,19 +54,18 @@ java -cp target/text-editor-1.0-SNAPSHOT.jar com.editor.Main
 * Current line highlighting
 * Add line comments highlighting for js, hs and erlang
 * Add home/end for lines
-* Add test
+* Add tests
 
 *Optional*:
 
 * Add multi-lines comments
 * Add dialog box with asking if user wants to save file before exit
-* Comments highlighting
 * CTRL+A, Home/End for lines
 * Tests
 * Add line numbers
-* Add string highlighting (inside " ")
+* Add multi-line leteral string highlighting (inside " ")
 * Add Save\Load file option
-* CTRL+Z
+* CTRL+Z, CTRL+K - undo, redo
 * Mouse selection wider than visible area (without moving scrollbar)
 
 *Known issues*:
@@ -74,6 +73,4 @@ java -cp target/text-editor-1.0-SNAPSHOT.jar com.editor.Main
 * Make comments highlighting for long strings with best performance
 * Copy not by CMD on Mac
 * Paired brackets highlighting when one of them in literal (ex.: "adf{kj" })
-* Highlighting for numbers in names with numbers (ex.: abc2)
-* Blinking cursor on scrolling up and down (minor)
 
