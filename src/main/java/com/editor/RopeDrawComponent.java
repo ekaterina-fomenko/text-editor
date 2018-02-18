@@ -5,6 +5,7 @@ import com.editor.model.Pointer;
 import com.editor.model.RopeTextEditorModel;
 import com.editor.model.TextBufferBuilder;
 import com.editor.model.rope.RopeApi;
+import com.editor.parser.keywords.BracketInfo;
 import com.editor.parser.keywords.KeywordsTrie;
 import com.editor.parser.keywords.TokenType;
 import com.editor.parser.keywords.Trie;
@@ -81,16 +82,8 @@ public class RopeDrawComponent extends JComponent {
 
         // Go trough lines that will be painted
         int charIndexStart = rope.charIndexOfLineStart(startRow);
+        int charIndexOfLineEnd = rope.charIndexOfLineStart(endRow);
         int linesCountToRender = visibleBounds.height / fontHeight;
-
-        long startCharAt = System.currentTimeMillis();
-        int length = rope.getLength();
-        if (length > 0) {
-            log.info(String.valueOf(rope.charAt(2 * length / 3)));
-        }
-        long endCharAt = System.currentTimeMillis();
-        log.info("char at center: {}ms", endCharAt - startCharAt);
-
 
         int linesCountRendered = 0;
         int currentIndex = charIndexStart;
@@ -104,68 +97,85 @@ public class RopeDrawComponent extends JComponent {
         TextBufferBuilder textBufferBuilder = new TextBufferBuilder();
         Trie keywordsTree = KeywordsTrie.getCurrentSyntaxTrie();
 
-        while (currentIndex < rope.getLength() && linesCountRendered < linesCountToRender) {
-            PreReadLineInfo preReadLineInfo = readLine(currentIndex);
-            String line = preReadLineInfo.getStringBuilder().toString();
-            if (preReadLineInfo.isCursorLine) {
-                AffineTransform transform = graphics2D.getTransform();
-                drawLineBackground(graphics2D, CURSOR_ROW_BACKGROUND_COLOR);
-                graphics2D.setTransform(transform);
-            }
-
-            long startTrie = System.currentTimeMillis();
-            Map<Integer, TokenType> reservedWordsSet = keywordsTree.isEmpty() ? new HashMap<>() : keywordsTree.getKeywordsIndexes(line.toCharArray());
-            long endTrie = System.currentTimeMillis();
-            log.info("Trie iterator: {}ms", endTrie - startTrie);
-
-            for (int i = 0; i < line.length(); i++) {
-                Character c = line.charAt(i);
-                currentLineLength++;
-                currentLinePixelLength += graphics2D.getFontMetrics().charWidth(c);
-
-                updateCursorPositionFromCoordinates(
-                        graphics2D,
-                        currentLinePixelLength,
-                        currentIndex,
-                        startRow + linesCountRendered,
-                        c);
-
-                if (currentIndex == model.getCursorPosition()) {
-                    textBufferBuilder.withCursorChar(c);
-
-                    drawPointer(graphics2D);
-                    model.setCursorRect(new Rectangle(
-                            currentLinePixelLength,
-                            visibleBounds.y + linesCountRendered * charHeight,
-                            POINTER_WIDTH,
-                            charHeight
-                    ));
-                }
-
-                if (!c.equals('\r')) {
-                    if (c.equals('\n')) {
-                        graphics2D.setTransform(affineTransform);
-                        graphics2D.translate(0, charHeight);
-                        affineTransform = graphics2D.getTransform();
-                        linesCountRendered++;
-                        textBufferBuilder.addLine(new LineInfo(currentLineStartIndex, currentLineLength - 1));
-
-                        currentLineStartIndex = currentLineStartIndex + currentLineLength;
-                        currentLineLength = 0;
-                        currentLinePixelLength = 0;
-                    } else {
-                        if (reservedWordsSet.containsKey(i)) {
-                            charColor = reservedWordsSet.get(i).getColor();
-                        } else {
-                        charColor = DEFAULT_CHAR_COLOR;
-                        }
-                        drawChar(graphics2D, c, charColor, isInSelection(currentIndex) ? SELECTOR_COLOR : null);
-                    }
-                }
-
-                currentIndex++;
-            }
+        //  while (currentIndex < rope.getLength() && linesCountRendered < linesCountToRender) {
+        BracketInfo bracketInfo = null;
+        PreReadLineInfo preReadLineInfo = readLine(currentIndex);
+        PreReadLineInfo preReadLineInfo1 = readLine(currentIndex, charIndexOfLineEnd);
+        String text = preReadLineInfo1.getStringBuilder().toString();
+        String line = preReadLineInfo.getStringBuilder().toString();
+        if (preReadLineInfo.isCursorLine) {
+            AffineTransform transform = graphics2D.getTransform();
+            drawLineBackground(graphics2D, CURSOR_ROW_BACKGROUND_COLOR);
+            graphics2D.setTransform(transform);
         }
+
+        long startTrie = System.currentTimeMillis();
+        Map<Integer, TokenType> reservedWordsSet = keywordsTree.isEmpty() ? new HashMap<>() : keywordsTree.getKeywordsIndexes(text.toCharArray(), currentIndex);
+        long endTrie = System.currentTimeMillis();
+        log.info("Trie iterator: {}ms", endTrie - startTrie);
+
+        int bracketStart = -1;
+        int bracketEnd = -1;
+        Color bracketColor = DEFAULT_CHAR_COLOR;
+        Map<Integer, BracketInfo> bracketMap =keywordsTree.isEmpty() ? new HashMap<>() : keywordsTree.getBracketsIndexesMap();
+        if (bracketMap.containsKey(model.getCursorPosition()) || bracketMap.containsKey(model.getCursorPosition() - 1)) {
+            bracketInfo = bracketMap.containsKey(model.getCursorPosition()) ? bracketMap.get(model.getCursorPosition()) : bracketMap.get(model.getCursorPosition() - 1);
+
+            bracketStart = bracketInfo.getStartInd();
+            bracketEnd = bracketInfo.getEndInd();
+            bracketColor = bracketInfo.getTokenType().getColor();
+        }
+
+        for (int i = 0; i < text.length(); i++) {
+            Character c = text.charAt(i);
+            currentLineLength++;
+            currentLinePixelLength += graphics2D.getFontMetrics().charWidth(c);
+
+            updateCursorPositionFromCoordinates(
+                    graphics2D,
+                    currentLinePixelLength,
+                    currentIndex,
+                    startRow + linesCountRendered,
+                    c);
+
+            if (currentIndex == model.getCursorPosition()) {
+                textBufferBuilder.withCursorChar(c);
+
+                drawPointer(graphics2D);
+                model.setCursorRect(new Rectangle(
+                        currentLinePixelLength,
+                        visibleBounds.y + linesCountRendered * charHeight,
+                        POINTER_WIDTH,
+                        charHeight
+                ));
+            }
+
+            if (!c.equals('\r')) {
+                if (c.equals('\n')) {
+                    graphics2D.setTransform(affineTransform);
+                    graphics2D.translate(0, charHeight);
+                    affineTransform = graphics2D.getTransform();
+                    linesCountRendered++;
+                    textBufferBuilder.addLine(new LineInfo(currentLineStartIndex, currentLineLength - 1));
+
+                    currentLineStartIndex = currentLineStartIndex + currentLineLength;
+                    currentLineLength = 0;
+                    currentLinePixelLength = 0;
+                } else {
+                    if (reservedWordsSet.containsKey(i)) {
+                        charColor = reservedWordsSet.get(i).getColor();
+                    } else if (bracketStart == currentIndex || bracketEnd == currentIndex || bracketStart == currentIndex - 1 || bracketEnd == currentIndex - 1) {
+                        charColor = bracketColor;
+                    } else {
+                        charColor = DEFAULT_CHAR_COLOR;
+                    }
+                    drawChar(graphics2D, c, charColor, isInSelection(currentIndex) ? SELECTOR_COLOR : null);
+                }
+            }
+
+            currentIndex++;
+        }
+        //  }
 
         model.setTextBuffer(textBufferBuilder.build());
 
@@ -184,6 +194,26 @@ public class RopeDrawComponent extends JComponent {
             if (c.equals('\n')) {
                 newLineMet = true;
             }
+
+            stringBuilder.append(c);
+
+            if (currentIndex == model.getCursorPosition()) {
+                isCursorLine = true;
+            }
+
+            currentIndex++;
+        }
+
+        return new PreReadLineInfo(stringBuilder, isCursorLine);
+    }
+//todo: remove
+    private PreReadLineInfo readLine(int currentIndex, int endInd) {
+        StringBuilder stringBuilder = new StringBuilder();
+        boolean isCursorLine = false;
+        Character c;
+        boolean newLineMet = false;
+        while (currentIndex < endInd) {
+            c = model.getRope().charAt(currentIndex);
 
             stringBuilder.append(c);
 
@@ -272,7 +302,7 @@ public class RopeDrawComponent extends JComponent {
     public void setScrollToCursorOnceOnPaint(boolean scrollToCursorOnceOnPaint) {
         this.scrollToCursorOnceOnPaint = scrollToCursorOnceOnPaint;
     }
-    
+
     static class PreReadLineInfo {
         private StringBuilder stringBuilder;
         private boolean isCursorLine;
