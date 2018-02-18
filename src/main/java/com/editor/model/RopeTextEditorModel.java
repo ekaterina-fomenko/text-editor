@@ -41,6 +41,7 @@ public class RopeTextEditorModel {
     public RopeTextEditorModel() {
         this.cursorPosition = 0;
         rope = new RopeCached(new Rope());
+        this.selectionEnd = -1;
     }
 
     public int getSelectionEnd() {
