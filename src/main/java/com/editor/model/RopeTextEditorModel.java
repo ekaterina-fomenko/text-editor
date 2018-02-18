@@ -183,7 +183,9 @@ public class RopeTextEditorModel {
             cursorPosition++;
         }
 
-        cursorPosition++;
+        if(cursorPosition != rope.getLength()-1){
+            cursorPosition++;
+        }
     }
 
     public void movePointerLeft(boolean dropSelection) {

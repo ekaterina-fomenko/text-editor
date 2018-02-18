@@ -5,7 +5,7 @@ import java.util.List;
 
 public class TextBufferBuilder {
     private List<LineInfo> lines = new ArrayList<>();
-    private Character cursorChar;
+    private Character cursorChar = Character.MIN_VALUE;
 
     public TextBufferBuilder addLine(LineInfo lineInfo) {
         lines.add(lineInfo);
