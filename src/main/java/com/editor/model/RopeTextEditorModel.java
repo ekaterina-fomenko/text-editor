@@ -184,7 +184,7 @@ public class RopeTextEditorModel {
             cursorPosition++;
         }
 
-        if(cursorPosition != rope.getLength()-1){
+        if (cursorPosition != rope.getLength() - 1) {
             cursorPosition++;
         }
     }

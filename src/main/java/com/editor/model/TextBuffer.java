@@ -37,7 +37,7 @@ public class TextBuffer {
             return false;
         }
 
-        LineInfo lineInfo = linesInfo.get(0);
+        LineInfo lineInfo = linesInfo.get(lineIndex);
         return lineInfo.getStartIndex() + lineInfo.getLength() == charIndex;
     }
 
