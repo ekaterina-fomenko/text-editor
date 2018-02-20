@@ -272,7 +272,7 @@ public class RopeDrawComponent extends JComponent {
     public void setScrollToCursorOnceOnPaint(boolean scrollToCursorOnceOnPaint) {
         this.scrollToCursorOnceOnPaint = scrollToCursorOnceOnPaint;
     }
-    
+
     static class PreReadLineInfo {
         private StringBuilder stringBuilder;
         private boolean isCursorLine;
