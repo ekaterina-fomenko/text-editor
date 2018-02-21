@@ -3,7 +3,6 @@ package com.editor;
 import com.editor.model.RopeTextEditorModel;
 import com.editor.system.ClipboardAdapter;
 import javafx.geometry.VerticalDirection;
-import javafx.scene.control.ScrollBar;
 
 import javax.swing.*;
 import java.awt.*;
@@ -139,7 +138,7 @@ public class TextActionMap extends ActionMap {
         put(TextInputMap.CTRL_C, new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String selectedText = model.convertToString(model.getSelectedText());
+                String selectedText = model.getSelectedText();
                 clipboardAdapter.setText(selectedText);
                 textArea.render();
             }

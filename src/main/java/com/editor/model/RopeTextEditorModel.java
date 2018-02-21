@@ -4,12 +4,9 @@ import com.editor.model.rope.Rope;
 import com.editor.model.rope.RopeApi;
 import com.editor.model.rope.RopeNode;
 import com.editor.model.rope.StringSizeProvider;
-import com.editor.system.Constants;
 
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * This class process all actions that are made with text model such as:
@@ -40,6 +37,7 @@ public class RopeTextEditorModel {
 
     public RopeTextEditorModel() {
         this.cursorPosition = -1;
+        //todo: do we need ropecached???
         rope = new RopeCached(new Rope());
         this.selectionEnd = -1;
     }
@@ -274,34 +272,12 @@ public class RopeTextEditorModel {
         return selectionEnd >= 0;
     }
 
-    public String convertToString(List<StringBuilder> list) {
-        return list.stream().collect(Collectors.joining(Constants.NEW_LINE));
-    }
+    public String getSelectedText() {
+        int end = Math.max(selectionEnd, cursorPosition);
+        int start = Math.min(selectionEnd, cursorPosition);
 
-    public List<StringBuilder> getSelectedText() {
-//        Pointer from = getSelectionFrom();
-//        Pointer to = getSelectionTo();
-//
-//        if (from.equals(to)) {
-//            return null;
-//        }
-//
-//        StringBuilder startingRow = lineBuilders.get(from.row);
-//        StringBuilder endingRow = lineBuilders.get(to.row);
-        List<StringBuilder> resultList = new ArrayList<>();
-//
-//        if (from.row == to.row) {
-//            resultList.add(new StringBuilder(startingRow.substring(from.column, to.column)));
-//        } else {
-//            resultList.add(new StringBuilder(startingRow.substring(from.column, Math.max(from.column, startingRow.length()))));
-//
-//            for (int i = from.row + 1; i < to.row; i++) {
-//                resultList.add(lineBuilders.get(i));
-//            }
-//            resultList.add(new StringBuilder(endingRow.substring(0, to.column)));
-//
-//        }
-        return resultList;
+        Rope selectedRope = rope.substring(start, end);
+        return selectedRope.toString();
     }
 
     public void movePointerToInitPosition() {
