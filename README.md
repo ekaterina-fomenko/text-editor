@@ -1,6 +1,7 @@
 # Text editor
 
-Text editor with syntax highlighting for Javascript, Haskell and Erlang
+This text editor based on rope data structures.
+Provide syntax highlighting for Javascript, Haskell and Erlang.
 
 **Compile and run**
 
@@ -74,3 +75,7 @@ java -cp target/text-editor-1.0-SNAPSHOT.jar com.editor.Main
 * Copy not by CMD on Mac
 * Paired brackets highlighting when one of them in literal (ex.: "adf{kj" })
 
+*Improvements*:
+
+* For biggest files can read from file by parts and construct rope only for part of the file,
+then using Sparks save rope into whole file

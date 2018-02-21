@@ -107,10 +107,6 @@ public class RopeDrawComponent extends JComponent {
         long endRope = System.currentTimeMillis();
         log.info("Get sub rope: {}ms", endRope - startRope);
 
-        //todo: remove
-        //String text = preReadLineInfo1.getStringBuilder().toString();
-        //String line = preReadLineInfo.getStringBuilder().toString();
-
         //todo: fix current line background color
         /*if (preReadLineInfo.isCursorLine) {
             AffineTransform transform = graphics2D.getTransform();
