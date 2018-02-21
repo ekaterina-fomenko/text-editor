@@ -111,6 +111,7 @@ public class RopeDrawComponent extends JComponent {
         //String text = preReadLineInfo1.getStringBuilder().toString();
         //String line = preReadLineInfo.getStringBuilder().toString();
 
+        //todo: fix current line background color
         /*if (preReadLineInfo.isCursorLine) {
             AffineTransform transform = graphics2D.getTransform();
             drawLineBackground(graphics2D, CURSOR_ROW_BACKGROUND_COLOR);
@@ -175,7 +176,7 @@ public class RopeDrawComponent extends JComponent {
                 } else {
                     if (reservedWordsSet.containsKey(i)) {
                         charColor = reservedWordsSet.get(i).getColor();
-                    } else if (bracketStart == currentIndex || bracketEnd == currentIndex || bracketStart == currentIndex - 1 || bracketEnd == currentIndex - 1) {
+                    } else if (bracketStart == currentIndex || bracketEnd == currentIndex) {
                         charColor = bracketColor;
                     } else {
                         charColor = DEFAULT_CHAR_COLOR;
