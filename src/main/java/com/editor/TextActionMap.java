@@ -90,7 +90,7 @@ public class TextActionMap extends ActionMap {
         put(TextInputMap.UP, new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                boolean scrollUp = model.movePointerUp(false);
+                boolean scrollUp = model.movePointerUp(true);
                 if (scrollUp) {
                     scrollOnLine(VerticalDirection.UP);
                 }
