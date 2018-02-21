@@ -51,7 +51,7 @@ public class Trie {
         node.isLeaf = true;
     }
 
-    public Map<Integer, TokenType> getKeywordsIndexes(Rope visibleRope) {
+    public Map<Integer, TokenType> getKeywordsIndexes(Rope visibleRope, int currentRopeIndex) {
         this.currentRopeIndex = currentRopeIndex;
         // todo: move to constructor
         keywordsIndexesMap = new HashMap<>();
@@ -75,6 +75,7 @@ public class Trie {
     private char moveIterator() {
         if (!isAtEnd()) {
             currentIndex++;
+            currentRopeIndex++;
             currentChar = rope.charAt(currentIndex);
         }
 
@@ -266,10 +267,9 @@ public class Trie {
     }
 
     private void findOpenedPair() {
-        ;
         if (!openBracketsStack.isEmpty()) {
             BracketInfo bracketInfo = openBracketsStack.pop();
-            bracketInfo.setEndInd(currentIndex);
+            bracketInfo.setEndInd(currentRopeIndex);
             bracketsIndexesMap.put(bracketInfo.getStartInd(), bracketInfo);
             bracketsIndexesMap.put(bracketInfo.getEndInd(), bracketInfo);
         }
@@ -277,7 +277,7 @@ public class Trie {
     }
 
     private void pushBracketToStack() {
-        BracketInfo bracketInfo = new BracketInfo(currentChar, currentIndex);
+        BracketInfo bracketInfo = new BracketInfo(currentChar, currentRopeIndex);
         openBracketsStack.push(bracketInfo);
     }
 }

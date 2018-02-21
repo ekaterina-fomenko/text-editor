@@ -118,7 +118,7 @@ public class RopeDrawComponent extends JComponent {
         }*/
 
         long startTrie = System.currentTimeMillis();
-        Map<Integer, TokenType> reservedWordsSet = keywordsTree.isEmpty() ? new HashMap<>() : keywordsTree.getKeywordsIndexes(visibleRope);
+        Map<Integer, TokenType> reservedWordsSet = keywordsTree.isEmpty() ? new HashMap<>() : keywordsTree.getKeywordsIndexes(visibleRope, currentIndex);
         long endTrie = System.currentTimeMillis();
         log.info("Reserved words: {}ms", endTrie - startTrie);
 
@@ -175,7 +175,7 @@ public class RopeDrawComponent extends JComponent {
                 } else {
                     if (reservedWordsSet.containsKey(i)) {
                         charColor = reservedWordsSet.get(i).getColor();
-                    } else if (bracketStart == i || bracketEnd == i || bracketStart == i - 1 || bracketEnd == i - 1) {
+                    } else if (bracketStart == currentIndex || bracketEnd == currentIndex || bracketStart == currentIndex - 1 || bracketEnd == currentIndex - 1) {
                         charColor = bracketColor;
                     } else {
                         charColor = DEFAULT_CHAR_COLOR;
