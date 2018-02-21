@@ -137,6 +137,21 @@ public class RopeTextEditorModel {
         cursorPosition += text.length;
     }
 
+    //for undo/redo operations
+    public void paste(char[] text, int position) {
+        rope = rope.insert(position, text);
+        cursorPosition = position + text.length;
+    }
+
+    public void remove(int start, int end) {
+        movePointerLeft(false);
+        Rope ropeStart = rope.substring(0, start);
+        Rope ropeEnd = rope.substring(end, rope.getLength());
+        Rope ropeResult = ropeStart.append(ropeEnd);
+        rope = ropeResult;
+        cursorPosition = start;
+    }
+
     public void onEnter() {
         if (isSelectionInProgress()) {
             onBackspace();

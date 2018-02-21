@@ -1,12 +1,15 @@
 package com.editor;
 
 import com.editor.model.RopeTextEditorModel;
+import com.editor.model.undo.UndoRedoUtil;
 import com.editor.system.ClipboardAdapter;
 import javafx.geometry.VerticalDirection;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+
+import static com.editor.model.undo.OppositeCommands.Command.DELETE;
 
 /**
  * Process all external actions in tex area
@@ -16,20 +19,22 @@ public class TextActionMap extends ActionMap {
     private final ClipboardAdapter clipboardAdapter;
     private RopeTextEditorModel model;
     private TextArea textArea;
+    private UndoRedoUtil undoRedoOperation;
 
     public TextActionMap(RopeTextEditorModel model, TextArea area) {
         this.model = model;
         this.textArea = area;
         this.clipboardAdapter = new ClipboardAdapter();
+        this.undoRedoOperation = new UndoRedoUtil(model);
     }
 
-    {
+    {// todo: BUG!!!!
         for (char i = ' '; i <= '~'; i++) {
             put(Character.toString(i), new AbstractAction() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     char[] chars = e.getActionCommand().toCharArray();
-
+                    undoRedoOperation.addCommand(model.getCursorPosition(), (model.getCursorPosition() + clipboardAdapter.getText().length()), clipboardAdapter.getText().toCharArray(), DELETE);
                     model.onTextInput(chars);
                     textArea.render();
                 }
@@ -130,6 +135,7 @@ public class TextActionMap extends ActionMap {
         put(TextInputMap.CTRL_V, new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                undoRedoOperation.addCommand(model.getCursorPosition(), (model.getCursorPosition() + clipboardAdapter.getText().length()), clipboardAdapter.getText().toCharArray(), DELETE);
                 model.onTextInput(clipboardAdapter.getText().toCharArray());
                 textArea.render();
             }
@@ -176,6 +182,22 @@ public class TextActionMap extends ActionMap {
             public void actionPerformed(ActionEvent e) {
                 model.movePointerToStartOfLine();
                 //todo: Fix - move scroll to cursor position
+                textArea.render();
+            }
+        });
+
+        put(TextInputMap.CTRL_Z, new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                undoRedoOperation.undo();
+                textArea.render();
+            }
+        });
+
+        put(TextInputMap.CTRL_K, new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                undoRedoOperation.redo();
                 textArea.render();
             }
         });

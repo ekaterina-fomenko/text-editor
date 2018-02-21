@@ -41,6 +41,10 @@ public class TextInputMap extends InputMap {
 
     public static final String LINE_START = "ALT+left";
 
+    public static final String CTRL_K = "CTRL+k";
+
+    public static final String CTRL_Z = "CTRL+z";
+
     {
         for (char i = ' '; i <= '~'; i++) {
             put(KeyStroke.getKeyStroke(i), Character.toString(i));
@@ -67,5 +71,8 @@ public class TextInputMap extends InputMap {
         put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, KeyEvent.ALT_MASK), LAST_POSITION);
         put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, KeyEvent.ALT_MASK), LINE_END);
         put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, KeyEvent.ALT_MASK), LINE_START);
+
+        put(KeyStroke.getKeyStroke(KeyEvent.VK_K, KeyEvent.CTRL_MASK), CTRL_K);
+        put(KeyStroke.getKeyStroke(KeyEvent.VK_Z, KeyEvent.CTRL_MASK), CTRL_Z);
     }
 }
