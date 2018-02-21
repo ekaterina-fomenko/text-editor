@@ -148,7 +148,8 @@ public class TextActionMap extends ActionMap {
             @Override
             public void actionPerformed(ActionEvent e) {
                 model.movePointerToInitPosition();
-                textArea.render();
+                //todo: Fix - move scroll to cursor position
+                textArea.render(true);
             }
         });
 
@@ -156,7 +157,8 @@ public class TextActionMap extends ActionMap {
             @Override
             public void actionPerformed(ActionEvent e) {
                 model.movePointerToLastPosition();
-                textArea.render();
+                //todo: Fix - move scroll to cursor position
+                textArea.render(true);
             }
         });
 
@@ -164,6 +166,7 @@ public class TextActionMap extends ActionMap {
             @Override
             public void actionPerformed(ActionEvent e) {
                 model.movePointerToTheEndOfLine();
+                //todo: Fix - move scroll to cursor position
                 textArea.render();
             }
         });
@@ -171,8 +174,9 @@ public class TextActionMap extends ActionMap {
         put(TextInputMap.LINE_START, new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-//                model.movePointerToStartOfLine();
-//                textArea.render();
+                model.movePointerToStartOfLine();
+                //todo: Fix - move scroll to cursor position
+                textArea.render();
             }
         });
     }

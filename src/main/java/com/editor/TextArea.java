@@ -1,8 +1,6 @@
 package com.editor;
 
 import com.editor.model.RopeTextEditorModel;
-import com.editor.model.rope.StringSizeProvider;
-import com.editor.parser.SyntaxParser;
 
 import javax.swing.*;
 import java.awt.*;
@@ -77,10 +75,10 @@ public class TextArea {
         this.ropeDrawComponent.setVisibleBounds(jScrollPane.getViewport().getViewRect());
         this.ropeDrawComponent.repaint();
         this.ropeDrawComponent.setScrollToCursorOnceOnPaint(forceScrollToCursor);
-
-        if (!SyntaxParser.isTextSyntax()) {
+//todo: remove
+/*        if (!SyntaxParser.isTextSyntax()) {
             ropeModel.updatePairedBrackets();
-        }
+        }*/
 
     }
 }

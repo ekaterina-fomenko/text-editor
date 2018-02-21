@@ -322,9 +322,9 @@ public class RopeDrawComponent extends JComponent {
             this.isCursorLine = isCursorLine;
         }
 
-        public StringBuilder getStringBuilder() {
-            return stringBuilder;
-        }
+        //public StringBuilder getStringBuilder() {
+        //    return stringBuilder;
+        //}
 
         public boolean isCursorLine() {
             return isCursorLine;

@@ -4,6 +4,7 @@ import com.editor.model.rope.Rope;
 import com.editor.model.rope.RopeApi;
 import com.editor.model.rope.RopeNode;
 import com.editor.model.rope.StringSizeProvider;
+import com.editor.system.Constants;
 
 import java.awt.*;
 import java.util.List;
@@ -27,10 +28,12 @@ public class RopeTextEditorModel {
     private Pointer endBracket;
     private TextBuffer textBuffer = new TextBuffer();
 
+    //todo:remove
     public Pointer getStartBracket() {
         return startBracket;
     }
 
+    //todo:remove
     public Pointer getEndBracket() {
         return endBracket;
     }
@@ -62,6 +65,7 @@ public class RopeTextEditorModel {
         return rope;
     }
 
+    //todo:remove
     public void updatePairedBrackets() {
         /*startBracket = null;
         endBracket = null;
@@ -121,6 +125,7 @@ public class RopeTextEditorModel {
 //        return this.lineBuilders.get(row).charAt(column);
 //    }
 
+    //todo:remove
     private boolean isValidTextPosition(int row, int column) {
         return true;//row > -1 && row < lineBuilders.size() && column > -1 && column < lineBuilders.get(row).length();
     }
@@ -182,7 +187,7 @@ public class RopeTextEditorModel {
             cursorPosition++;
         }
 
-        if(cursorPosition != rope.getLength()-1){
+        if (cursorPosition != rope.getLength() - 1) {
             cursorPosition++;
         }
     }
@@ -285,19 +290,14 @@ public class RopeTextEditorModel {
     }
 
     public void movePointerToLastPosition() {
-//        cursorPosition.row = lineBuilders.size() - 1;
-//        cursorPosition.column = lineBuilders.get(cursorPosition.row).length();
+        cursorPosition = rope.getLength() - 1;
     }
-//
-//    public void setCursorPosition(Pointer cursorPosition) {
-//        this.cursorPosition = cursorPosition;
-//        selectionEnd = null;
-//    }
 
     public void setSelectionEnd(int selectionEnd) {
         this.selectionEnd = selectionEnd;
     }
 
+    //todo:remove
     public void setLineBuildersFromFile(List<StringBuilder> lineBuilders) {
 //        this.lineBuilders = lineBuilders;
 //        cursorPosition.row = 0;
@@ -305,12 +305,29 @@ public class RopeTextEditorModel {
     }
 
     public void movePointerToTheEndOfLine() {
-//        cursorPosition.column = lineBuilders.get(cursorPosition.row).length();
+        int position = cursorPosition;
+        char ch = rope.charAt(position);
+        while (ch != Constants.NEW_LINE_CHAR) {
+            position++;
+            ch = rope.charAt(position);
+        }
+        cursorPosition = position;
     }
 
-//    public void movePointerToStartOfLine() {
-//        cursorPosition.column = 0;
-//    }
+    public void movePointerToStartOfLine() {
+        int position = cursorPosition;
+        char ch = rope.charAt(position);
+
+        if (ch == Constants.NEW_LINE_CHAR) {
+            ch = rope.charAt(position - 1);
+        }
+
+        while (ch != Constants.NEW_LINE_CHAR) {
+            position--;
+            ch = rope.charAt(position);
+        }
+        cursorPosition = position + 1;
+    }
 
     public void append(char[] line) {
         rope = rope.append(line);
