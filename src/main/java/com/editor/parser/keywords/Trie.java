@@ -1,5 +1,6 @@
 package com.editor.parser.keywords;
 
+import com.editor.model.rope.Rope;
 import com.editor.parser.SyntaxParser;
 import com.editor.parser.SyntaxType;
 import com.editor.system.Constants;
@@ -28,8 +29,8 @@ public class Trie {
     private char currentChar;
     private int currentIndex;
     private TrieNode root = new TrieNode();
-    private char[] chars;
     private int currentRopeIndex;
+    private Rope rope;
 
     public Map<Integer, BracketInfo> getBracketsIndexesMap() {
         return bracketsIndexesMap;
@@ -50,21 +51,21 @@ public class Trie {
         node.isLeaf = true;
     }
 
-    public Map<Integer, TokenType> getKeywordsIndexes(char[] charArray, int currentRopeIndex) {
+    public Map<Integer, TokenType> getKeywordsIndexes(Rope visibleRope) {
         this.currentRopeIndex = currentRopeIndex;
         // todo: move to constructor
         keywordsIndexesMap = new HashMap<>();
         bracketsIndexesMap = new HashMap<>();
         openBracketsStack = new Stack<>();
-        chars = charArray;
+        rope = visibleRope;
         currentIndex = 0;
-        while (currentIndex < chars.length) {
-            currentChar = chars[currentIndex];
+        while (currentIndex < rope.getLength()) {
+            currentChar = rope.charAt(currentIndex);
             scanSymbol();
-           // if (isAtEndOfLine()) {
-           //     break;
-           // }
-            if(isAtEnd()){
+            // if (isAtEndOfLine()) {
+            //     break;
+            // }
+            if (isAtEnd()) {
                 break;
             }
         }
@@ -74,7 +75,7 @@ public class Trie {
     private char moveIterator() {
         if (!isAtEnd()) {
             currentIndex++;
-            currentChar = chars[currentIndex];
+            currentChar = rope.charAt(currentIndex);
         }
 
         return currentChar;
@@ -96,7 +97,7 @@ public class Trie {
     }
 
     private boolean isAtEnd() {
-        return currentIndex >= chars.length - 1;
+        return currentIndex >= rope.getLength() - 1;
     }
 
     private void string() {
@@ -133,7 +134,7 @@ public class Trie {
             }
         }
         if (node.isLeaf && !isAlpha(currentChar)) {
-            Map<Integer, TokenType> keywordIndexes = IntStream.rangeClosed(startIndex, currentIndex-1).boxed().collect(Collectors.toMap(Function.identity(), v -> TokenType.RESERVED_WORD));
+            Map<Integer, TokenType> keywordIndexes = IntStream.rangeClosed(startIndex, currentIndex - 1).boxed().collect(Collectors.toMap(Function.identity(), v -> TokenType.RESERVED_WORD));
             keywordsIndexesMap.putAll(keywordIndexes);
             return;
         }
@@ -264,17 +265,18 @@ public class Trie {
         keywordsIndexesMap.putAll(keywordIndexes);
     }
 
-    private void findOpenedPair(){;
-        if(!openBracketsStack.isEmpty()){
+    private void findOpenedPair() {
+        ;
+        if (!openBracketsStack.isEmpty()) {
             BracketInfo bracketInfo = openBracketsStack.pop();
             bracketInfo.setEndInd(currentIndex);
             bracketsIndexesMap.put(bracketInfo.getStartInd(), bracketInfo);
-            bracketsIndexesMap.put(bracketInfo.getEndInd(),bracketInfo);
+            bracketsIndexesMap.put(bracketInfo.getEndInd(), bracketInfo);
         }
 
     }
 
-    private void pushBracketToStack(){
+    private void pushBracketToStack() {
         BracketInfo bracketInfo = new BracketInfo(currentChar, currentIndex);
         openBracketsStack.push(bracketInfo);
     }

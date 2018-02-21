@@ -1,7 +1,7 @@
 package com.editor.model.rope;
 
-import com.editor.utils.StringUtils;
 import com.editor.system.Constants;
+import com.editor.utils.StringUtils;
 
 /**
  * This class contains information about node in rope tree

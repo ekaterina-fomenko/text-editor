@@ -1,6 +1,5 @@
 package com.editor.model.rope;
 
-import com.editor.utils.LoggingUtils;
 import com.editor.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -187,7 +186,7 @@ public class RopeCommonOperations {
 
     public List<Rope> split(Rope rope, int index) {
         if (index > rope.getLength()) {
-            throw new IndexOutOfBoundsException(String.format("Index '%s' must not be higher than '%s'", index, rope.getLength()));
+            throw new IndexOutOfBoundsException(String.format("Index '%s' must not be bigger than length '%s'", index, rope.getLength()));
         }
 
         RopeNode leftSplit = new RopeNode();

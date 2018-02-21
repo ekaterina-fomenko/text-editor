@@ -4,6 +4,7 @@ import com.editor.model.LineInfo;
 import com.editor.model.Pointer;
 import com.editor.model.RopeTextEditorModel;
 import com.editor.model.TextBufferBuilder;
+import com.editor.model.rope.Rope;
 import com.editor.model.rope.RopeApi;
 import com.editor.parser.keywords.BracketInfo;
 import com.editor.parser.keywords.KeywordsTrie;
@@ -99,25 +100,33 @@ public class RopeDrawComponent extends JComponent {
 
         //  while (currentIndex < rope.getLength() && linesCountRendered < linesCountToRender) {
         BracketInfo bracketInfo = null;
-        PreReadLineInfo preReadLineInfo = readLine(currentIndex);
-        PreReadLineInfo preReadLineInfo1 = readLine(currentIndex, charIndexOfLineEnd);
-        String text = preReadLineInfo1.getStringBuilder().toString();
-        String line = preReadLineInfo.getStringBuilder().toString();
-        if (preReadLineInfo.isCursorLine) {
+        //PreReadLineInfo preReadLineInfo = readLine(currentIndex);
+        //PreReadLineInfo preReadLineInfo1 = readLine(currentIndex, charIndexOfLineEnd);
+        long startRope = System.currentTimeMillis();
+        Rope visibleRope = rope.substring(currentIndex, charIndexOfLineEnd);
+        long endRope = System.currentTimeMillis();
+        log.info("Get sub rope: {}ms", endRope - startRope);
+
+        //todo: remove
+        //String text = preReadLineInfo1.getStringBuilder().toString();
+        //String line = preReadLineInfo.getStringBuilder().toString();
+
+        /*if (preReadLineInfo.isCursorLine) {
             AffineTransform transform = graphics2D.getTransform();
             drawLineBackground(graphics2D, CURSOR_ROW_BACKGROUND_COLOR);
             graphics2D.setTransform(transform);
-        }
+        }*/
 
         long startTrie = System.currentTimeMillis();
-        Map<Integer, TokenType> reservedWordsSet = keywordsTree.isEmpty() ? new HashMap<>() : keywordsTree.getKeywordsIndexes(text.toCharArray(), currentIndex);
+        Map<Integer, TokenType> reservedWordsSet = keywordsTree.isEmpty() ? new HashMap<>() : keywordsTree.getKeywordsIndexes(visibleRope);
         long endTrie = System.currentTimeMillis();
-        log.info("Trie iterator: {}ms", endTrie - startTrie);
+        log.info("Reserved words: {}ms", endTrie - startTrie);
 
         int bracketStart = -1;
         int bracketEnd = -1;
         Color bracketColor = DEFAULT_CHAR_COLOR;
-        Map<Integer, BracketInfo> bracketMap =keywordsTree.isEmpty() ? new HashMap<>() : keywordsTree.getBracketsIndexesMap();
+        Map<Integer, BracketInfo> bracketMap = keywordsTree.isEmpty() ? new HashMap<>() : keywordsTree.getBracketsIndexesMap();
+
         if (bracketMap.containsKey(model.getCursorPosition()) || bracketMap.containsKey(model.getCursorPosition() - 1)) {
             bracketInfo = bracketMap.containsKey(model.getCursorPosition()) ? bracketMap.get(model.getCursorPosition()) : bracketMap.get(model.getCursorPosition() - 1);
 
@@ -126,8 +135,11 @@ public class RopeDrawComponent extends JComponent {
             bracketColor = bracketInfo.getTokenType().getColor();
         }
 
-        for (int i = 0; i < text.length(); i++) {
-            Character c = text.charAt(i);
+
+        int i = 0;
+        while (i < visibleRope.getLength() && linesCountRendered < linesCountToRender) {
+            //Character c = text.charAt(i);
+            Character c = visibleRope.charAt(i);
             currentLineLength++;
             currentLinePixelLength += graphics2D.getFontMetrics().charWidth(c);
 
@@ -149,7 +161,6 @@ public class RopeDrawComponent extends JComponent {
                         charHeight
                 ));
             }
-
             if (!c.equals('\r')) {
                 if (c.equals('\n')) {
                     graphics2D.setTransform(affineTransform);
@@ -164,7 +175,7 @@ public class RopeDrawComponent extends JComponent {
                 } else {
                     if (reservedWordsSet.containsKey(i)) {
                         charColor = reservedWordsSet.get(i).getColor();
-                    } else if (bracketStart == currentIndex || bracketEnd == currentIndex || bracketStart == currentIndex - 1 || bracketEnd == currentIndex - 1) {
+                    } else if (bracketStart == i || bracketEnd == i || bracketStart == i - 1 || bracketEnd == i - 1) {
                         charColor = bracketColor;
                     } else {
                         charColor = DEFAULT_CHAR_COLOR;
@@ -174,8 +185,8 @@ public class RopeDrawComponent extends JComponent {
             }
 
             currentIndex++;
+            i++;
         }
-        //  }
 
         model.setTextBuffer(textBufferBuilder.build());
 
@@ -183,6 +194,7 @@ public class RopeDrawComponent extends JComponent {
         log.info("Paint: {}ms", paintEnd - paintStart);
     }
 
+    //todo: remove
     private PreReadLineInfo readLine(int currentIndex) {
         StringBuilder stringBuilder = new StringBuilder();
         boolean isCursorLine = false;
@@ -206,7 +218,8 @@ public class RopeDrawComponent extends JComponent {
 
         return new PreReadLineInfo(stringBuilder, isCursorLine);
     }
-//todo: remove
+
+    //todo: remove
     private PreReadLineInfo readLine(int currentIndex, int endInd) {
         StringBuilder stringBuilder = new StringBuilder();
         boolean isCursorLine = false;

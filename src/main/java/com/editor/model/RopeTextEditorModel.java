@@ -39,7 +39,7 @@ public class RopeTextEditorModel {
     }
 
     public RopeTextEditorModel() {
-        this.cursorPosition = 0;
+        this.cursorPosition = -1;
         rope = new RopeCached(new Rope());
         this.selectionEnd = -1;
     }
