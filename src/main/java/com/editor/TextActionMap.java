@@ -8,6 +8,7 @@ import javafx.geometry.VerticalDirection;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.util.Stack;
 
 import static com.editor.model.undo.OppositeCommands.Command.DELETE;
 
@@ -155,7 +156,7 @@ public class TextActionMap extends ActionMap {
             public void actionPerformed(ActionEvent e) {
                 model.movePointerToInitPosition();
                 //todo: Fix - move scroll to cursor position
-                textArea.render(true);
+                textArea.render();
             }
         });
 
@@ -164,7 +165,7 @@ public class TextActionMap extends ActionMap {
             public void actionPerformed(ActionEvent e) {
                 model.movePointerToLastPosition();
                 //todo: Fix - move scroll to cursor position
-                textArea.render(true);
+                textArea.render();
             }
         });
 
@@ -172,7 +173,7 @@ public class TextActionMap extends ActionMap {
             @Override
             public void actionPerformed(ActionEvent e) {
                 model.movePointerToTheEndOfLine();
-                //todo: Fix - move scroll to cursor position
+                //// TODO: 2/22/2018  : Fix - move scroll to cursor position
                 textArea.render();
             }
         });

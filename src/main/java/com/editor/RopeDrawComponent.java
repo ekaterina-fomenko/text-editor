@@ -67,12 +67,6 @@ public class RopeDrawComponent extends JComponent {
 
         updatePreferredSize(graphics);
 
-        if (scrollToCursorOnceOnPaint) {
-            revalidate();
-            scrollRectToVisible(model.getCursorRect());
-            scrollToCursorOnceOnPaint = false;
-        }
-
         int fontHeight = graphics.getFontMetrics().getHeight();
 
         graphics2D.translate(0, Math.max(0, visibleBounds.y) - visibleBounds.y % fontHeight);
@@ -152,7 +146,7 @@ public class RopeDrawComponent extends JComponent {
 
                 drawPointer(graphics2D);
                 model.setCursorRect(new Rectangle(
-                        currentLinePixelLength,
+                        currentLinePixelLength - graphics.getFontMetrics().charWidth(c),
                         visibleBounds.y + linesCountRendered * charHeight,
                         POINTER_WIDTH,
                         charHeight
@@ -186,6 +180,12 @@ public class RopeDrawComponent extends JComponent {
         }
 
         model.setTextBuffer(textBufferBuilder.build());
+
+        if (scrollToCursorOnceOnPaint) {
+            revalidate();
+            scrollRectToVisible(model.getCursorRect());
+            scrollToCursorOnceOnPaint = false;
+        }
 
         long paintEnd = System.currentTimeMillis();
         log.info("Paint: {}ms", paintEnd - paintStart);

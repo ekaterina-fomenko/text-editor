@@ -20,23 +20,10 @@ import java.util.List;
 public class RopeTextEditorModel {
     public static final boolean IS_MULTI_SYMBOL_NEWLINE = System.lineSeparator().length() > 1;
     private int cursorPosition;
-    private int cursorLine;
     private Rectangle cursorRect = new Rectangle();
     private int selectionEnd;
     private RopeApi rope;
-    private Pointer startBracket;
-    private Pointer endBracket;
     private TextBuffer textBuffer = new TextBuffer();
-
-    //todo:remove
-    public Pointer getStartBracket() {
-        return startBracket;
-    }
-
-    //todo:remove
-    public Pointer getEndBracket() {
-        return endBracket;
-    }
 
     public RopeTextEditorModel() {
         this.cursorPosition = -1;
@@ -212,11 +199,15 @@ public class RopeTextEditorModel {
             dropSelection();
         }
 
-        cursorPosition--;
+        cursorPosition = dec(cursorPosition);
 
         if (textBuffer.isEOL(cursorPosition) && IS_MULTI_SYMBOL_NEWLINE) {
-            cursorPosition--;
+            cursorPosition = dec(cursorPosition);
         }
+    }
+
+    private int dec(int cursorPosition) {
+        return Math.max(0, cursorPosition - 1);
     }
 
     public boolean movePointerUp(boolean dropSelection) {
