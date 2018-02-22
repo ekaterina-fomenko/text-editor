@@ -92,21 +92,11 @@ public class RopeDrawComponent extends JComponent {
         TextBufferBuilder textBufferBuilder = new TextBufferBuilder();
         Trie keywordsTree = KeywordsTrie.getCurrentSyntaxTrie();
 
-        //  while (currentIndex < rope.getLength() && linesCountRendered < linesCountToRender) {
         BracketInfo bracketInfo = null;
-        //PreReadLineInfo preReadLineInfo = readLine(currentIndex);
-        //PreReadLineInfo preReadLineInfo1 = readLine(currentIndex, charIndexOfLineEnd);
         long startRope = System.currentTimeMillis();
         Rope visibleRope = rope.substring(currentIndex, charIndexOfLineEnd);
         long endRope = System.currentTimeMillis();
         log.info("Get sub rope: {}ms", endRope - startRope);
-
-        //todo: fix current line background color
-        /*if (preReadLineInfo.isCursorLine) {
-            AffineTransform transform = graphics2D.getTransform();
-            drawLineBackground(graphics2D, CURSOR_ROW_BACKGROUND_COLOR);
-            graphics2D.setTransform(transform);
-        }*/
 
         long startTrie = System.currentTimeMillis();
         Map<Integer, TokenType> reservedWordsSet = keywordsTree.isEmpty() ? new HashMap<>() : keywordsTree.getKeywordsIndexes(visibleRope, currentIndex);
@@ -126,10 +116,14 @@ public class RopeDrawComponent extends JComponent {
             bracketColor = bracketInfo.getTokenType().getColor();
         }
 
+        int cursorLine = rope.lineAtChar(model.getCursorPosition());
+        AffineTransform transform = graphics2D.getTransform();
+        graphics.translate(0, graphics2D.getFontMetrics().getHeight() * (cursorLine - startRow));
+        drawLineBackground(graphics2D, CURSOR_ROW_BACKGROUND_COLOR);
+        graphics2D.setTransform(transform);
 
         int i = 0;
         while (i < visibleRope.getLength() && linesCountRendered < linesCountToRender) {
-            //Character c = text.charAt(i);
             Character c = visibleRope.charAt(i);
             currentLineLength++;
             currentLinePixelLength += graphics2D.getFontMetrics().charWidth(c);
@@ -152,6 +146,7 @@ public class RopeDrawComponent extends JComponent {
                         charHeight
                 ));
             }
+
             if (!c.equals('\r')) {
                 if (c.equals('\n')) {
                     graphics2D.setTransform(affineTransform);

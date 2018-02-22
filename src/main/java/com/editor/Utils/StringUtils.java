@@ -85,4 +85,15 @@ public class StringUtils {
     public static char[] subArray(char[] chars, int start) {
         return subArray(chars, start, chars.length - start);
     }
+
+    public static int countChars(char[] chars, char c, int from, int to) {
+        int counter = 0;
+
+        for (int i = from; i < to; i++) {
+         if (chars[i] == c) {
+             counter++;
+         }
+        }
+        return counter;
+    }
 }

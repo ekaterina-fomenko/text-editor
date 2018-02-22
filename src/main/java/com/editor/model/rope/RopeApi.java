@@ -28,4 +28,6 @@ public interface RopeApi {
     default Rope append(String str) {
         return append(str.toCharArray());
     }
+
+    int lineAtChar(int index);
 }

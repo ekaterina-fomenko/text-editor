@@ -305,14 +305,16 @@ public class RopeTextEditorModel {
 
     public void movePointerToTheEndOfLine() {
         int currentLineBufferIndex = textBuffer.getLineByCharIndex(cursorPosition);
-
-        cursorPosition = textBuffer.getLinesInfo().get(currentLineBufferIndex).getEndIndex();
+        if (currentLineBufferIndex > -1) {
+            cursorPosition = textBuffer.getLinesInfo().get(currentLineBufferIndex).getEndIndex();
+        }
     }
 
     public void movePointerToStartOfLine() {
         int currentLineBufferIndex = textBuffer.getLineByCharIndex(cursorPosition);
-
-        cursorPosition = textBuffer.getLinesInfo().get(currentLineBufferIndex).getStartIndex();
+        if (currentLineBufferIndex > -1) {
+            cursorPosition = textBuffer.getLinesInfo().get(currentLineBufferIndex).getStartIndex();
+        }
     }
 
     public void append(char[] line) {

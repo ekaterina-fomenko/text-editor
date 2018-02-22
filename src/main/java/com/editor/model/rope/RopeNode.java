@@ -187,6 +187,10 @@ public class RopeNode {
         return dst;
     }
 
+    public int lineAtChar(int index) {
+        return lineAtChar(index, this);
+    }
+
     private void copyTo(RopeNode node, char[] dst, int startIndex) {
         if (node == null) {
             return;
@@ -211,6 +215,19 @@ public class RopeNode {
             return charAt(index - ropeNode.getLeft().getLength(), ropeNode.getRight());
         }
         return charAt(index, ropeNode.getLeft());
+    }
+
+    private int lineAtChar(int index, RopeNode ropeNode) {
+        if (ropeNode.isLeaf()) {
+            return StringUtils.countChars(ropeNode.getValue(), '\n', 0, index);
+        }
+
+        RopeNode left = ropeNode.left;
+        if (index >= left.length) {
+            return left.linesNum + lineAtChar(index - left.length, ropeNode.right) - 1;
+        }
+
+        return lineAtChar(index, ropeNode.left);
     }
 
     public void setNodeValuesFrom(RopeNode source) {

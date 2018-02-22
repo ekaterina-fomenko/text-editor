@@ -70,6 +70,11 @@ public class Rope implements RopeApi {
         return append(str.toCharArray());
     }
 
+    @Override
+    public int lineAtChar(int index) {
+        return node.lineAtChar(index);
+    }
+
     public Rope substring(int start, int end) {
         if (start < 0 || end > getLength())
             throw new IllegalArgumentException("Illegal subsequence (" + start + "," + end + ")");

@@ -91,4 +91,9 @@ public class RopeCached implements RopeApi {
 //            throw new RuntimeException(e);
 //        }
     }
+
+    @Override
+    public int lineAtChar(int index) {
+        return rope.lineAtChar(index);
+    }
 }

@@ -217,5 +217,7 @@ public class TextActionMap extends ActionMap {
                 newY,
                 cursorRect.width,
                 cursorRect.height));
+
+        ropeDrawComponent.scrollRectToVisible(model.getCursorRect());
     }
 }

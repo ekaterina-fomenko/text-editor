@@ -93,4 +93,30 @@ public class RopeNodeTest {
         assertEquals(4, maxLineLengthInfo.getLengthFromLastBoundary());
         assertEquals(14, maxLineLengthInfo.getMaxLineLengthInCenter());
     }
+
+    @Test
+    public void testLineAtChar() {
+        RopeNode root = new RopeNode(
+                new RopeNode(
+                        new RopeNode("AA\nBB\nCC"),// 0..7
+                        new RopeNode("AA\nBB\nCC") // 8..15
+                ),
+                new RopeNode(
+                        new RopeNode("AABBCCD"), // 17..24
+                        new RopeNode("AA\nBB\nCC") // 25..32
+                )
+        );
+
+        assertEquals(0, root.lineAtChar(0));
+        assertEquals(0, root.lineAtChar(2));
+        assertEquals(1, root.lineAtChar(3));
+        assertEquals(1, root.lineAtChar(4));
+        assertEquals(2, root.lineAtChar(7));
+
+        assertEquals(4, root.lineAtChar(16));
+
+        assertEquals(4, root.lineAtChar(20));
+        assertEquals(4, root.lineAtChar(25));
+        assertEquals(6, root.lineAtChar(31));
+    }
 }
