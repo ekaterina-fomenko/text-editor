@@ -155,7 +155,6 @@ public class TextActionMap extends ActionMap {
             @Override
             public void actionPerformed(ActionEvent e) {
                 model.movePointerToInitPosition();
-                //todo: Fix - move scroll to cursor position
                 textArea.render();
             }
         });
@@ -164,7 +163,6 @@ public class TextActionMap extends ActionMap {
             @Override
             public void actionPerformed(ActionEvent e) {
                 model.movePointerToLastPosition();
-                //todo: Fix - move scroll to cursor position
                 textArea.render();
             }
         });

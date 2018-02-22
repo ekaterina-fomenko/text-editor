@@ -303,36 +303,16 @@ public class RopeTextEditorModel {
         this.selectionEnd = selectionEnd;
     }
 
-    //todo:remove
-    public void setLineBuildersFromFile(List<StringBuilder> lineBuilders) {
-//        this.lineBuilders = lineBuilders;
-//        cursorPosition.row = 0;
-//        cursorPosition.column = 0;
-    }
-
     public void movePointerToTheEndOfLine() {
-        int position = cursorPosition;
-        char ch = rope.charAt(position);
-        while (ch != Constants.NEW_LINE_CHAR) {
-            position++;
-            ch = rope.charAt(position);
-        }
-        cursorPosition = position;
+        int currentLineBufferIndex = textBuffer.getLineByCharIndex(cursorPosition);
+
+        cursorPosition = textBuffer.getLinesInfo().get(currentLineBufferIndex).getEndIndex();
     }
 
     public void movePointerToStartOfLine() {
-        int position = cursorPosition;
-        char ch = rope.charAt(position);
+        int currentLineBufferIndex = textBuffer.getLineByCharIndex(cursorPosition);
 
-        if (ch == Constants.NEW_LINE_CHAR) {
-            ch = rope.charAt(position - 1);
-        }
-
-        while (ch != Constants.NEW_LINE_CHAR) {
-            position--;
-            ch = rope.charAt(position);
-        }
-        cursorPosition = position + 1;
+        cursorPosition = textBuffer.getLinesInfo().get(currentLineBufferIndex).getStartIndex();
     }
 
     public void append(char[] line) {
