@@ -1,16 +1,13 @@
 package com.editor;
 
 import com.editor.model.RopeTextEditorModel;
-import com.editor.model.undo.UndoRedoUtil;
+import com.editor.model.undo.UndoService;
 import com.editor.system.ClipboardAdapter;
 import javafx.geometry.VerticalDirection;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.util.Stack;
-
-import static com.editor.model.undo.OppositeCommands.Command.DELETE;
 
 /**
  * Process all external actions in tex area
@@ -20,13 +17,13 @@ public class TextActionMap extends ActionMap {
     private final ClipboardAdapter clipboardAdapter;
     private RopeTextEditorModel model;
     private TextArea textArea;
-    private UndoRedoUtil undoRedoOperation;
+    private UndoService undoService;
 
     public TextActionMap(RopeTextEditorModel model, TextArea area) {
         this.model = model;
         this.textArea = area;
         this.clipboardAdapter = new ClipboardAdapter();
-        this.undoRedoOperation = new UndoRedoUtil(model);
+        this.undoService = new UndoService(model);
     }
 
     {// todo: BUG!!!!
@@ -35,7 +32,7 @@ public class TextActionMap extends ActionMap {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     char[] chars = e.getActionCommand().toCharArray();
-                    undoRedoOperation.addCommand(model.getCursorPosition(), (model.getCursorPosition() + clipboardAdapter.getText().length()), clipboardAdapter.getText().toCharArray(), DELETE);
+                    undoService.pushState();
                     model.onTextInput(chars);
                     textArea.render();
                 }
@@ -45,6 +42,7 @@ public class TextActionMap extends ActionMap {
         put(TextInputMap.DELETE, new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                undoService.pushState();
                 model.onBackspace();
                 textArea.render();
             }
@@ -53,6 +51,7 @@ public class TextActionMap extends ActionMap {
         put(TextInputMap.NEW_LINE, new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                undoService.pushState();
                 model.onEnter();
                 textArea.render();
             }
@@ -136,7 +135,7 @@ public class TextActionMap extends ActionMap {
         put(TextInputMap.CTRL_V, new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                undoRedoOperation.addCommand(model.getCursorPosition(), (model.getCursorPosition() + clipboardAdapter.getText().length()), clipboardAdapter.getText().toCharArray(), DELETE);
+                undoService.pushState();
                 model.onTextInput(clipboardAdapter.getText().toCharArray());
                 textArea.render();
             }
@@ -188,7 +187,7 @@ public class TextActionMap extends ActionMap {
         put(TextInputMap.CTRL_Z, new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                undoRedoOperation.undo();
+                undoService.undo();
                 textArea.render();
             }
         });
@@ -196,7 +195,7 @@ public class TextActionMap extends ActionMap {
         put(TextInputMap.CTRL_K, new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                undoRedoOperation.redo();
+                undoService.redo();
                 textArea.render();
             }
         });

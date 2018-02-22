@@ -8,6 +8,7 @@ import com.editor.system.Constants;
 
 import java.awt.*;
 import java.util.List;
+import java.util.Stack;
 
 /**
  * This class process all actions that are made with text model such as:
@@ -27,8 +28,7 @@ public class RopeTextEditorModel {
 
     public RopeTextEditorModel() {
         this.cursorPosition = -1;
-        //todo: do we need ropecached???
-        rope = new RopeCached(new Rope());
+        rope = new Rope();
         this.selectionEnd = -1;
     }
 
@@ -44,77 +44,8 @@ public class RopeTextEditorModel {
         this.cursorPosition = cursorPosition;
     }
 
-    public int getLinesCount() {
-        return rope.getLinesNum();
-    }
-
     public RopeApi getRope() {
         return rope;
-    }
-
-    //todo:remove
-    public void updatePairedBrackets() {
-        /*startBracket = null;
-        endBracket = null;
-
-        int cursorRow = cursorPosition.row;
-        int column = cursorPosition.column;
-        if (!isValidTextPosition(cursorRow, column)) {
-            return;
-        }
-
-        char ch = getChar(cursorRow, column);
-        Brackets brackets = new Brackets();
-        Map<Character, Boolean> bracketsDirectionMap = brackets.getBracketsDirection();
-        Map<Character, Character> bracketsOppositeMap = brackets.getBracketsOpposite();
-
-        if (bracketsDirectionMap.containsKey(ch)) {
-            boolean isForward = bracketsDirectionMap.get(ch);
-            char opposite = bracketsOppositeMap.get(ch);
-
-            Stack<Boolean> stack = new Stack<>();
-            int i = cursorRow;
-            int j = column;
-            while (i > -1 && i < getLinesCount()) {
-                if (isValidTextPosition(i, j)) {
-                    char aChar = getChar(i, j);
-                    if (aChar == opposite) {
-                        stack.pop();
-                    } else if (aChar == ch) {
-                        stack.add(isForward);
-                        startBracket = new Pointer(cursorRow, column);
-                    }
-                }
-
-                if (stack.isEmpty()) {
-                    endBracket = new Pointer(i, j);
-                    break;
-                }
-
-                j += isForward ? 1 : -1;
-                if (isForward) {
-//                    if (j > lineBuilders.get(i).length() - 1) {
-//                        j = 0;
-//                        i++;
-//                    }
-                } else {
-                    if (j < 0) {
-                        i--;
-//                        j = Math.max(0, i > -1 ? lineBuilders.get(i).length() - 1 : 0);
-                    }
-                }
-            }
-
-        }*/
-    }
-
-//    private char getChar(int row, int column) {
-//        return this.lineBuilders.get(row).charAt(column);
-//    }
-
-    //todo:remove
-    private boolean isValidTextPosition(int row, int column) {
-        return true;//row > -1 && row < lineBuilders.size() && column > -1 && column < lineBuilders.get(row).length();
     }
 
     public void onTextInput(char[] text) {
@@ -122,21 +53,6 @@ public class RopeTextEditorModel {
 
         rope = rope.insert(cursorPosition, text);
         cursorPosition += text.length;
-    }
-
-    //for undo/redo operations
-    public void paste(char[] text, int position) {
-        rope = rope.insert(position, text);
-        cursorPosition = position + text.length;
-    }
-
-    public void remove(int start, int end) {
-        movePointerLeft(false);
-        Rope ropeStart = rope.substring(0, start);
-        Rope ropeEnd = rope.substring(end, rope.getLength());
-        Rope ropeResult = ropeStart.append(ropeEnd);
-        rope = ropeResult;
-        cursorPosition = start;
     }
 
     public void onEnter() {
@@ -343,5 +259,9 @@ public class RopeTextEditorModel {
 
     public void setCursorRect(Rectangle cursorRect) {
         this.cursorRect = cursorRect;
+    }
+
+    public void setRope(RopeApi rope) {
+        this.rope = rope;
     }
 }

@@ -3,21 +3,21 @@ package com.editor.model.undo;
 import java.util.Stack;
 
 public class OperationStack {
-    private Stack<OperationInfo> commands;
+    private Stack<ModelState> commands;
 
     public OperationStack() {
         this.commands = new Stack<>();
     }
 
-    public OperationInfo peek() {
+    public ModelState peek() {
         return commands.peek();
     }
 
-    public OperationInfo pop() {
+    public ModelState pop() {
         return commands.pop();
     }
 
-    public void push(OperationInfo command) {
+    public void push(ModelState command) {
         commands.push(command);
     }
 
