@@ -1,7 +1,7 @@
 package com.editor;
 
 import com.editor.model.RopeTextEditorModel;
-import com.editor.model.undo.UndoService;
+import com.editor.model.undo.UndoRedoService;
 import com.editor.system.ClipboardAdapter;
 import javafx.geometry.VerticalDirection;
 
@@ -17,13 +17,13 @@ public class TextActionMap extends ActionMap {
     private final ClipboardAdapter clipboardAdapter;
     private RopeTextEditorModel model;
     private TextArea textArea;
-    private UndoService undoService;
+    private UndoRedoService undoService;
 
     public TextActionMap(RopeTextEditorModel model, TextArea area) {
         this.model = model;
         this.textArea = area;
         this.clipboardAdapter = new ClipboardAdapter();
-        this.undoService = new UndoService(model);
+        this.undoService = new UndoRedoService(model);
     }
 
     {// todo: BUG!!!!

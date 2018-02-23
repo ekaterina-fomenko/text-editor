@@ -1,7 +1,7 @@
 package com.editor.model.rope;
 
-import com.editor.utils.StringUtils;
 import com.editor.system.Constants;
+import com.editor.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -79,6 +79,9 @@ public class Rope implements RopeApi {
         if (start < 0 || end > getLength())
             throw new IllegalArgumentException("Illegal subsequence (" + start + "," + end + ")");
 
+        if (start == 0 && end == 0) {
+            return operations.split(this, start).get(1);
+        }
         if (start == 0) {
             return operations.split(this, end).get(0);
         }

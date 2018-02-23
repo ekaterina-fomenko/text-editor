@@ -4,11 +4,9 @@ import com.editor.model.rope.Rope;
 import com.editor.model.rope.RopeApi;
 import com.editor.model.rope.RopeNode;
 import com.editor.model.rope.StringSizeProvider;
-import com.editor.system.Constants;
 
 import java.awt.*;
 import java.util.List;
-import java.util.Stack;
 
 /**
  * This class process all actions that are made with text model such as:
@@ -27,8 +25,8 @@ public class RopeTextEditorModel {
     private TextBuffer textBuffer = new TextBuffer();
 
     public RopeTextEditorModel() {
-        this.cursorPosition = -1;
-        rope = new Rope();
+        this.cursorPosition = 0;
+        this.rope = new Rope();
         this.selectionEnd = -1;
     }
 

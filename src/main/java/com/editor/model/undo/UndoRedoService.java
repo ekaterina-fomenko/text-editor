@@ -4,12 +4,12 @@ import com.editor.model.RopeTextEditorModel;
 
 import java.util.Stack;
 
-public class UndoService {
+public class UndoRedoService {
     private Stack<ModelState> statesStack;
     private Stack<ModelState> oldStatesStack;
     private RopeTextEditorModel model;
 
-    public UndoService(RopeTextEditorModel model) {
+    public UndoRedoService(RopeTextEditorModel model) {
         this.model = model;
         this.statesStack = new Stack<>();
         this.oldStatesStack = new Stack<>();
