@@ -123,6 +123,10 @@ public class RopeDrawComponent extends JComponent {
         graphics2D.setTransform(transform);
 
         int i = 0;
+        //need to draw cursor when open white page
+        if (visibleRope.getLength() == 0) {
+            drawPointer(graphics2D);
+        }
         while (i < visibleRope.getLength() && linesCountRendered < linesCountToRender) {
             Character c = visibleRope.charAt(i);
             currentLineLength++;
@@ -139,6 +143,7 @@ public class RopeDrawComponent extends JComponent {
                 textBufferBuilder.withCursorChar(c);
 
                 drawPointer(graphics2D);
+                //todo: do we really need to set it always here
                 model.setCursorRect(new Rectangle(
                         currentLinePixelLength - graphics.getFontMetrics().charWidth(c),
                         visibleBounds.y + linesCountRendered * charHeight,
@@ -172,6 +177,10 @@ public class RopeDrawComponent extends JComponent {
 
             currentIndex++;
             i++;
+        }
+        //todo: move it -- need for draw cursor in first line when typing
+        if (currentIndex == model.getCursorPosition()) {
+            drawPointer(graphics2D);
         }
 
         model.setTextBuffer(textBufferBuilder.build());
