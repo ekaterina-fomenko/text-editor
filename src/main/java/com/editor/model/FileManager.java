@@ -1,8 +1,8 @@
 package com.editor.model;
 
 import com.editor.TextArea;
-import com.editor.utils.StringUtils;
 import com.editor.parser.SyntaxParser;
+import com.editor.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,6 +49,7 @@ public class FileManager {
             BufferedReader reader = new BufferedReader(new FileReader(file));
             char[] buffer = new char[5000 * 1000];
             int countRead;
+
             while ((countRead = reader.read(buffer)) != -1) {
                 char[] charsRead = countRead == buffer.length ? buffer : StringUtils.subArray(buffer, 0, countRead);
                 model.append(charsRead);
