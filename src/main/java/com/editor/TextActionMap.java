@@ -214,6 +214,15 @@ public class TextActionMap extends ActionMap {
                 textArea.render();
             }
         });
+
+        put(TextInputMap.CTRL_A, new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                model.movePointerToLastPosition(true);
+                model.setSelectionEnd(0);
+                textArea.render();
+            }
+        });
     }
 
     private void scrollOnLine(VerticalDirection direction) {

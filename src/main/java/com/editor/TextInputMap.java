@@ -45,6 +45,8 @@ public class TextInputMap extends InputMap {
 
     public static final String CTRL_Z = "CTRL+z";
 
+    public static final Object CTRL_A = "CTRL+a";
+
     {
         for (char i = ' '; i <= '~'; i++) {
             put(KeyStroke.getKeyStroke(i), Character.toString(i));
@@ -74,5 +76,6 @@ public class TextInputMap extends InputMap {
 
         put(KeyStroke.getKeyStroke(KeyEvent.VK_K, KeyEvent.CTRL_MASK), CTRL_K);
         put(KeyStroke.getKeyStroke(KeyEvent.VK_Z, KeyEvent.CTRL_MASK), CTRL_Z);
+        put(KeyStroke.getKeyStroke(KeyEvent.VK_A, KeyEvent.CTRL_MASK), CTRL_A);
     }
 }
