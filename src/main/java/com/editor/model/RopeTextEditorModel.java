@@ -15,7 +15,7 @@ import java.util.List;
  * Process selected text
  */
 
-public class RopeTextEditorModel {
+public class RopeTextEditorModel implements Resetable {
     public static final boolean IS_MULTI_SYMBOL_NEWLINE = System.lineSeparator().length() > 1;
     private int cursorPosition;
     private Rectangle cursorRect = new Rectangle();
@@ -24,9 +24,7 @@ public class RopeTextEditorModel {
     private VisibleLinesInfo visibleLinesInfo = new VisibleLinesInfo();
 
     public RopeTextEditorModel() {
-        this.cursorPosition = 0;
-        this.rope = Rope.empty();
-        this.selectionEnd = -1;
+        reset();
     }
 
     public int getSelectionEnd() {
@@ -249,7 +247,8 @@ public class RopeTextEditorModel {
         rope = rope.append(line);
     }
 
-    public void clearAll() {
+    @Override
+    public void reset() {
         rope = Rope.empty();
         resetCursorPosition();
         dropSelection();

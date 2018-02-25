@@ -1,10 +1,11 @@
 package com.editor.model.undo;
 
+import com.editor.model.Resetable;
 import com.editor.model.RopeTextEditorModel;
 
 import java.util.Stack;
 
-public class UndoRedoService {
+public class UndoRedoService implements Resetable{
     private Stack<ModelState> undoStack;
     private Stack<ModelState> redoStack;
     private RopeTextEditorModel model;
@@ -13,9 +14,7 @@ public class UndoRedoService {
 
     public UndoRedoService(RopeTextEditorModel model) {
         this.model = model;
-        this.undoStack = new Stack<>();
-        this.redoStack = new Stack<>();
-        pushState();
+        reset();
     }
 
     public void pushState() {
@@ -49,5 +48,12 @@ public class UndoRedoService {
         if (stack.size() == STACK_MAX_SIZE) {
             stack.remove(0);
         }
+    }
+
+    @Override
+    public void reset() {
+        this.undoStack = new Stack<>();
+        this.redoStack = new Stack<>();
+        pushState();
     }
 }

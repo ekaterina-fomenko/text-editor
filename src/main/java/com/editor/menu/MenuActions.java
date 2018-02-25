@@ -2,8 +2,8 @@ package com.editor.menu;
 
 import com.editor.TextArea;
 import com.editor.model.FileManager;
-import com.editor.parser.SyntaxType;
 import com.editor.parser.SyntaxParser;
+import com.editor.parser.SyntaxType;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -22,7 +22,7 @@ public class MenuActions extends AbstractAction {
 
         this.textArea = textArea;
         this.jComponent = textArea.ropeDrawComponent;
-        this.fileManager = new FileManager(textArea);
+        this.fileManager = new FileManager(textArea.frame, textArea.ropeModel, textArea.undoRedoService);
 
     }
 

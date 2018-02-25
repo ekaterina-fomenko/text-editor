@@ -1,6 +1,6 @@
 package com.editor.model;
 
-import com.editor.TextArea;
+import com.editor.model.undo.UndoRedoService;
 import com.editor.parser.SyntaxParser;
 import com.editor.utils.StringUtils;
 import org.slf4j.Logger;
@@ -19,14 +19,16 @@ public class FileManager {
     private String directory;
     private JFrame frame;
     private RopeTextEditorModel model;
+    private UndoRedoService undoRedoService;
 
     public static Logger log = LoggerFactory.getLogger(FileManager.class);
 
-    public FileManager(TextArea textArea) {
+    public FileManager(JFrame frame, RopeTextEditorModel model, UndoRedoService undoRedoService) {
         this.fileName = null;
         this.directory = null;
-        this.frame = textArea.frame;
-        this.model = textArea.ropeModel;
+        this.frame = frame;
+        this.model = model;
+        this.undoRedoService = undoRedoService;
     }
 
     public void openFile() {
@@ -44,7 +46,7 @@ public class FileManager {
     public void openFile(File file) {
         long openStart = System.currentTimeMillis();
 
-        model.clearAll();
+        model.reset();
         try {
             BufferedReader reader = new BufferedReader(new FileReader(file));
             char[] buffer = new char[5000 * 1000];
@@ -64,7 +66,7 @@ public class FileManager {
         } catch (IOException e) {
             log.error("Exception was occurred while trying to read file {} from buffer", fileName, e);
         }
-
+        undoRedoService.reset();
         long openEnd = System.currentTimeMillis();
         log.info("File '{}' opened in {}ms", fileName, openEnd - openStart);
     }
