@@ -8,6 +8,7 @@ public class UndoRedoService {
     private Stack<ModelState> undoStack;
     private Stack<ModelState> redoStack;
     private RopeTextEditorModel model;
+    // to avoid OutOfMemory
     private static final int STACK_MAX_SIZE = 20;
 
     public UndoRedoService(RopeTextEditorModel model) {
