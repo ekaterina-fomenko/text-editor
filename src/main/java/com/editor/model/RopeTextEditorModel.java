@@ -239,6 +239,8 @@ public class RopeTextEditorModel {
 
     public void clearAll() {
         rope = Rope.empty();
+        cursorPosition = 0;
+        dropSelection();
     }
 
     public static void setStringSizeProvider(StringSizeProvider provider) {
