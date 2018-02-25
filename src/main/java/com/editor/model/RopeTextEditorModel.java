@@ -218,7 +218,7 @@ public class RopeTextEditorModel {
         if (dropSelection) {
             dropSelection();
         }
-        cursorPosition = rope.getLength() - 1;
+        cursorPosition = rope.getLength();
     }
 
     public void setSelectionEnd(int selectionEnd) {
