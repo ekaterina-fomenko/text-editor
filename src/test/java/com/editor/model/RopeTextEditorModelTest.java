@@ -11,7 +11,7 @@ public class RopeTextEditorModelTest {
     public void movePointerUp() throws Exception {
         RopeTextEditorModel model = new RopeTextEditorModel();
         model.append("aaaaaaaaaaaaaaaaaaaaaaaaaa".toCharArray());
-        model.setTextBuffer(new TextBuffer(newArrayList(
+        model.setVisibleLinesInfo(new VisibleLinesInfo(newArrayList(
                 new LineInfo(0, 3),
                 new LineInfo(4, 5),
                 new LineInfo(10, 1),

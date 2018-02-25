@@ -3,21 +3,21 @@ package com.editor.model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TextBufferBuilder {
+public class VisibleLinesBufferBuilder {
     private List<LineInfo> lines = new ArrayList<>();
     private Character cursorChar = Character.MIN_VALUE;
 
-    public TextBufferBuilder addLine(LineInfo lineInfo) {
+    public VisibleLinesBufferBuilder addLine(LineInfo lineInfo) {
         lines.add(lineInfo);
         return this;
     }
 
-    public TextBufferBuilder withCursorChar(Character c) {
+    public VisibleLinesBufferBuilder withCursorChar(Character c) {
         cursorChar = c;
         return this;
     }
 
-    public TextBuffer build() {
-        return new TextBuffer(lines, cursorChar);
+    public VisibleLinesInfo build() {
+        return new VisibleLinesInfo(lines, cursorChar);
     }
 }

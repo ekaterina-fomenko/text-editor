@@ -3,16 +3,16 @@ package com.editor.model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TextBuffer {
+public class VisibleLinesInfo {
     private List<LineInfo> linesInfo = new ArrayList<>();
     private Character cursorChar = Character.MIN_VALUE;
 
-    public TextBuffer(List<LineInfo> linesInfo, Character cursorChar) {
+    public VisibleLinesInfo(List<LineInfo> linesInfo, Character cursorChar) {
         this.linesInfo = linesInfo;
         this.cursorChar = cursorChar;
     }
 
-    public TextBuffer() {
+    public VisibleLinesInfo() {
     }
 
     public List<LineInfo> getLinesInfo() {

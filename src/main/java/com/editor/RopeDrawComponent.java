@@ -3,7 +3,7 @@ package com.editor;
 import com.editor.model.LineInfo;
 import com.editor.model.Pointer;
 import com.editor.model.RopeTextEditorModel;
-import com.editor.model.TextBufferBuilder;
+import com.editor.model.VisibleLinesBufferBuilder;
 import com.editor.model.rope.Rope;
 import com.editor.parser.keywords.BracketInfo;
 import com.editor.parser.keywords.KeywordsTrie;
@@ -77,7 +77,7 @@ public class RopeDrawComponent extends JComponent {
         // Go trough lines that will be painted
         int charIndexOfVisibleStart = rope.charIndexOfLineStart(startRow);
         int charIndexOfVisibleEnd = getIndexOfVisibleEnd(rope, endRow);
-        int linesCountToRender = visibleBounds.height / fontHeight;
+        int linesCountToRender = endRow - startRow + 1;
 
         int linesCountRendered = 0;
         int currentIndex = charIndexOfVisibleStart;
@@ -88,7 +88,7 @@ public class RopeDrawComponent extends JComponent {
         int currentLinePixelLength = 0;
         final int charHeight = graphics2D.getFontMetrics().getHeight();
 
-        TextBufferBuilder textBufferBuilder = new TextBufferBuilder();
+        VisibleLinesBufferBuilder visibleLinesBufferBuilder = new VisibleLinesBufferBuilder();
         Trie keywordsTree = KeywordsTrie.getCurrentSyntaxTrie();
 
         BracketInfo bracketInfo = null;
@@ -141,7 +141,7 @@ public class RopeDrawComponent extends JComponent {
                     c);
 
             if (currentIndex == model.getCursorPosition()) {
-                textBufferBuilder.withCursorChar(c);
+                visibleLinesBufferBuilder.withCursorChar(c);
 
                 drawPointer(graphics2D);
                 model.setCursorRect(new Rectangle(
@@ -158,7 +158,7 @@ public class RopeDrawComponent extends JComponent {
                     graphics2D.translate(0, charHeight);
                     affineTransform = graphics2D.getTransform();
                     linesCountRendered++;
-                    textBufferBuilder.addLine(new LineInfo(currentLineStartIndex, currentLineLength - 1));
+                    visibleLinesBufferBuilder.addLine(new LineInfo(currentLineStartIndex, currentLineLength - 1));
 
                     currentLineStartIndex = currentLineStartIndex + currentLineLength;
                     currentLineLength = 0;
@@ -179,11 +179,12 @@ public class RopeDrawComponent extends JComponent {
             i++;
         }
 
+        visibleLinesBufferBuilder.addLine(new LineInfo(currentLineStartIndex, currentLineLength - 1));
+        model.setVisibleLinesInfo(visibleLinesBufferBuilder.build());
+
         if (currentIndex == model.getCursorPosition()) {
             drawPointer(graphics2D);
         }
-
-        model.setTextBuffer(textBufferBuilder.build());
 
         if (scrollToCursorOnceOnPaint) {
             revalidate();
