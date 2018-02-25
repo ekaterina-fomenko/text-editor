@@ -76,7 +76,7 @@ public class RopeDrawComponent extends JComponent {
 
         // Go trough lines that will be painted
         int charIndexOfVisibleStart = rope.charIndexOfLineStart(startRow);
-        int charIndexOfVisibleEnd = rope.charIndexOfLineStart(endRow);
+        int charIndexOfVisibleEnd = getIndexOfVisibleEnd(rope, endRow);
         int linesCountToRender = visibleBounds.height / fontHeight;
 
         int linesCountRendered = 0;
@@ -152,7 +152,6 @@ public class RopeDrawComponent extends JComponent {
                 ));
             }
 
-
             if (!c.equals('\r')) {
                 if (c.equals('\n')) {
                     graphics2D.setTransform(affineTransform);
@@ -194,6 +193,15 @@ public class RopeDrawComponent extends JComponent {
 
         long paintEnd = System.currentTimeMillis();
         log.info("Paint: {}ms", paintEnd - paintStart);
+    }
+
+    private int getIndexOfVisibleEnd(Rope rope, int endRow) {
+        int indexOfLastPlusOneLineStart = rope.charIndexOfLineStart(endRow + 1);
+        if (indexOfLastPlusOneLineStart == -1){
+            return rope.getLength();
+        }
+
+        return indexOfLastPlusOneLineStart;
     }
 
     //todo: remove

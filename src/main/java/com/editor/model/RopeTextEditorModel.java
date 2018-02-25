@@ -60,7 +60,16 @@ public class RopeTextEditorModel {
 
         char[] text = System.lineSeparator().toCharArray();
         rope = rope.insert(cursorPosition, text);
-        cursorPosition += text.length;
+
+        incCursorPosition(text.length);
+    }
+
+    private void incCursorPosition(int count) {
+        cursorPosition = Math.min(rope.getLength(), cursorPosition + count);
+    }
+
+    private void decCursorPosition(int count) {
+        cursorPosition = Math.max(0, cursorPosition - count);
     }
 
     public void onBackspace() {
@@ -99,12 +108,10 @@ public class RopeTextEditorModel {
         }
 
         if ('\r' == textBuffer.getCursorChar()) {
-            cursorPosition++;
+            incCursorPosition(1);
         }
 
-        if (cursorPosition != rope.getLength() - 1) {
-            cursorPosition++;
-        }
+        incCursorPosition(1);
     }
 
     public void movePointerLeft(boolean dropSelection) {
@@ -112,15 +119,11 @@ public class RopeTextEditorModel {
             dropSelection();
         }
 
-        cursorPosition = dec(cursorPosition);
+        decCursorPosition(1);
 
         if (textBuffer.isEOL(cursorPosition) && IS_MULTI_SYMBOL_NEWLINE) {
-            cursorPosition = dec(cursorPosition);
+            decCursorPosition(1);
         }
-    }
-
-    private int dec(int cursorPosition) {
-        return Math.max(0, cursorPosition - 1);
     }
 
     public boolean movePointerUp(boolean dropSelection) {
