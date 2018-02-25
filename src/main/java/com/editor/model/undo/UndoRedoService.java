@@ -5,39 +5,48 @@ import com.editor.model.RopeTextEditorModel;
 import java.util.Stack;
 
 public class UndoRedoService {
-    private Stack<ModelState> statesStack;
-    private Stack<ModelState> oldStatesStack;
+    private Stack<ModelState> undoStack;
+    private Stack<ModelState> redoStack;
     private RopeTextEditorModel model;
+    private static final int STACK_MAX_SIZE = 20;
 
     public UndoRedoService(RopeTextEditorModel model) {
         this.model = model;
-        this.statesStack = new Stack<>();
-        this.oldStatesStack = new Stack<>();
+        this.undoStack = new Stack<>();
+        this.redoStack = new Stack<>();
         pushState();
     }
 
     public void pushState() {
-        this.statesStack.push(new ModelState(model));
+        updateWithStackSize(undoStack);
+        this.undoStack.push(new ModelState(model));
     }
 
     public void undo() {
-        if (statesStack.size() <= 1) {
-            // We need 2 latest states: current (to push into Redo states) and previous (to rollback to)
+        // Need 2 latest states: current (to push into Redo states) and previous (to rollback to)
+        if (undoStack.size() <= 1) {
             return;
         }
 
-        oldStatesStack.push(statesStack.pop());
-        statesStack.peek().updateModel(model);
+        updateWithStackSize(redoStack);
+        redoStack.push(undoStack.pop());
+        undoStack.peek().updateModel(model);
     }
 
     public void redo() {
-        if (oldStatesStack.isEmpty()) {
+        if (redoStack.isEmpty()) {
             return;
         }
 
-        ModelState targetState = oldStatesStack.pop();
-
-        statesStack.push(targetState);
+        updateWithStackSize(undoStack);
+        ModelState targetState = redoStack.pop();
+        undoStack.push(targetState);
         targetState.updateModel(model);
+    }
+
+    private static void updateWithStackSize(Stack stack) {
+        if (stack.size() == STACK_MAX_SIZE) {
+            stack.remove(0);
+        }
     }
 }
