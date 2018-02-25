@@ -25,7 +25,6 @@ java -cp target/text-editor-1.0-SNAPSHOT.jar com.editor.Main
 * Delete: Backspace
 * Enter: New line
 * Select: Shift + Up/Down/Right/Left
-* Mouse selection
 * Line start: Alt + Left
 * Line end: Alt + Right
 
@@ -36,44 +35,37 @@ java -cp target/text-editor-1.0-SNAPSHOT.jar com.editor.Main
 * New line
 * Cursor horizontal navigation(left, right)
 * Delete chars
+* Current line highlighting
 * Reserved js words highlighting
-* Cursor vertical navigation(up, down)
-* Selection
-* Paste/Copy
 * Reserved erlang words highlighting
 * Reserved haskell words highlighting
+* Add line comments highlighting for js, hs and erlang
+* Parsing file extension and set syntax automatically
+* Cursor vertical navigation(up, down)
+* Paired Brackets highlighting (inside visible rows)
+* Selection
+* Paste/Copy
 * Scrolling
-* Brackets (opened and closed)
+* Add home/end for lines
 * Move cursor to file begin, move cursor to file end (like Home, End)
-* Numbers,';',',' chars highlighting
+* Numbers, chars highlighting
 * Text virtualization (big files support)
 * Mouse click to set cursor
-* Mouse selection inside visible area
 * Open files from disk
 * Save/saveAs menu items
-* Parsing file extension and set syntax automatically
-* Current line highlighting
-* Add line comments highlighting for js, hs and erlang
-* Add home/end for lines
+* CTRL+Z, CTRL+K - undo, redo
 * Add tests
 
-*Optional*:
+*Optional* (do not yet realized):
 
-* Add multi-lines comments
-* Add dialog box with asking if user wants to save file before exit
-* CTRL+A, Home/End for lines
-* Tests
-* Add line numbers
-* Add multi-line leteral string highlighting (inside " ")
-* Add Save\Load file option
-* CTRL+Z, CTRL+K - undo, redo
-* Mouse selection wider than visible area (without moving scrollbar)
-
-*Known issues*:
-
-* Make comments highlighting for long strings with best performance
-* Copy not by CMD on Mac
-* Paired brackets highlighting when one of them in literal (ex.: "adf{kj" })
+* Multi-lines comments
+* Dialog box with asking if user wants to save file before exit
+* CTRL+A
+* More tests
+* Line numbers
+* Multi-line literal string highlighting
+* Parentheses highlighting
+* Mouse selection
 
 *Improvements*:
 

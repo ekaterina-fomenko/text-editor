@@ -152,7 +152,7 @@ public class Rope {
 
         long end = System.currentTimeMillis();
 
-        log.info("charIndexOfLineStart: {}ms", end - start);
+        log.debug("CharIndexOfLineStart: {}ms", end - start);
 
         return result;
     }

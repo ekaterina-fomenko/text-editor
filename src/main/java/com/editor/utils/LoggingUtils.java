@@ -1,7 +1,6 @@
 package com.editor.utils;
 
 import com.google.common.base.Supplier;
-import com.oracle.jrockit.jfr.Producer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,7 +23,7 @@ public class LoggingUtils {
             return action.get();
         } finally {
             long end = System.currentTimeMillis();
-            log.info("Timing of '{}': {}ms", name, end - start);
+            log.debug("Timing of '{}': {}ms", name, end - start);
         }
     }
 }

@@ -105,7 +105,7 @@ public class RopeCommonOperations {
             List<RopeNode> allTreeLeaves = getAllTreeLeaves(rope.getNode());
             rope.node = balance(allTreeLeaves);
             long end = System.currentTimeMillis();
-            log.info("Rebalanced in {}ms: length={},depth={}->{},lines={}",
+            log.debug("Rebalanced in {}ms: length={},depth={}->{},lines={}",
                     end - start,
                     rope.getLength(),
                     oldNode.getDepth(),

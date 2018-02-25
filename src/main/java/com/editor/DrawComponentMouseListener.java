@@ -1,7 +1,6 @@
 package com.editor;
 
 import com.editor.model.Pointer;
-import com.editor.model.TextEditorModel;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -14,6 +13,7 @@ import java.awt.event.MouseMotionListener;
 public class DrawComponentMouseListener implements MouseListener, MouseMotionListener {
     private final TextArea textArea;
     private final RopeDrawComponent drawComponent;
+//    todo: make mouse selection
 //    private final TextEditorModel model;
 
     public DrawComponentMouseListener(TextArea textArea, RopeDrawComponent drawComponent) {

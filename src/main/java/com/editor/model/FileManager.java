@@ -68,7 +68,7 @@ public class FileManager {
         }
         undoRedoService.reset();
         long openEnd = System.currentTimeMillis();
-        log.info("File '{}' opened in {}ms", fileName, openEnd - openStart);
+        log.debug("File '{}' opened in {}ms", fileName, openEnd - openStart);
     }
 
     private char[] removeWindowsEndings(char[] charsRead) {

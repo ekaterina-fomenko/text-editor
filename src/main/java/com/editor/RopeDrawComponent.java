@@ -100,12 +100,12 @@ public class RopeDrawComponent extends JComponent {
                 : rope;
 
         long endRope = System.currentTimeMillis();
-        log.info("Get sub rope: {}ms", endRope - startRope);
+        log.debug("Get sub rope: {}ms", endRope - startRope);
 
         long startTrie = System.currentTimeMillis();
         Map<Integer, TokenType> reservedWordsSet = keywordsTree.isEmpty() ? new HashMap<>() : keywordsTree.getKeywordsIndexes(visibleRope, currentIndex);
         long endTrie = System.currentTimeMillis();
-        log.info("Reserved words: {}ms", endTrie - startTrie);
+        log.debug("Reserved words: {}ms", endTrie - startTrie);
 
         int bracketStart = -1;
         int bracketEnd = -1;
@@ -202,7 +202,7 @@ public class RopeDrawComponent extends JComponent {
         }
 
         long paintEnd = System.currentTimeMillis();
-        log.info("Paint: {}ms", paintEnd - paintStart);
+        log.debug("Paint: {}ms", paintEnd - paintStart);
     }
 
     private int getIndexOfVisibleEnd(Rope rope, int endRow) {
