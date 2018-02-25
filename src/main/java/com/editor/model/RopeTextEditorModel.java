@@ -51,15 +51,8 @@ public class RopeTextEditorModel implements Resetable {
     }
 
     public void onEnter() {
-        if (isSelectionInProgress()) {
-            onBackspace();
-
-        }
-
         char[] text = System.lineSeparator().toCharArray();
-        rope = rope.insert(cursorPosition, text);
-
-        incCursorPosition(text.length);
+        onTextInput(text);
     }
 
     private void incCursorPosition(int count) {

@@ -190,6 +190,14 @@ public class RopeDrawComponent extends JComponent {
         if (scrollToCursorOnceOnPaint) {
             revalidate();
             scrollRectToVisible(model.getCursorRect());
+
+            if (model.getCursorPosition() >= model.getRope().getLength()) {
+                // if in the end text, scroll to the last line
+                model.moveCursorRectTo(new Point(
+                        model.getCursorRect().x,
+                        visibleBounds.y + visibleBounds.height));
+            }
+
             scrollToCursorOnceOnPaint = false;
         }
 
