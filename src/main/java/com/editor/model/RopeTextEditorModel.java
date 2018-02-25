@@ -164,14 +164,10 @@ public class RopeTextEditorModel {
             int currentLineStartIndex = linesInfo.get(currentLineBufferIndex).getStartIndex();
 
             if (currentLineBufferIndex == linesInfo.size() - 1) {
-//                cursorPosition = linesInfo.get(currentLineBufferIndex).getIndex(currentLineBufferIndex);
                 return true;
             } else {
                 int nextLineBufferIndex = currentLineBufferIndex + 1;
                 int nextLineLength = linesInfo.get(nextLineBufferIndex).getLength();
-                if (IS_MULTI_SYMBOL_NEWLINE) {
-                    nextLineLength--;
-                }
 
                 int nextLineStartIndex = linesInfo.get(nextLineBufferIndex).getStartIndex();
 
@@ -207,12 +203,12 @@ public class RopeTextEditorModel {
         return selectedRope.toString();
     }
 
-    public void movePointerToInitPosition() {
+    public void resetCursorPosition() {
         cursorPosition = 0;
     }
 
     public void movePointerToLastPosition() {
-        cursorPosition = rope.getLength() - 1;
+        cursorPosition = rope.getLength();
     }
 
     public void setSelectionEnd(int selectionEnd) {
@@ -239,7 +235,7 @@ public class RopeTextEditorModel {
 
     public void clearAll() {
         rope = Rope.empty();
-        cursorPosition = 0;
+        resetCursorPosition();
         dropSelection();
     }
 

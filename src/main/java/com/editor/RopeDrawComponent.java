@@ -27,7 +27,7 @@ public class RopeDrawComponent extends JComponent {
 
     private RopeTextEditorModel model;
 
-    public static final int POINTER_WIDTH = 2;
+    public static final int CURSOR_WIDTH = 2;
 
     public static final Color DEFAULT_CHAR_COLOR = Color.black;
     public static final Color SELECTOR_COLOR = new Color(250, 128, 114, 100);
@@ -126,7 +126,6 @@ public class RopeDrawComponent extends JComponent {
         graphics2D.setTransform(transform);
 
         int i = 0;
-
         while (i < visibleRope.getLength() && linesCountRendered < linesCountToRender) {
             Character c = visibleRope.charAt(i);
 
@@ -138,7 +137,8 @@ public class RopeDrawComponent extends JComponent {
                     currentLinePixelLength,
                     currentIndex,
                     startRow + linesCountRendered,
-                    c);
+                    c
+            );
 
             if (currentIndex == model.getCursorPosition()) {
                 visibleLinesBufferBuilder.withCursorChar(c);
@@ -147,7 +147,7 @@ public class RopeDrawComponent extends JComponent {
                 model.setCursorRect(new Rectangle(
                         currentLinePixelLength - graphics.getFontMetrics().charWidth(c),
                         visibleBounds.y + linesCountRendered * charHeight,
-                        POINTER_WIDTH,
+                        CURSOR_WIDTH,
                         charHeight
                 ));
             }
@@ -179,7 +179,7 @@ public class RopeDrawComponent extends JComponent {
             i++;
         }
 
-        visibleLinesBufferBuilder.addLine(new LineInfo(currentLineStartIndex, currentLineLength - 1));
+        visibleLinesBufferBuilder.addLine(new LineInfo(currentLineStartIndex, currentLineLength));
         model.setVisibleLinesInfo(visibleLinesBufferBuilder.build());
 
         if (currentIndex == model.getCursorPosition()) {
@@ -273,7 +273,7 @@ public class RopeDrawComponent extends JComponent {
 
     private void drawPointer(Graphics2D graphics2D) {
         graphics2D.setColor(Color.DARK_GRAY);
-        graphics2D.fillRect(0, 3, POINTER_WIDTH, graphics2D.getFontMetrics().getHeight());
+        graphics2D.fillRect(0, 3, CURSOR_WIDTH, graphics2D.getFontMetrics().getHeight());
     }
 
     private void updatePreferredSize(Graphics graphics) {

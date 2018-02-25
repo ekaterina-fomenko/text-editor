@@ -153,7 +153,7 @@ public class TextActionMap extends ActionMap {
         put(TextInputMap.INIT_POSITION, new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                model.movePointerToInitPosition();
+                model.resetCursorPosition();
                 textArea.render();
             }
         });
@@ -200,7 +200,7 @@ public class TextActionMap extends ActionMap {
             }
         });
     }
-
+    
     private void scrollOnLine(VerticalDirection direction) {
         RopeDrawComponent ropeDrawComponent = this.textArea.ropeDrawComponent;
         Graphics2D graphices = ropeDrawComponent.getLatestGraphices();
