@@ -13,6 +13,7 @@ public class UndoRedoService {
         this.model = model;
         this.statesStack = new Stack<>();
         this.oldStatesStack = new Stack<>();
+        pushState();
     }
 
     public void pushState() {
@@ -21,6 +22,7 @@ public class UndoRedoService {
 
     public void undo() {
         if (statesStack.size() <= 1) {
+            // We need 2 latest states: current (to push into Redo states) and previous (to rollback to)
             return;
         }
 
@@ -29,11 +31,13 @@ public class UndoRedoService {
     }
 
     public void redo() {
-        if (oldStatesStack.size() <= 1) {
+        if (oldStatesStack.isEmpty()) {
             return;
         }
 
-        statesStack.push(oldStatesStack.pop());
-        statesStack.peek().updateModel(model);
+        ModelState targetState = oldStatesStack.pop();
+
+        statesStack.push(targetState);
+        targetState.updateModel(model);
     }
 }
