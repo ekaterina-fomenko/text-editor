@@ -95,7 +95,7 @@ public class RopeDrawComponent extends JComponent {
         BracketInfo bracketInfo = null;
         long startRope = System.currentTimeMillis();
 
-        Rope visibleRope = charIndexOfVisibleStart < charIndexOfVisibleEnd
+        Rope visibleRope = charIndexOfVisibleStart < charIndexOfVisibleEnd && charIndexOfVisibleStart > -1
                 ? rope.substring(charIndexOfVisibleStart, charIndexOfVisibleEnd)
                 : rope;
 
@@ -190,16 +190,9 @@ public class RopeDrawComponent extends JComponent {
         if (scrollToCursorOnceOnPaint) {
             revalidate();
             scrollRectToVisible(model.getCursorRect());
-
-            if (model.getCursorPosition() >= model.getRope().getLength()) {
-                // if in the end text, scroll to the last line
-                model.moveCursorRectTo(new Point(
-                        model.getCursorRect().x,
-                        visibleBounds.y + visibleBounds.height));
-            }
-
             scrollToCursorOnceOnPaint = false;
         }
+
 
         long paintEnd = System.currentTimeMillis();
         log.debug("Paint: {}ms", paintEnd - paintStart);

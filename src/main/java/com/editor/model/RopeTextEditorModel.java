@@ -64,13 +64,12 @@ public class RopeTextEditorModel implements Resetable {
     }
 
     public void onBackspace() {
-        if (isSelectionInProgress()) {
-            deleteSelection();
-        } else {
+        if (!isSelectionInProgress()) {
             startOrContinueSelection();
             movePointerLeft(false);
-            deleteSelection();
         }
+
+        deleteSelection();
     }
 
     private void deleteSelection() {
@@ -190,6 +189,10 @@ public class RopeTextEditorModel implements Resetable {
         int end = Math.max(selectionEnd, cursorPosition);
         int start = Math.min(selectionEnd, cursorPosition);
 
+        if (start < 0 || end < 0) {
+            return "";
+        }
+
         Rope selectedRope = rope.substring(start, end);
         return selectedRope.toString();
     }
@@ -265,6 +268,14 @@ public class RopeTextEditorModel implements Resetable {
 
     public void setCursorRect(Rectangle cursorRect) {
         this.cursorRect = cursorRect;
+    }
+
+    public void moveCursorRectToY(int y) {
+        if (cursorRect == null) {
+            return;
+        }
+
+        cursorRect = new Rectangle(cursorRect.x, y, cursorRect.width, cursorRect.height);
     }
 
     public void moveCursorRectTo(Point point) {
