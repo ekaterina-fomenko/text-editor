@@ -19,4 +19,13 @@ public class ModelState {
         model.setCursorPosition(cursorPosition);
         model.setSelectionEnd(selectionEnd);
     }
+
+    @Override
+    public String toString() {
+        return "ModelState{" +
+                "selectionEnd=" + selectionEnd +
+                ", value=" + value +
+                ", cursorPosition=" + cursorPosition +
+                '}';
+    }
 }

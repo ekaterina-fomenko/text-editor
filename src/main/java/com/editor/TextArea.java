@@ -1,6 +1,7 @@
 package com.editor;
 
 import com.editor.model.RopeTextEditorModel;
+import com.editor.model.undo.UndoRedoService;
 
 import javax.swing.*;
 import java.awt.*;
@@ -29,9 +30,10 @@ public class TextArea {
             int result = fontMetrics.charsWidth(text, offset, count);
             return result;
         });
+
         ropeModel = new RopeTextEditorModel();
         ropeDrawComponent.setModel(ropeModel);
-        ropeDrawComponent.setActionMap(new TextActionMap(ropeModel, this));
+        ropeDrawComponent.setActionMap(new TextActionMap(ropeModel, this, new UndoRedoService(ropeModel)));
         ropeDrawComponent.setInputMap(JComponent.WHEN_FOCUSED, new TextInputMap());
         mouseListener = new DrawComponentMouseListener(this, ropeDrawComponent);
         createJScRollPane();
