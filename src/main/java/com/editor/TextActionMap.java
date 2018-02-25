@@ -1,6 +1,7 @@
 package com.editor;
 
 import com.editor.model.RopeTextEditorModel;
+import com.editor.model.rope.Rope;
 import com.editor.model.undo.UndoRedoService;
 import com.editor.system.ClipboardAdapter;
 import javafx.geometry.VerticalDirection;
@@ -26,7 +27,7 @@ public class TextActionMap extends ActionMap {
         this.undoService = undoRedoService;
     }
 
-    {// todo: BUG!!!!
+    {
         for (char i = ' '; i <= '~'; i++) {
             put(Character.toString(i), new AbstractAction() {
                 @Override
@@ -154,6 +155,10 @@ public class TextActionMap extends ActionMap {
             @Override
             public void actionPerformed(ActionEvent e) {
                 model.movePointerToInitPosition(true);
+
+                // Moving to not-rendered position requires more work
+                model.moveCursorRectTo(new Point(0, 0));
+
                 textArea.render();
             }
         });
@@ -162,7 +167,19 @@ public class TextActionMap extends ActionMap {
             @Override
             public void actionPerformed(ActionEvent e) {
                 model.movePointerToLastPosition(true);
+
+                // Moving to not-rendered position requires more work
+                Rope rope = model.getRope();
+                int lastLineIndex = rope.lineAtChar(rope.getLength() - 1);
+                int fontHeight = textArea.ropeDrawComponent.getLatestFontHeight();
+                model.moveCursorRectTo(new Point(0, lastLineIndex * fontHeight));
                 textArea.render();
+
+                SwingUtilities.invokeLater(() -> {
+                    // It is hard to determine the x coordinate of last symbol. That is the easiest way.
+                    model.movePointerToTheEndOfLine(true);
+                    textArea.render();
+                });
             }
         });
 
@@ -170,7 +187,6 @@ public class TextActionMap extends ActionMap {
             @Override
             public void actionPerformed(ActionEvent e) {
                 model.movePointerToTheEndOfLine(true);
-                //// TODO: 2/22/2018  : Fix - move scroll to cursor position
                 textArea.render();
             }
         });
@@ -179,7 +195,6 @@ public class TextActionMap extends ActionMap {
             @Override
             public void actionPerformed(ActionEvent e) {
                 model.movePointerToStartOfLine(true);
-                //todo: Fix - move scroll to cursor position
                 textArea.render();
             }
         });
@@ -200,12 +215,11 @@ public class TextActionMap extends ActionMap {
             }
         });
     }
-    
+
     private void scrollOnLine(VerticalDirection direction) {
         RopeDrawComponent ropeDrawComponent = this.textArea.ropeDrawComponent;
-        Graphics2D graphices = ropeDrawComponent.getLatestGraphices();
         Rectangle cursorRect = model.getCursorRect();
-        int charHeight = graphices.getFontMetrics().getHeight();
+        int charHeight = ropeDrawComponent.getLatestFontHeight();
 
         int newY = direction == VerticalDirection.DOWN
                 ? cursorRect.y + charHeight

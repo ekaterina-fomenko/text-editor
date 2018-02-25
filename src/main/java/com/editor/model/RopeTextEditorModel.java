@@ -275,6 +275,14 @@ public class RopeTextEditorModel {
         this.cursorRect = cursorRect;
     }
 
+    public void moveCursorRectTo(Point point) {
+        if (cursorRect == null) {
+            return;
+        }
+
+        cursorRect = new Rectangle(point.x, point.y, cursorRect.width, cursorRect.height);
+    }
+
     public void setRope(Rope rope) {
         this.rope = rope;
     }

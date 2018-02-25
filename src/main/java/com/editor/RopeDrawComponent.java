@@ -40,6 +40,7 @@ public class RopeDrawComponent extends JComponent {
     private Rectangle visibleBounds = new Rectangle();
 
     private Graphics2D latestGraphices = null;
+
     private Pointer mouseCursorPointer;
     private boolean scrollToCursorOnceOnPaint;
 
@@ -198,57 +199,11 @@ public class RopeDrawComponent extends JComponent {
 
     private int getIndexOfVisibleEnd(Rope rope, int endRow) {
         int indexOfLastPlusOneLineStart = rope.charIndexOfLineStart(endRow + 1);
-        if (indexOfLastPlusOneLineStart == -1){
+        if (indexOfLastPlusOneLineStart == -1) {
             return rope.getLength();
         }
 
         return indexOfLastPlusOneLineStart;
-    }
-
-    //todo: remove
-    private PreReadLineInfo readLine(int currentIndex) {
-        StringBuilder stringBuilder = new StringBuilder();
-        boolean isCursorLine = false;
-        Character c;
-        boolean newLineMet = false;
-        while (currentIndex < model.getRope().getLength() && !newLineMet) {
-            c = model.getRope().charAt(currentIndex);
-
-            if (c.equals('\n')) {
-                newLineMet = true;
-            }
-
-            stringBuilder.append(c);
-
-            if (currentIndex == model.getCursorPosition()) {
-                isCursorLine = true;
-            }
-
-            currentIndex++;
-        }
-
-        return new PreReadLineInfo(stringBuilder, isCursorLine);
-    }
-
-    //todo: remove
-    private PreReadLineInfo readLine(int currentIndex, int endInd) {
-        StringBuilder stringBuilder = new StringBuilder();
-        boolean isCursorLine = false;
-        Character c;
-        boolean newLineMet = false;
-        while (currentIndex < endInd) {
-            c = model.getRope().charAt(currentIndex);
-
-            stringBuilder.append(c);
-
-            if (currentIndex == model.getCursorPosition()) {
-                isCursorLine = true;
-            }
-
-            currentIndex++;
-        }
-
-        return new PreReadLineInfo(stringBuilder, isCursorLine);
     }
 
     private void drawLineBackground(Graphics graphics2D, Color backgroundColor) {
@@ -270,11 +225,11 @@ public class RopeDrawComponent extends JComponent {
         }
     }
 
-
     private void drawPointer(Graphics2D graphics2D) {
         graphics2D.setColor(Color.DARK_GRAY);
         graphics2D.fillRect(0, 3, CURSOR_WIDTH, graphics2D.getFontMetrics().getHeight());
     }
+
 
     private void updatePreferredSize(Graphics graphics) {
         FontMetrics fontMetrics = graphics.getFontMetrics();
@@ -315,10 +270,6 @@ public class RopeDrawComponent extends JComponent {
         this.model = model;
     }
 
-    public Graphics2D getLatestGraphices() {
-        return latestGraphices;
-    }
-
     public void setMouseCursorPointer(Pointer mouseCursorPointer) {
         this.mouseCursorPointer = mouseCursorPointer;
     }
@@ -327,21 +278,15 @@ public class RopeDrawComponent extends JComponent {
         this.scrollToCursorOnceOnPaint = scrollToCursorOnceOnPaint;
     }
 
-    static class PreReadLineInfo {
-        private StringBuilder stringBuilder;
-        private boolean isCursorLine;
+    public Graphics2D getLatestGraphices() {
+        return latestGraphices;
+    }
 
-        PreReadLineInfo(StringBuilder stringBuilder, boolean isCursorLine) {
-            this.stringBuilder = stringBuilder;
-            this.isCursorLine = isCursorLine;
+    public int getLatestFontHeight() {
+        if (latestGraphices == null) {
+            return 0;
         }
 
-        //public StringBuilder getStringBuilder() {
-        //    return stringBuilder;
-        //}
-
-        public boolean isCursorLine() {
-            return isCursorLine;
-        }
+        return latestGraphices.getFontMetrics().getHeight();
     }
 }
