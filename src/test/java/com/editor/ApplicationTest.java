@@ -1,17 +1,17 @@
 package com.editor;
 
-import com.editor.model.rope.CountingStringSizeProvider;
 import com.editor.model.rope.RopeNode;
 import com.editor.model.rope.StringSizeProvider;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.awt.*;
 import java.io.File;
 import java.io.PrintWriter;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 @E2E
 public class ApplicationTest {
@@ -27,6 +27,8 @@ public class ApplicationTest {
         RopeNode.setSizeProvider(originalSizeProvider);
     }
 
+    // todo: remove ignore
+    @Ignore
     @Test
     public void passingFileArgToMainShouldOpenFileImmediately() throws Exception {
         File tempFile = File.createTempFile("tempFile", "TextEditor");

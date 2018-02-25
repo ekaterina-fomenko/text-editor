@@ -4,7 +4,8 @@ import java.util.ArrayDeque;
 import java.util.Iterator;
 
 /**
- * Fast Iterator for ropes
+ * Iterator for ropes
+ * Drastically bad creation performance - now is not used
  */
 public class RopeIterator implements Iterator<Character> {
     private final ArrayDeque<RopeNode> ropeDeque;

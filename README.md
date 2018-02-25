@@ -2,6 +2,7 @@
 
 This text editor based on rope data structures.
 Provide syntax highlighting for Javascript, Haskell and Erlang.
+Tested on 120Mb text.
 
 **Compile and run**
 
@@ -54,14 +55,14 @@ java -cp target/text-editor-1.0-SNAPSHOT.jar com.editor.Main
 * Open files from disk
 * Save/saveAs menu items
 * CTRL+Z, CTRL+K - undo, redo
-* Add tests
+* CTRL+A - select all
+* Add tests : rope
 
-*Optional* (do not yet realized):
+*Optional* (not yet implemented):
 
 * Multi-lines comments
 * Dialog box with asking if user wants to save file before exit
-* CTRL+A
-* More tests
+* More tests : UndoRedoService, TextEditorModel, Syntax highlighting
 * Line numbers
 * Multi-line literal string highlighting
 * Parentheses highlighting
