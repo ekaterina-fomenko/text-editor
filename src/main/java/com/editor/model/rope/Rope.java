@@ -11,7 +11,7 @@ import java.util.Queue;
 /**
  * This class represents a rope data structure
  */
-public class Rope implements RopeApi {
+public class Rope {
     protected static int MAX_LENGTH_IN_ROPE = 256;
 
     Logger log = LoggerFactory.getLogger(Rope.class);
@@ -36,17 +36,14 @@ public class Rope implements RopeApi {
         this(new char[0]);
     }
 
-    @Override
     public int getLinesNum() {
         return this.node.getLinesNum();
     }
 
-    @Override
     public int getLength() {
         return node.getLength();
     }
 
-    @Override
     public int getDepth() {
         return node.getDepth();
     }
@@ -55,22 +52,18 @@ public class Rope implements RopeApi {
         return node;
     }
 
-    @Override
     public Rope append(Rope rope) {
         return operations.concat(this, rope);
     }
 
-    @Override
     public Rope append(char[] str) {
         return append(operations.create(str));
     }
 
-    @Override
     public Rope append(String str) {
         return append(str.toCharArray());
     }
 
-    @Override
     public int lineAtChar(int index) {
         return node.lineAtChar(index);
     }
@@ -79,12 +72,14 @@ public class Rope implements RopeApi {
         if (start < 0 || end > getLength())
             throw new IllegalArgumentException("Illegal subsequence (" + start + "," + end + ")");
 
-        if (start == 0 && end == 0) {
-            return operations.split(this, start).get(1);
+        if (start == end) {
+            return Rope.empty();
         }
+
         if (start == 0) {
             return operations.split(this, end).get(0);
         }
+
         if (end == getLength()) {
             return operations.split(this, start).get(1);
         }
@@ -93,7 +88,10 @@ public class Rope implements RopeApi {
         return operations.split(splittedRope, end - start).get(0);
     }
 
-    @Override
+    public static Rope empty() {
+        return new Rope();
+    }
+
     public Rope insert(int index, char[] text) {
         return insert(index, operations.create(text));
     }
@@ -116,7 +114,6 @@ public class Rope implements RopeApi {
         return node.toChars();
     }
 
-    @Override
     public RopeIterator iterator(final int start) {
         return node.iterator(start);
     }
@@ -148,7 +145,6 @@ public class Rope implements RopeApi {
         return stringBuilder.toString();
     }
 
-    @Override
     public int charIndexOfLineStart(int lineIndex) {
         long start = System.currentTimeMillis();
 
@@ -216,12 +212,10 @@ public class Rope implements RopeApi {
         appendToBuilder(builder, ropeNode.getRight());
     }
 
-    @Override
     public int getMaxLineLength() {
         return node.getMaxLineLength();
     }
 
-    @Override
     public char charAt(int i) {
         return node.charAt(i);
     }

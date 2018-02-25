@@ -2,11 +2,10 @@ package com.editor.model.undo;
 
 import com.editor.model.RopeTextEditorModel;
 import com.editor.model.rope.Rope;
-import com.editor.model.rope.RopeApi;
 
 public class ModelState {
     private final int selectionEnd;
-    private RopeApi value;
+    private Rope value;
     private int cursorPosition;
 
     public ModelState(RopeTextEditorModel model) {

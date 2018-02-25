@@ -5,7 +5,6 @@ import com.editor.model.Pointer;
 import com.editor.model.RopeTextEditorModel;
 import com.editor.model.TextBufferBuilder;
 import com.editor.model.rope.Rope;
-import com.editor.model.rope.RopeApi;
 import com.editor.parser.keywords.BracketInfo;
 import com.editor.parser.keywords.KeywordsTrie;
 import com.editor.parser.keywords.TokenType;
@@ -58,7 +57,7 @@ public class RopeDrawComponent extends JComponent {
         log.debug("Paint started. VisibleBounds: " + visibleBounds);
         long paintStart = System.currentTimeMillis();
 
-        RopeApi rope = model.getRope();
+        Rope rope = model.getRope();
         Color charColor;
 
         Graphics2D graphics2D = (Graphics2D) graphics;
@@ -76,14 +75,14 @@ public class RopeDrawComponent extends JComponent {
         int endRow = Math.min(rope.getLinesNum() - 1, (visibleBounds.y + visibleBounds.height) / fontHeight);
 
         // Go trough lines that will be painted
-        int charIndexStart = rope.charIndexOfLineStart(startRow);
-        int charIndexOfLineEnd = rope.charIndexOfLineStart(endRow);
+        int charIndexOfVisibleStart = rope.charIndexOfLineStart(startRow);
+        int charIndexOfVisibleEnd = rope.charIndexOfLineStart(endRow);
         int linesCountToRender = visibleBounds.height / fontHeight;
 
         int linesCountRendered = 0;
-        int currentIndex = charIndexStart;
+        int currentIndex = charIndexOfVisibleStart;
 
-        int currentLineStartIndex = charIndexStart;
+        int currentLineStartIndex = charIndexOfVisibleStart;
 
         int currentLineLength = 0;
         int currentLinePixelLength = 0;
@@ -94,7 +93,11 @@ public class RopeDrawComponent extends JComponent {
 
         BracketInfo bracketInfo = null;
         long startRope = System.currentTimeMillis();
-        Rope visibleRope = rope.substring(currentIndex, charIndexOfLineEnd);
+
+        Rope visibleRope = charIndexOfVisibleStart < charIndexOfVisibleEnd
+                ? rope.substring(charIndexOfVisibleStart, charIndexOfVisibleEnd)
+                : rope;
+
         long endRope = System.currentTimeMillis();
         log.info("Get sub rope: {}ms", endRope - startRope);
 
@@ -123,12 +126,10 @@ public class RopeDrawComponent extends JComponent {
         graphics2D.setTransform(transform);
 
         int i = 0;
-        //need to draw cursor when open white page
-        if (visibleRope.getLength() == 0) {
-            drawPointer(graphics2D);
-        }
+
         while (i < visibleRope.getLength() && linesCountRendered < linesCountToRender) {
             Character c = visibleRope.charAt(i);
+
             currentLineLength++;
             currentLinePixelLength += graphics2D.getFontMetrics().charWidth(c);
 
@@ -143,7 +144,6 @@ public class RopeDrawComponent extends JComponent {
                 textBufferBuilder.withCursorChar(c);
 
                 drawPointer(graphics2D);
-                //todo: do we really need to set it always here
                 model.setCursorRect(new Rectangle(
                         currentLinePixelLength - graphics.getFontMetrics().charWidth(c),
                         visibleBounds.y + linesCountRendered * charHeight,
@@ -151,6 +151,7 @@ public class RopeDrawComponent extends JComponent {
                         charHeight
                 ));
             }
+
 
             if (!c.equals('\r')) {
                 if (c.equals('\n')) {
@@ -178,7 +179,7 @@ public class RopeDrawComponent extends JComponent {
             currentIndex++;
             i++;
         }
-        //todo: move it -- need for draw cursor in first line when typing
+
         if (currentIndex == model.getCursorPosition()) {
             drawPointer(graphics2D);
         }

@@ -1,7 +1,6 @@
 package com.editor.model;
 
 import com.editor.model.rope.Rope;
-import com.editor.model.rope.RopeApi;
 import com.editor.model.rope.RopeNode;
 import com.editor.model.rope.StringSizeProvider;
 
@@ -21,12 +20,12 @@ public class RopeTextEditorModel {
     private int cursorPosition;
     private Rectangle cursorRect = new Rectangle();
     private int selectionEnd;
-    private RopeApi rope;
+    private Rope rope;
     private TextBuffer textBuffer = new TextBuffer();
 
     public RopeTextEditorModel() {
         this.cursorPosition = 0;
-        this.rope = new Rope();
+        this.rope = Rope.empty();
         this.selectionEnd = -1;
     }
 
@@ -42,7 +41,7 @@ public class RopeTextEditorModel {
         this.cursorPosition = cursorPosition;
     }
 
-    public RopeApi getRope() {
+    public Rope getRope() {
         return rope;
     }
 
@@ -236,7 +235,7 @@ public class RopeTextEditorModel {
     }
 
     public void clearAll() {
-        rope = new Rope();
+        rope = Rope.empty();
     }
 
     public static void setStringSizeProvider(StringSizeProvider provider) {
@@ -259,7 +258,7 @@ public class RopeTextEditorModel {
         this.cursorRect = cursorRect;
     }
 
-    public void setRope(RopeApi rope) {
+    public void setRope(Rope rope) {
         this.rope = rope;
     }
 }
