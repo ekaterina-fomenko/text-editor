@@ -114,6 +114,7 @@ public class FileManager {
     public void saveFile() {
         if (fileName == null || directory == null) {
             saveAsFile();
+            return;
         }
         try {
             FileWriter writer = new FileWriter(new File(directory + "/" + fileName));

@@ -73,9 +73,9 @@ public class Trie {
     }
 
     private char moveIterator() {
+        currentIndex++;
+        currentRopeIndex++;
         if (!isAtEnd()) {
-            currentIndex++;
-            currentRopeIndex++;
             currentChar = rope.charAt(currentIndex);
         }
 
@@ -98,7 +98,7 @@ public class Trie {
     }
 
     private boolean isAtEnd() {
-        return currentIndex >= rope.getLength() - 1;
+        return currentIndex >= rope.getLength();
     }
 
     private void string() {
@@ -110,6 +110,7 @@ public class Trie {
         }
         Map<Integer, TokenType> keywordIndexes = IntStream.rangeClosed(startIndex, currentIndex).boxed().collect(Collectors.toMap(Function.identity(), v -> TokenType.STRING));
         keywordsIndexesMap.putAll(keywordIndexes);
+        moveIterator();
     }
 
     private boolean isAlpha(char c) {
@@ -140,13 +141,13 @@ public class Trie {
             return;
         }
 
-        while (isAlpha(currentChar) || isDigit(currentChar)) {
+        while ((isAlpha(currentChar) || isDigit(currentChar)) && !isAtEnd()) {
             moveIterator();
         }
     }
 
     void number() {
-        while (isDigit(currentChar)) {
+        while (isDigit(currentChar) && !isAtEnd()) {
             keywordsIndexesMap.put(currentIndex, TokenType.DIGIT);
             moveIterator();
         }
