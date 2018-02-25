@@ -259,7 +259,7 @@ public class Trie {
 
     private void comment(int commentSymbolsNumber) {
         int startIndex = currentIndex - commentSymbolsNumber;
-        // A comment goes until the end of the line.
+        // A comment goes until the end of the line
         while (currentChar != '\n' && !isAtEndOfLine()) {
             moveIterator();
         }

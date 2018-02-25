@@ -250,6 +250,7 @@ public class RopeDrawComponent extends JComponent {
         }
 
         graphics2D.setColor(color);
+        //Not so fast for each char separately
         graphics2D.drawString(Character.toString(currentChar), 0, DEFAULT_Y_COORDINATE);
         graphics2D.translate(graphics2D.getFontMetrics().charWidth(currentChar), 0);
     }
