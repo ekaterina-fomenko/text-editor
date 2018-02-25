@@ -207,11 +207,17 @@ public class RopeTextEditorModel {
         return selectedRope.toString();
     }
 
-    public void movePointerToInitPosition() {
+    public void movePointerToInitPosition(boolean dropSelection) {
+        if (dropSelection) {
+            dropSelection();
+        }
         cursorPosition = 0;
     }
 
-    public void movePointerToLastPosition() {
+    public void movePointerToLastPosition(boolean dropSelection) {
+        if (dropSelection) {
+            dropSelection();
+        }
         cursorPosition = rope.getLength() - 1;
     }
 
@@ -219,14 +225,20 @@ public class RopeTextEditorModel {
         this.selectionEnd = selectionEnd;
     }
 
-    public void movePointerToTheEndOfLine() {
+    public void movePointerToTheEndOfLine(boolean dropSelection) {
+        if (dropSelection) {
+            dropSelection();
+        }
         int currentLineBufferIndex = visibleLinesInfo.getLineByCharIndex(cursorPosition);
         if (currentLineBufferIndex > -1) {
             cursorPosition = visibleLinesInfo.getLinesInfo().get(currentLineBufferIndex).getEndIndex();
         }
     }
 
-    public void movePointerToStartOfLine() {
+    public void movePointerToStartOfLine(boolean dropSelection) {
+        if (dropSelection) {
+            dropSelection();
+        }
         int currentLineBufferIndex = visibleLinesInfo.getLineByCharIndex(cursorPosition);
         if (currentLineBufferIndex > -1) {
             cursorPosition = visibleLinesInfo.getLinesInfo().get(currentLineBufferIndex).getStartIndex();

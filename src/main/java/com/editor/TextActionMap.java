@@ -153,7 +153,7 @@ public class TextActionMap extends ActionMap {
         put(TextInputMap.INIT_POSITION, new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                model.movePointerToInitPosition();
+                model.movePointerToInitPosition(true);
                 textArea.render();
             }
         });
@@ -161,7 +161,7 @@ public class TextActionMap extends ActionMap {
         put(TextInputMap.LAST_POSITION, new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                model.movePointerToLastPosition();
+                model.movePointerToLastPosition(true);
                 textArea.render();
             }
         });
@@ -169,7 +169,7 @@ public class TextActionMap extends ActionMap {
         put(TextInputMap.LINE_END, new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                model.movePointerToTheEndOfLine();
+                model.movePointerToTheEndOfLine(true);
                 //// TODO: 2/22/2018  : Fix - move scroll to cursor position
                 textArea.render();
             }
@@ -178,7 +178,7 @@ public class TextActionMap extends ActionMap {
         put(TextInputMap.LINE_START, new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                model.movePointerToStartOfLine();
+                model.movePointerToStartOfLine(true);
                 //todo: Fix - move scroll to cursor position
                 textArea.render();
             }
