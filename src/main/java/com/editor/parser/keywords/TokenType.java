@@ -2,6 +2,9 @@ package com.editor.parser.keywords;
 
 import java.awt.*;
 
+/**
+ *  Store information about type of keywords and also set color for each type
+ */
 public enum TokenType {
     COMMENT(new Color(138, 43, 226)),
     RESERVED_WORD(new Color(204, 0, 153)),

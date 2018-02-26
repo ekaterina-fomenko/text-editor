@@ -1,7 +1,7 @@
 package com.editor.parser;
 
 /**
- * This class helps highlight syntax and line comments of languages
+ * This class is used for setting syntax for current text
  */
 public class SyntaxParser {
 

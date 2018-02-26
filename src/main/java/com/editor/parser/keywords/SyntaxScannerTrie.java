@@ -14,25 +14,41 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 /**
- * Prefix Tree for constructing reserved words
+ * Prefix Tree for register list of keywords.
+ * Also helps to find reserved words in rope.
  */
-public class Trie {
+public class SyntaxScannerTrie {
     static class TrieNode {
 
         Map<Character, TrieNode> children = new TreeMap<>();
         boolean isLeaf;
     }
 
-    private Stack<BracketInfo> openBracketsStack;
+    private Stack<PairedBracketsInfo> openBracketsStack;
+
+    //Store keywords indexes
     private Map<Integer, TokenType> keywordsIndexesMap;
-    private Map<Integer, BracketInfo> bracketsIndexesMap;
+
+    //Store paired brackets indexes
+    private Map<Integer, PairedBracketsInfo> bracketsIndexesMap;
     private char currentChar;
     private int currentIndex;
-    private TrieNode root = new TrieNode();
     private int currentRopeIndex;
     private Rope rope;
+    private TrieNode root;
 
-    public Map<Integer, BracketInfo> getBracketsIndexesMap() {
+    SyntaxScannerTrie() {
+        root = new TrieNode();
+    }
+
+    private void clearAll() {
+        currentIndex = 0;
+        keywordsIndexesMap = new HashMap<>();
+        bracketsIndexesMap = new HashMap<>();
+        openBracketsStack = new Stack<>();
+    }
+
+    public Map<Integer, PairedBracketsInfo> getBracketsIndexesMap() {
         return bracketsIndexesMap;
     }
 
@@ -40,6 +56,7 @@ public class Trie {
         return root.children.size() == 0;
     }
 
+    // Using for register keywords of language
     void registerReservedWord(String string) {
         TrieNode node = root;
         for (char ch : string.toLowerCase().toCharArray()) {
@@ -52,19 +69,12 @@ public class Trie {
     }
 
     public Map<Integer, TokenType> getKeywordsIndexes(Rope visibleRope, int currentRopeIndex) {
+        clearAll();
         this.currentRopeIndex = currentRopeIndex;
-        // todo: move to constructor
-        keywordsIndexesMap = new HashMap<>();
-        bracketsIndexesMap = new HashMap<>();
-        openBracketsStack = new Stack<>();
         rope = visibleRope;
-        currentIndex = 0;
         while (currentIndex < rope.getLength()) {
             currentChar = rope.charAt(currentIndex);
             scanSymbol();
-            // if (isAtEndOfLine()) {
-            //     break;
-            // }
             if (isAtEnd()) {
                 break;
             }
@@ -196,7 +206,6 @@ public class Trie {
             case '>':
                 moveIterator();
                 break;
-            //for js only
             case '/':
                 if (isJsSyntax() && match('/')) {
                     comment(2);
@@ -221,12 +230,11 @@ public class Trie {
             case ' ':
             case '\r':
             case '\t':
-                // Ignore whitespace.
+                // Ignore whitespace
                 moveIterator();
                 break;
 
             case '\n':
-                //startLine++;  --- need for cases with several lines
                 moveIterator();
                 break;
             case '"':
@@ -260,7 +268,7 @@ public class Trie {
     private void comment(int commentSymbolsNumber) {
         int startIndex = currentIndex - commentSymbolsNumber;
         // A comment goes until the end of the line
-        while (currentChar != '\n' && !isAtEndOfLine()) {
+        while (!isAtEndOfLine()) {
             moveIterator();
         }
         Map<Integer, TokenType> keywordIndexes = IntStream.rangeClosed(startIndex, currentIndex).boxed().collect(Collectors.toMap(Function.identity(), v -> TokenType.COMMENT));
@@ -269,7 +277,7 @@ public class Trie {
 
     private void findOpenedPair() {
         if (!openBracketsStack.isEmpty()) {
-            BracketInfo bracketInfo = openBracketsStack.pop();
+            PairedBracketsInfo bracketInfo = openBracketsStack.pop();
             bracketInfo.setEndInd(currentRopeIndex);
             bracketsIndexesMap.put(bracketInfo.getStartInd(), bracketInfo);
             bracketsIndexesMap.put(bracketInfo.getEndInd(), bracketInfo);
@@ -278,7 +286,7 @@ public class Trie {
     }
 
     private void pushBracketToStack() {
-        BracketInfo bracketInfo = new BracketInfo(currentChar, currentRopeIndex);
+        PairedBracketsInfo bracketInfo = new PairedBracketsInfo(currentRopeIndex);
         openBracketsStack.push(bracketInfo);
     }
 }

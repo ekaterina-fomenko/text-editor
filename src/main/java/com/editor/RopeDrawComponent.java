@@ -5,10 +5,10 @@ import com.editor.model.Pointer;
 import com.editor.model.RopeTextEditorModel;
 import com.editor.model.VisibleLinesBufferBuilder;
 import com.editor.model.rope.Rope;
-import com.editor.parser.keywords.BracketInfo;
+import com.editor.parser.keywords.PairedBracketsInfo;
 import com.editor.parser.keywords.KeywordsTrie;
 import com.editor.parser.keywords.TokenType;
-import com.editor.parser.keywords.Trie;
+import com.editor.parser.keywords.SyntaxScannerTrie;
 import com.editor.system.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -90,27 +90,21 @@ public class RopeDrawComponent extends JComponent {
         final int charHeight = graphics2D.getFontMetrics().getHeight();
 
         VisibleLinesBufferBuilder visibleLinesBufferBuilder = new VisibleLinesBufferBuilder();
-        Trie keywordsTree = KeywordsTrie.getCurrentSyntaxTrie();
 
-        BracketInfo bracketInfo = null;
-        long startRope = System.currentTimeMillis();
+        PairedBracketsInfo bracketInfo;
 
         Rope visibleRope = charIndexOfVisibleStart < charIndexOfVisibleEnd && charIndexOfVisibleStart > -1
                 ? rope.substring(charIndexOfVisibleStart, charIndexOfVisibleEnd)
                 : rope;
 
-        long endRope = System.currentTimeMillis();
-        log.debug("Get sub rope: {}ms", endRope - startRope);
 
-        long startTrie = System.currentTimeMillis();
+        SyntaxScannerTrie keywordsTree = KeywordsTrie.getCurrentSyntaxTrie();
         Map<Integer, TokenType> reservedWordsSet = keywordsTree.isEmpty() ? new HashMap<>() : keywordsTree.getKeywordsIndexes(visibleRope, currentIndex);
-        long endTrie = System.currentTimeMillis();
-        log.debug("Reserved words: {}ms", endTrie - startTrie);
 
         int bracketStart = -1;
         int bracketEnd = -1;
         Color bracketColor = DEFAULT_CHAR_COLOR;
-        Map<Integer, BracketInfo> bracketMap = keywordsTree.isEmpty() ? new HashMap<>() : keywordsTree.getBracketsIndexesMap();
+        Map<Integer, PairedBracketsInfo> bracketMap = keywordsTree.isEmpty() ? new HashMap<>() : keywordsTree.getBracketsIndexesMap();
 
         if (bracketMap.containsKey(model.getCursorPosition()) || bracketMap.containsKey(model.getCursorPosition() - 1)) {
             bracketInfo = bracketMap.containsKey(model.getCursorPosition()) ? bracketMap.get(model.getCursorPosition()) : bracketMap.get(model.getCursorPosition() - 1);

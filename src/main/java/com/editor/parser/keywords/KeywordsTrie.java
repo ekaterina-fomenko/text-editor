@@ -140,18 +140,18 @@ public class KeywordsTrie {
             "ignore"
     );
 
-    public static Trie js_keywords_trie = getKeyWordsTrie(js_keywords_list);
-    public static Trie er_keywords_trie = getKeyWordsTrie(er_keywords_list);
-    public static Trie hs_keywords_trie = getKeyWordsTrie(hs_keywords_list);
-    public static Trie text_keywords_trie = getKeyWordsTrie(new ArrayList<>());
+    public static SyntaxScannerTrie js_keywords_trie = getKeyWordsTrie(js_keywords_list);
+    public static SyntaxScannerTrie er_keywords_trie = getKeyWordsTrie(er_keywords_list);
+    public static SyntaxScannerTrie hs_keywords_trie = getKeyWordsTrie(hs_keywords_list);
+    public static SyntaxScannerTrie text_keywords_trie = getKeyWordsTrie(new ArrayList<>());
 
-    private static Trie getKeyWordsTrie(List<String> keyWords) {
-        Trie keywords_trie = new Trie();
+    private static SyntaxScannerTrie getKeyWordsTrie(List<String> keyWords) {
+        SyntaxScannerTrie keywords_trie = new SyntaxScannerTrie();
         keyWords.forEach(keywords_trie::registerReservedWord);
         return keywords_trie;
     }
 
-    public static Trie getCurrentSyntaxTrie() {
+    public static SyntaxScannerTrie getCurrentSyntaxTrie() {
         SyntaxType syntax = SyntaxParser.getCurrentSyntax();
         switch (syntax) {
             case JAVASCRIPT:
