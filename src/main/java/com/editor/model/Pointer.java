@@ -13,14 +13,6 @@ public class Pointer implements Comparable<Pointer> {
         this.column = column;
     }
 
-    public Pointer(Pointer pointer) {
-        this(pointer.row, pointer.column);
-    }
-
-    public Pointer() {
-        this(0, 0);
-    }
-
     @Override
     public int compareTo(Pointer obj) {
         int rowsCompare = Integer.compare(row, obj.row);

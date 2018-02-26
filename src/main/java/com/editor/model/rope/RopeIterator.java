@@ -4,22 +4,23 @@ import java.util.ArrayDeque;
 import java.util.Iterator;
 
 /**
- * Fast Iterator for ropes
+ * Iterator for ropes
+ * Drastically bad creation performance - now is not used
  */
 public class RopeIterator implements Iterator<Character> {
-    private final ArrayDeque<Rope> ropeDeque;
-    private Rope currentRope;
+    private final ArrayDeque<RopeNode> ropeDeque;
+    private RopeNode currentRope;
     private int currentRopePos;
     private int skip;
     private int currentAbsolutePos;
 
-    public RopeIterator(final Rope rope) {
+    public RopeIterator(final RopeNode rope) {
         this(rope, 0);
     }
 
-    public RopeIterator(final Rope rope, final int start) {
+    public RopeIterator(final RopeNode rope, final int start) {
         this.ropeDeque = new ArrayDeque<>();
-        this.ropeDeque.push(new Rope(rope.getNode()));
+        this.ropeDeque.push(rope);
         this.currentRope = null;
         this.initialize();
 
@@ -51,8 +52,8 @@ public class RopeIterator implements Iterator<Character> {
         while (!this.ropeDeque.isEmpty()) {
             this.currentRope = this.ropeDeque.pop();
             if (!this.currentRope.isFlat()) {
-                this.ropeDeque.push(new Rope(this.currentRope.getNode().getRight()));
-                this.ropeDeque.push(new Rope(this.currentRope.getNode().getLeft()));
+                this.ropeDeque.push(this.currentRope.getRight());
+                this.ropeDeque.push(this.currentRope.getLeft());
             } else {
                 break;
             }
@@ -87,8 +88,8 @@ public class RopeIterator implements Iterator<Character> {
             while (!this.ropeDeque.isEmpty()) {
                 this.currentRope = this.ropeDeque.pop();
                 if (!this.currentRope.isFlat()) {
-                    this.ropeDeque.push(new Rope(this.currentRope.getNode().getRight()));
-                    this.ropeDeque.push(new Rope(this.currentRope.getNode().getLeft()));
+                    this.ropeDeque.push(this.currentRope.getRight());
+                    this.ropeDeque.push(this.currentRope.getLeft());
                 } else {
                     this.currentRopePos = -1;
                     break;

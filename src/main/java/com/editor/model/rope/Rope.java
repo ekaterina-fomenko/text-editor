@@ -1,6 +1,10 @@
 package com.editor.model.rope;
 
-import java.util.Iterator;
+import com.editor.system.Constants;
+import com.editor.utils.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -8,20 +12,32 @@ import java.util.Queue;
  * This class represents a rope data structure
  */
 public class Rope {
+    protected static int MAX_LENGTH_IN_ROPE = 256;
 
-    protected static int MAX_DEPTH = 100;
-    protected static int MAX_LENGTH_IN_ROPE = 20;
+    Logger log = LoggerFactory.getLogger(Rope.class);
 
     RopeNode node;
 
-    protected RopeCommonOperations operations = new RopeCommonOperations(MAX_DEPTH, MAX_LENGTH_IN_ROPE);
+    protected RopeCommonOperations operations = new RopeCommonOperations(MAX_LENGTH_IN_ROPE);
 
-    Rope(CharSequence charSequence) {
+    Rope(String str) {
+        this(str.toCharArray());
+    }
+
+    Rope(char[] charSequence) {
         node = new RopeNode(charSequence);
     }
 
-    public Rope(RopeNode node) {
+    Rope(RopeNode node) {
         this.node = node;
+    }
+
+    public Rope() {
+        this(new char[0]);
+    }
+
+    public int getLinesNum() {
+        return this.node.getLinesNum();
     }
 
     public int getLength() {
@@ -40,17 +56,30 @@ public class Rope {
         return operations.concat(this, rope);
     }
 
-    public Rope append(CharSequence str) {
-        return append(new Rope(str));
+    public Rope append(char[] str) {
+        return append(operations.create(str));
+    }
+
+    public Rope append(String str) {
+        return append(str.toCharArray());
+    }
+
+    public int lineAtChar(int index) {
+        return node.lineAtChar(index);
     }
 
     public Rope substring(int start, int end) {
         if (start < 0 || end > getLength())
             throw new IllegalArgumentException("Illegal subsequence (" + start + "," + end + ")");
 
+        if (start == end) {
+            return Rope.empty();
+        }
+
         if (start == 0) {
             return operations.split(this, end).get(0);
         }
+
         if (end == getLength()) {
             return operations.split(this, start).get(1);
         }
@@ -59,22 +88,19 @@ public class Rope {
         return operations.split(splittedRope, end - start).get(0);
     }
 
-    public boolean isFlat() {
-        return node.getDepth() == 0;
+    public static Rope empty() {
+        return new Rope();
     }
 
-    public char charAt(int index) {
-        return charAt(index, node);
+    public Rope insert(int index, char[] text) {
+        return insert(index, operations.create(text));
     }
 
-    private char charAt(int index, RopeNode ropeNode) {
-        if (ropeNode.isLeaf()) {
-            return ropeNode.getValue().charAt(index);
-        }
-        if (index > ropeNode.getLeft().getLength()) {
-            return charAt(index, ropeNode.getRight());
-        }
-        return charAt(index, ropeNode.getLeft());
+    public Rope insert(int index, Rope text) {
+        Rope start = substring(0, index);
+        Rope end = substring(index, getLength());
+
+        return start.append(text).append(end);
     }
 
     @Override
@@ -84,26 +110,12 @@ public class Rope {
         return stringBuilder.toString();
     }
 
-    private void appendToBuilder(StringBuilder builder, RopeNode ropeNode) {
-        if (ropeNode == null) {
-            return;
-        }
-        if (ropeNode.isLeaf()) {
-            builder.append(ropeNode.getValue());
-            return;
-        }
-        appendToBuilder(builder, ropeNode.getLeft());
-        appendToBuilder(builder, ropeNode.getRight());
+    public char[] toChars() {
+        return node.toChars();
     }
 
-    public Iterator<Character> iterator(final int start) {
-        if (start < 0 || start > this.getLength())
-            throw new IndexOutOfBoundsException("Rope index out of range: " + start);
-        if (start >= this.getNode().getLeft().getLength()) {
-            return new Rope(this.getNode().getRight()).iterator(start - this.getNode().getLeft().getLength());
-        } else {
-            return new RopeIterator(this, start);
-        }
+    public RopeIterator iterator(final int start) {
+        return node.iterator(start);
     }
 
     public String printRopeNodes() {
@@ -131,5 +143,80 @@ public class Rope {
             }
         } while (!queue.isEmpty() || localNode != null);
         return stringBuilder.toString();
+    }
+
+    public int charIndexOfLineStart(int lineIndex) {
+        long start = System.currentTimeMillis();
+
+        int result = charIndexOfLineStart(lineIndex, node);
+
+        long end = System.currentTimeMillis();
+
+        log.debug("CharIndexOfLineStart: {}ms", end - start);
+
+        return result;
+    }
+
+    boolean isFlat() {
+        return node.isFlat();
+    }
+
+    public int charIndexOfLineStart(int lineIndex, RopeNode node) {
+        int linesNum = node.getLinesNum();
+        if (linesNum < lineIndex) {
+            return -1;
+        }
+
+        RopeNode left = node.getLeft();
+        if (left != null && left.getLinesNum() > lineIndex) {
+            return charIndexOfLineStart(lineIndex, left);
+        }
+
+        RopeNode right = node.getRight();
+        int leftLength = left == null ? 0 : left.getLength();
+        int leftLinesNum = left == null ? 0 : left.getLinesNum();
+        if (right != null && right.getLinesNum() > lineIndex - leftLinesNum + 1) {
+            return leftLength + charIndexOfLineStart(lineIndex - leftLinesNum + 1, right);
+        }
+
+        // it must be a leaf
+        if (node.getValue() == null) {
+            return -1;
+        }
+
+        if (lineIndex == 0) {
+            return 0;
+        }
+
+        int startingFrom = -1;
+        int lineCounter = 0;
+        while ((startingFrom = StringUtils.indexOf(node.getValue(), Constants.NEW_LINE_CHAR, startingFrom + 1)) > -1) {
+            lineCounter++;
+            if (lineCounter == lineIndex) {
+                return startingFrom + 1;
+            }
+        }
+
+        return -1;
+    }
+
+    private void appendToBuilder(StringBuilder builder, RopeNode ropeNode) {
+        if (ropeNode == null) {
+            return;
+        }
+        if (ropeNode.isLeaf()) {
+            builder.append(ropeNode.getValue());
+            return;
+        }
+        appendToBuilder(builder, ropeNode.getLeft());
+        appendToBuilder(builder, ropeNode.getRight());
+    }
+
+    public int getMaxLineLength() {
+        return node.getMaxLineLength();
+    }
+
+    public char charAt(int i) {
+        return node.charAt(i);
     }
 }

@@ -1,14 +1,13 @@
 package com.editor.model;
 
-import com.editor.TextArea;
+import com.editor.model.undo.UndoRedoService;
 import com.editor.parser.SyntaxParser;
+import com.editor.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * This class contains all info about file.
@@ -19,15 +18,17 @@ public class FileManager {
     private String fileName;
     private String directory;
     private JFrame frame;
-    private TextEditorModel model;
+    private RopeTextEditorModel model;
+    private UndoRedoService undoRedoService;
 
     public static Logger log = LoggerFactory.getLogger(FileManager.class);
 
-    public FileManager(TextArea textArea) {
+    public FileManager(JFrame frame, RopeTextEditorModel model, UndoRedoService undoRedoService) {
         this.fileName = null;
         this.directory = null;
-        this.frame = textArea.frame;
-        this.model = textArea.model;
+        this.frame = frame;
+        this.model = model;
+        this.undoRedoService = undoRedoService;
     }
 
     public void openFile() {
@@ -38,24 +39,58 @@ public class FileManager {
         fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         if (fileChooser.showOpenDialog(frame) == JFileChooser.APPROVE_OPTION) {
             File file = fileChooser.getSelectedFile();
-            String line;
-            List<StringBuilder> text = new ArrayList<>();
-            try {
-                BufferedReader reader = new BufferedReader(new FileReader(file));
-                while ((line = reader.readLine()) != null) {
-                    text.add(new StringBuilder(line));
-                }
-                model.setLineBuildersFromFile(text);
-                fileName = fileChooser.getName(file);
-                directory = fileChooser.getCurrentDirectory().getPath();
-                setTitleAndSyntax();
+            openFile(file);
+        }
+    }
 
-            } catch (FileNotFoundException e) {
-                log.error("Cannot find  file {}", fileName, e);
-            } catch (IOException e) {
-                log.error("Exception was occurred while trying to read file {} from buffer", fileName, e);
+    public void openFile(File file) {
+        long openStart = System.currentTimeMillis();
+
+        model.reset();
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(file));
+            char[] buffer = new char[5000 * 1000];
+            int countRead;
+
+            while ((countRead = reader.read(buffer)) != -1) {
+                char[] charsRead = countRead == buffer.length ? buffer : StringUtils.subArray(buffer, 0, countRead);
+                model.append(charsRead);
+            }
+
+            fileName = file.getName();
+            directory = file.getParentFile().getAbsolutePath();
+            setTitleAndSyntax();
+
+        } catch (FileNotFoundException e) {
+            log.error("Cannot find  file {}", fileName, e);
+        } catch (IOException e) {
+            log.error("Exception was occurred while trying to read file {} from buffer", fileName, e);
+        }
+        undoRedoService.reset();
+        long openEnd = System.currentTimeMillis();
+        log.debug("File '{}' opened in {}ms", fileName, openEnd - openStart);
+    }
+
+    private char[] removeWindowsEndings(char[] charsRead) {
+        char illegalSymbol = '\r';
+        int counter = 0;
+        for (char c : charsRead) {
+            if (c == illegalSymbol) {
+                counter++;
             }
         }
+
+        char[] result = new char[charsRead.length - counter];
+
+        counter = 0;
+        for (char c : charsRead) {
+            if (c != illegalSymbol) {
+                result[counter] = c;
+                counter++;
+            }
+        }
+
+        return result;
     }
 
     public void saveAsFile() {
@@ -64,7 +99,7 @@ public class FileManager {
         if (chooser.showSaveDialog(frame) == JFileChooser.APPROVE_OPTION) {
             try {
                 FileWriter writer = new FileWriter(chooser.getSelectedFile());
-                writer.write(model.lineBuildersToString());
+                writer.write(model.getRope().toString());
                 writer.close();
                 fileName = chooser.getName(chooser.getSelectedFile());
                 directory = chooser.getCurrentDirectory().getPath();
@@ -79,10 +114,11 @@ public class FileManager {
     public void saveFile() {
         if (fileName == null || directory == null) {
             saveAsFile();
+            return;
         }
         try {
             FileWriter writer = new FileWriter(new File(directory + "/" + fileName));
-            writer.write(model.lineBuildersToString());
+            writer.write(model.getRope().toString());
             writer.close();
             log.info("File was saved successfully");
         } catch (IOException e) {

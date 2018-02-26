@@ -1,9 +1,13 @@
 package com.editor;
 
-import com.editor.model.TextEditorModel;
+import com.editor.model.RopeTextEditorModel;
+import com.editor.model.rope.Rope;
+import com.editor.model.undo.UndoRedoService;
 import com.editor.system.ClipboardAdapter;
+import javafx.geometry.VerticalDirection;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 
 /**
@@ -12,15 +16,15 @@ import java.awt.event.ActionEvent;
 
 public class TextActionMap extends ActionMap {
     private final ClipboardAdapter clipboardAdapter;
-    private TextEditorModel model;
+    private RopeTextEditorModel model;
     private TextArea textArea;
+    private UndoRedoService undoService;
 
-    public TextActionMap(TextEditorModel model, TextArea area) {
-
+    public TextActionMap(RopeTextEditorModel model, TextArea area, UndoRedoService undoRedoService) {
         this.model = model;
         this.textArea = area;
         this.clipboardAdapter = new ClipboardAdapter();
-
+        this.undoService = undoRedoService;
     }
 
     {
@@ -28,8 +32,11 @@ public class TextActionMap extends ActionMap {
             put(Character.toString(i), new AbstractAction() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    model.addText(e.getActionCommand());
-                    textArea.render();
+                    char[] chars = e.getActionCommand().toCharArray();
+                    model.onTextInput(chars);
+                    undoService.pushState();
+
+                    forceScrollToCursorAndRender();
                 }
             });
         }
@@ -38,15 +45,19 @@ public class TextActionMap extends ActionMap {
             @Override
             public void actionPerformed(ActionEvent e) {
                 model.onBackspace();
-                textArea.render();
+                undoService.pushState();
+
+                forceScrollToCursorAndRender();
             }
         });
 
         put(TextInputMap.NEW_LINE, new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                model.addNewLine();
-                textArea.render();
+                model.onEnter();
+                undoService.pushState();
+
+                forceScrollToCursorAndRender();
             }
         });
 
@@ -87,8 +98,12 @@ public class TextActionMap extends ActionMap {
         put(TextInputMap.UP, new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                model.movePointerUp(true);
-                textArea.render();
+                boolean scrollUp = model.movePointerUp(true);
+                if (scrollUp) {
+                    scrollOnLine(VerticalDirection.UP);
+                }
+
+                forceScrollToCursorAndRender();
             }
         });
 
@@ -104,8 +119,12 @@ public class TextActionMap extends ActionMap {
         put(TextInputMap.DOWN, new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                model.movePointerDown(true);
-                textArea.render();
+                boolean scrollDown = model.movePointerDown(true);
+                if (scrollDown) {
+                    scrollOnLine(VerticalDirection.DOWN);
+                }
+
+                textArea.render(true);
             }
         });
 
@@ -121,15 +140,18 @@ public class TextActionMap extends ActionMap {
         put(TextInputMap.CTRL_V, new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                model.addText(clipboardAdapter.getText());
-                textArea.render();
+                model.onTextInput(clipboardAdapter.getText().toCharArray());
+
+                undoService.pushState();
+
+                forceScrollToCursorAndRender();
             }
         });
 
         put(TextInputMap.CTRL_C, new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String selectedText = model.convertToString(model.getSelectedText());
+                String selectedText = model.getSelectedText();
                 clipboardAdapter.setText(selectedText);
                 textArea.render();
             }
@@ -138,33 +160,111 @@ public class TextActionMap extends ActionMap {
         put(TextInputMap.INIT_POSITION, new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                model.movePointerToInitPosition();
-                textArea.render();
+                model.movePointerToInitPosition(true);
+
+                forceScrollToCursorAndRender();
             }
         });
 
         put(TextInputMap.LAST_POSITION, new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                model.movePointerToLastPosition();
-                textArea.render();
+                model.movePointerToLastPosition(true);
+
+                forceScrollToCursorAndRender();
             }
         });
 
         put(TextInputMap.LINE_END, new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                model.movePointerToTheEndOfLine();
-                textArea.render();
+                model.movePointerToTheEndOfLine(true);
+
+                forceScrollToCursorAndRender();
             }
         });
 
         put(TextInputMap.LINE_START, new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                model.movePointerToStartOfLine();
+                model.movePointerToStartOfLine(true);
+
+                forceScrollToCursorAndRender();
+            }
+        });
+
+        put(TextInputMap.CTRL_Z, new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                undoService.undo();
+
+                forceScrollToCursorAndRender();
+            }
+        });
+
+        put(TextInputMap.CTRL_K, new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                undoService.redo();
+
+                forceScrollToCursorAndRender();
+            }
+        });
+
+        put(TextInputMap.CTRL_A, new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                model.movePointerToLastPosition(true);
+                model.setSelectionEnd(0);
+
                 textArea.render();
             }
         });
     }
+
+    private void scrollOnLine(VerticalDirection direction) {
+        RopeDrawComponent ropeDrawComponent = this.textArea.ropeDrawComponent;
+        Rectangle cursorRect = model.getCursorRect();
+        int charHeight = ropeDrawComponent.getLatestFontHeight();
+
+        int newY = direction == VerticalDirection.DOWN
+                ? cursorRect.y + charHeight
+                : cursorRect.y - charHeight;
+
+        model.setCursorRect(new Rectangle(
+                cursorRect.x,
+                newY,
+                cursorRect.width,
+                cursorRect.height));
+
+        ropeDrawComponent.scrollRectToVisible(model.getCursorRect());
+    }
+
+    public void forceScrollToCursorAndRender() {
+        Rope rope = model.getRope();
+        int cursorPosition = model.getCursorPosition();
+        if (cursorPosition < 0) {
+            return;
+        }
+
+        if (cursorPosition >= rope.getLength()) {
+            forceScrollToCharIndexAndRender(rope.getLength() - 1);
+        }
+
+        forceScrollToCharIndexAndRender(cursorPosition);
+    }
+
+    private void forceScrollToCharIndexAndRender(int cursorPosition) {
+        Rope rope = model.getRope();
+        RopeDrawComponent drawComponent = textArea.ropeDrawComponent;
+
+        int lineCount = rope.lineAtChar(cursorPosition);
+        int y = lineCount * drawComponent.getLatestFontHeight();
+
+        model.moveCursorRectToY(y);
+        textArea.render();
+
+        SwingUtilities.invokeLater(() -> textArea.render());
+    }
+
 }
