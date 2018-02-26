@@ -1,5 +1,6 @@
 package com.editor.model;
 
+import com.editor.model.buffer.VisibleLinesInfo;
 import org.junit.Test;
 
 import static com.google.common.collect.Lists.newArrayList;

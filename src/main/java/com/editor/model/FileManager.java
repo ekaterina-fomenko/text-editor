@@ -1,7 +1,7 @@
 package com.editor.model;
 
 import com.editor.model.undo.UndoRedoService;
-import com.editor.parser.SyntaxParser;
+import com.editor.syntax.SyntaxSetter;
 import com.editor.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -134,7 +134,7 @@ public class FileManager {
             frame.setTitle(fileName);
             int lastIndex = fileName.lastIndexOf(".");
             String fileExtension = fileName.substring(lastIndex + 1);
-            SyntaxParser.setCurrentSyntaxByFileExtension(fileExtension);
+            SyntaxSetter.setCurrentSyntaxByFileExtension(fileExtension);
         }
     }
 }

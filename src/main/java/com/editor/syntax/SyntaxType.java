@@ -1,4 +1,4 @@
-package com.editor.parser;
+package com.editor.syntax;
 
 /**
  * This class provides different syntax for text-editor.

@@ -1,4 +1,4 @@
-package com.editor.parser.keywords;
+package com.editor.syntax.keywords;
 
 import org.junit.Ignore;
 import org.junit.Test;

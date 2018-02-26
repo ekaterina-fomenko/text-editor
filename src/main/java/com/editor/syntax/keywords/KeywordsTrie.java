@@ -1,7 +1,7 @@
-package com.editor.parser.keywords;
+package com.editor.syntax.keywords;
 
-import com.editor.parser.SyntaxParser;
-import com.editor.parser.SyntaxType;
+import com.editor.syntax.SyntaxSetter;
+import com.editor.syntax.SyntaxType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -152,7 +152,7 @@ public class KeywordsTrie {
     }
 
     public static SyntaxScannerTrie getCurrentSyntaxTrie() {
-        SyntaxType syntax = SyntaxParser.getCurrentSyntax();
+        SyntaxType syntax = SyntaxSetter.getCurrentSyntax();
         switch (syntax) {
             case JAVASCRIPT:
                 return js_keywords_trie;

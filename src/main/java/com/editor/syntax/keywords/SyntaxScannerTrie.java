@@ -1,8 +1,8 @@
-package com.editor.parser.keywords;
+package com.editor.syntax.keywords;
 
 import com.editor.model.rope.Rope;
-import com.editor.parser.SyntaxParser;
-import com.editor.parser.SyntaxType;
+import com.editor.syntax.SyntaxSetter;
+import com.editor.syntax.SyntaxType;
 import com.editor.system.Constants;
 
 import java.util.HashMap;
@@ -254,15 +254,15 @@ public class SyntaxScannerTrie {
     }
 
     private boolean isJsSyntax() {
-        return SyntaxParser.getCurrentSyntax() == SyntaxType.JAVASCRIPT;
+        return SyntaxSetter.getCurrentSyntax() == SyntaxType.JAVASCRIPT;
     }
 
     private boolean isHsSyntax() {
-        return SyntaxParser.getCurrentSyntax() == SyntaxType.HASKELL;
+        return SyntaxSetter.getCurrentSyntax() == SyntaxType.HASKELL;
     }
 
     private boolean isErSyntax() {
-        return SyntaxParser.getCurrentSyntax() == SyntaxType.ERLANG;
+        return SyntaxSetter.getCurrentSyntax() == SyntaxType.ERLANG;
     }
 
     private void comment(int commentSymbolsNumber) {

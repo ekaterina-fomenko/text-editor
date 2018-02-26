@@ -1,4 +1,6 @@
-package com.editor.model;
+package com.editor.model.buffer;
+
+import com.editor.model.LineInfo;
 
 import java.util.ArrayList;
 import java.util.List;

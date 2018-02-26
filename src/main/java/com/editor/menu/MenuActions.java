@@ -2,8 +2,8 @@ package com.editor.menu;
 
 import com.editor.TextArea;
 import com.editor.model.FileManager;
-import com.editor.parser.SyntaxParser;
-import com.editor.parser.SyntaxType;
+import com.editor.syntax.SyntaxSetter;
+import com.editor.syntax.SyntaxType;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -34,16 +34,16 @@ public class MenuActions extends AbstractAction {
 
         switch (event.getText()) {
             case MenuBar.TEXT:
-                SyntaxParser.setCurrentSyntax(SyntaxType.TEXT);
+                SyntaxSetter.setCurrentSyntax(SyntaxType.TEXT);
                 break;
             case MenuBar.JAVASCRIPT:
-                SyntaxParser.setCurrentSyntax(SyntaxType.JAVASCRIPT);
+                SyntaxSetter.setCurrentSyntax(SyntaxType.JAVASCRIPT);
                 break;
             case MenuBar.ERLANG:
-                SyntaxParser.setCurrentSyntax(SyntaxType.ERLANG);
+                SyntaxSetter.setCurrentSyntax(SyntaxType.ERLANG);
                 break;
             case MenuBar.HASKELL:
-                SyntaxParser.setCurrentSyntax(SyntaxType.HASKELL);
+                SyntaxSetter.setCurrentSyntax(SyntaxType.HASKELL);
                 break;
             case MenuBar.OPEN_FILE:
                 fileManager.openFile();

@@ -1,9 +1,9 @@
-package com.editor.parser;
+package com.editor.syntax;
 
 /**
  * This class is used for setting syntax for current text
  */
-public class SyntaxParser {
+public class SyntaxSetter {
 
     private static SyntaxType CurrentSyntax = SyntaxType.TEXT;
 

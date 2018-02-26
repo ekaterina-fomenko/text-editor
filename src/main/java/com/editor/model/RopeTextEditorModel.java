@@ -1,5 +1,6 @@
 package com.editor.model;
 
+import com.editor.model.buffer.VisibleLinesInfo;
 import com.editor.model.rope.Rope;
 import com.editor.model.rope.RopeNode;
 import com.editor.model.rope.StringSizeProvider;

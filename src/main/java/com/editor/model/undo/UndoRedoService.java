@@ -5,6 +5,9 @@ import com.editor.model.RopeTextEditorModel;
 
 import java.util.Stack;
 
+/**
+ * This class is used for undo/redo
+ */
 public class UndoRedoService implements Resetable{
     private Stack<ModelState> undoStack;
     private Stack<ModelState> redoStack;
@@ -17,6 +20,7 @@ public class UndoRedoService implements Resetable{
         reset();
     }
 
+    // Push into undo stack init state of text model
     public void pushState() {
         updateWithStackSize(undoStack);
         this.undoStack.push(new ModelState(model));

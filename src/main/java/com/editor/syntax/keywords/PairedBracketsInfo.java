@@ -1,4 +1,4 @@
-package com.editor.parser.keywords;
+package com.editor.syntax.keywords;
 
 /**
  * Store info about start and end indexes if paired brackets
