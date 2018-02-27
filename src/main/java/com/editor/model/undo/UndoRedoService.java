@@ -13,7 +13,7 @@ public class UndoRedoService implements Resetable{
     private Stack<ModelState> redoStack;
     private RopeTextEditorModel model;
     // to avoid OutOfMemory
-    private static final int STACK_MAX_SIZE = 20;
+    protected static final int STACK_MAX_SIZE = 20;
 
     public UndoRedoService(RopeTextEditorModel model) {
         this.model = model;
