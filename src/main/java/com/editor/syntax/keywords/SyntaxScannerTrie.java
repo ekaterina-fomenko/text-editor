@@ -83,10 +83,12 @@ public class SyntaxScannerTrie {
     }
 
     private char moveIterator() {
-        currentIndex++;
-        currentRopeIndex++;
         if (!isAtEnd()) {
-            currentChar = rope.charAt(currentIndex);
+            currentIndex++;
+            currentRopeIndex++;
+            if (!isAtEnd()) {
+                currentChar = rope.charAt(currentIndex);
+            }
         }
 
         return currentChar;
@@ -145,7 +147,7 @@ public class SyntaxScannerTrie {
                 moveIterator();
             }
         }
-        if (node.isLeaf && !isAlpha(currentChar)) {
+        if (node.isLeaf && (!isAlpha(currentChar) || ((isAlpha(currentChar)) && isAtEnd()))) {
             Map<Integer, TokenType> keywordIndexes = IntStream.rangeClosed(startIndex, currentIndex - 1).boxed().collect(Collectors.toMap(Function.identity(), v -> TokenType.RESERVED_WORD));
             keywordsIndexesMap.putAll(keywordIndexes);
             return;
