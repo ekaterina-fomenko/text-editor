@@ -117,7 +117,7 @@ public class SyntaxScannerTrie {
         int startIndex = currentIndex;
         moveIterator();
         // Only for single line strings for now
-        while (currentChar != '"' && !isAtEndOfLine()) {
+        while (currentChar != '"' && !isAtEndOfLine() && !isAtEnd()) {
             moveIterator();
         }
         Map<Integer, TokenType> keywordIndexes = IntStream.rangeClosed(startIndex, currentIndex).boxed().collect(Collectors.toMap(Function.identity(), v -> TokenType.STRING));
@@ -181,33 +181,6 @@ public class SyntaxScannerTrie {
                 findOpenedPair();
                 moveIterator();
                 break;
-            case ',':
-                moveIterator();
-                break;
-            case '.':
-                moveIterator();
-                break;
-            case '+':
-                moveIterator();
-                break;
-            case ';':
-                moveIterator();
-                break;
-            case '*':
-                moveIterator();
-                break;
-            case '!':
-                moveIterator();
-                break;
-            case '=':
-                moveIterator();
-                break;
-            case '<':
-                moveIterator();
-                break;
-            case '>':
-                moveIterator();
-                break;
             case '/':
                 if (isJsSyntax() && match('/')) {
                     comment(2);
@@ -228,16 +201,6 @@ public class SyntaxScannerTrie {
                 } else {
                     moveIterator();
                 }
-                break;
-            case ' ':
-            case '\r':
-            case '\t':
-                // Ignore whitespace
-                moveIterator();
-                break;
-
-            case '\n':
-                moveIterator();
                 break;
             case '"':
                 string();
@@ -270,7 +233,7 @@ public class SyntaxScannerTrie {
     private void comment(int commentSymbolsNumber) {
         int startIndex = currentIndex - commentSymbolsNumber;
         // A comment goes until the end of the line
-        while (!isAtEndOfLine()) {
+        while (!isAtEndOfLine() && !isAtEnd()) {
             moveIterator();
         }
         Map<Integer, TokenType> keywordIndexes = IntStream.rangeClosed(startIndex, currentIndex).boxed().collect(Collectors.toMap(Function.identity(), v -> TokenType.COMMENT));
