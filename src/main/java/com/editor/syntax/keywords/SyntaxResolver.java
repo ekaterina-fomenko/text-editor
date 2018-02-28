@@ -1,7 +1,6 @@
 package com.editor.syntax.keywords;
 
 import com.editor.model.rope.Rope;
-import com.editor.syntax.SyntaxSetter;
 import com.editor.syntax.SyntaxType;
 import com.editor.system.Constants;
 
@@ -15,32 +14,45 @@ import java.util.stream.IntStream;
  * Also helps to find reserved words in rope.
  */
 public class SyntaxResolver {
+    private List<String> keywords;
+    private SyntaxType syntaxType;
+
     static class TrieNode {
 
         Map<Character, TrieNode> children = new TreeMap<>();
+
         boolean isLeaf;
+
     }
-
     private Stack<PairedBracketsInfo> openBracketsStack;
-
     //Store keywords indexes
     private Map<Integer, TokenType> keywordsIndexesMap;
 
     //Store paired brackets indexes
     private Map<Integer, PairedBracketsInfo> bracketsIndexesMap;
+
     private char currentChar;
+
     private int currentIndex;
     private int currentRopeIndex;
     private Rope rope;
     private TrieNode root;
 
+    public SyntaxResolver(SyntaxType syntaxType) {
+        this(Keywords.getSyntaxKeywords(syntaxType));
+
+        this.syntaxType = syntaxType;
+    }
+
     SyntaxResolver(List<String> keywords) {
+        this.keywords = keywords;
         root = new TrieNode();
-        clearAll();
+
+        resetAll();
         registerReservedWord(keywords);
     }
 
-    private void clearAll() {
+    private void resetAll() {
         currentIndex = 0;
         keywordsIndexesMap = new HashMap<>();
         bracketsIndexesMap = new HashMap<>();
@@ -75,7 +87,7 @@ public class SyntaxResolver {
 
     public void calculateTokens(Rope visibleRope, int currentRopeIndex) {
         if (!isEmpty()) {
-            clearAll();
+            resetAll();
             this.currentRopeIndex = currentRopeIndex;
             rope = visibleRope;
             while (currentIndex < rope.getLength()) {
@@ -187,21 +199,21 @@ public class SyntaxResolver {
                 moveIterator();
                 break;
             case '/':
-                if (isJsSyntax() && match('/')) {
+                if (syntaxType == SyntaxType.JAVASCRIPT && match('/')) {
                     comment(2);
                 } else {
                     moveIterator();
                 }
                 break;
             case '-':
-                if (isHsSyntax() && match('-')) {
+                if (syntaxType == SyntaxType.HASKELL && match('-')) {
                     comment(2);
                 } else {
                     moveIterator();
                 }
                 break;
             case '%':
-                if (isErSyntax()) {
+                if (syntaxType == SyntaxType.ERLANG) {
                     comment(1);
                 } else {
                     moveIterator();
@@ -221,18 +233,6 @@ public class SyntaxResolver {
                 moveIterator();
                 break;
         }
-    }
-
-    private boolean isJsSyntax() {
-        return SyntaxSetter.getCurrentSyntax() == SyntaxType.JAVASCRIPT;
-    }
-
-    private boolean isHsSyntax() {
-        return SyntaxSetter.getCurrentSyntax() == SyntaxType.HASKELL;
-    }
-
-    private boolean isErSyntax() {
-        return SyntaxSetter.getCurrentSyntax() == SyntaxType.ERLANG;
     }
 
     private void comment(int commentSymbolsNumber) {

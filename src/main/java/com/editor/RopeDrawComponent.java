@@ -5,7 +5,6 @@ import com.editor.model.Pointer;
 import com.editor.model.RopeTextEditorModel;
 import com.editor.model.buffer.VisibleLinesBufferBuilder;
 import com.editor.model.rope.Rope;
-import com.editor.syntax.keywords.Keywords;
 import com.editor.syntax.keywords.PairedBracketsInfo;
 import com.editor.syntax.keywords.SyntaxResolver;
 import com.editor.syntax.keywords.TokenType;
@@ -37,6 +36,12 @@ public class RopeDrawComponent extends JComponent {
 
     private Pointer mouseCursorPointer;
     private boolean scrollToCursorOnceOnPaint;
+
+    private final EditorSettings editorSettings;
+
+    public RopeDrawComponent(EditorSettings editorSettings) {
+        this.editorSettings = editorSettings;
+    }
 
     /**
      * Permanently redraw all text area on each action.
@@ -91,11 +96,11 @@ public class RopeDrawComponent extends JComponent {
                 ? rope.substring(charIndexOfVisibleStart, charIndexOfVisibleEnd)
                 : rope;
 
+        SyntaxResolver syntaxResolver = new SyntaxResolver(editorSettings.getCurrentSyntax());
+        syntaxResolver.calculateTokens(visibleRope, currentIndex);
 
-        SyntaxResolver keywordsTree = Keywords.getCurrentSyntaxTrie();
-        keywordsTree.calculateTokens(visibleRope, currentIndex);
-        Map<Integer, TokenType> reservedWordsSet = keywordsTree.getKeywordsIndexes();
-        Map<Integer, PairedBracketsInfo> bracketMap = keywordsTree.getBracketsIndexesMap();
+        Map<Integer, TokenType> reservedWordsSet = syntaxResolver.getKeywordsIndexes();
+        Map<Integer, PairedBracketsInfo> bracketMap = syntaxResolver.getBracketsIndexesMap();
 
         int bracketStart = -1;
         int bracketEnd = -1;

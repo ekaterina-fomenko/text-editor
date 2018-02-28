@@ -1,7 +1,6 @@
 package com.editor.syntax.keywords;
 
 import com.editor.model.rope.Rope;
-import com.editor.syntax.SyntaxSetter;
 import com.editor.syntax.SyntaxType;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,7 +21,6 @@ public class SyntaxResolverTest {
     public void setup() {
         trie = new SyntaxResolver(Arrays.asList("i","am","happy"));
     }
-
 
     @Test
     public void reservedWordsIndexesTest() {
@@ -130,7 +128,6 @@ public class SyntaxResolverTest {
     @Test
     public void commentErTest() {
         checkCommentIndexes("%", SyntaxType.ERLANG);
-
     }
 
     @Test
@@ -164,8 +161,7 @@ public class SyntaxResolverTest {
 
     @Test
     public void testSyntaxTest() {
-        SyntaxSetter.setCurrentSyntax(SyntaxType.TEXT);
-        SyntaxResolver keywordsTree = Keywords.getCurrentSyntaxTrie();
+        SyntaxResolver keywordsTree = new SyntaxResolver(SyntaxType.TEXT);
         assertTrue(keywordsTree.isEmpty());
 
         Rope rope = new Rope();
@@ -178,9 +174,8 @@ public class SyntaxResolverTest {
 
     private void checkCommentIndexes(String commentSymbol, SyntaxType syntaxType) {
         Rope rope = new Rope();
+        SyntaxResolver resolver = new SyntaxResolver(syntaxType);
         rope = rope.append(COMMENTS_STRING);
-
-        SyntaxSetter.setCurrentSyntax(syntaxType);
 
         Map<Integer, TokenType> expectedResultMap = new HashMap<>();
 
@@ -188,8 +183,8 @@ public class SyntaxResolverTest {
             expectedResultMap.put(indexOfComment, TokenType.COMMENT);
         }
 
-        trie.calculateTokens(rope, 0);
-        Map<Integer, TokenType> resultMap = trie.getKeywordsIndexes();
+        resolver.calculateTokens(rope, 0);
+        Map<Integer, TokenType> resultMap = resolver.getKeywordsIndexes();
 
         for (Integer key : expectedResultMap.keySet()) {
             assertEquals(expectedResultMap.get(key), resultMap.get(key));

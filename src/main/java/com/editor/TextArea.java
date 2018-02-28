@@ -14,9 +14,9 @@ public class TextArea {
     private DrawComponentMouseListener mouseListener;
     public UndoRedoService undoRedoService;
 
-    public TextArea(JFrame frame) {
+    public TextArea(JFrame frame, EditorSettings editorSettings) {
         this.frame = frame;
-        ropeDrawComponent = new RopeDrawComponent();
+        ropeDrawComponent = new RopeDrawComponent(editorSettings);
 
         RopeTextEditorModel.setStringSizeProvider((text, offset, count) -> {
             Graphics2D graphics = ropeDrawComponent.getLatestGraphices();

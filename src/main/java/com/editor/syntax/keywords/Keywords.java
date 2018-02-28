@@ -1,6 +1,5 @@
 package com.editor.syntax.keywords;
 
-import com.editor.syntax.SyntaxSetter;
 import com.editor.syntax.SyntaxType;
 
 import java.util.ArrayList;
@@ -140,23 +139,17 @@ public class Keywords {
             "ignore"
     );
 
-    public static SyntaxResolver js_keywords_trie = new SyntaxResolver(js_keywords_list);
-    public static SyntaxResolver er_keywords_trie = new SyntaxResolver(er_keywords_list);
-    public static SyntaxResolver hs_keywords_trie = new SyntaxResolver(hs_keywords_list);
-    public static SyntaxResolver text_keywords_trie = new SyntaxResolver(new ArrayList<>());
-
-    public static SyntaxResolver getCurrentSyntaxTrie() {
-        SyntaxType syntax = SyntaxSetter.getCurrentSyntax();
-        switch (syntax) {
+    public static List<String> getSyntaxKeywords(SyntaxType syntaxType) {
+        switch (syntaxType) {
             case JAVASCRIPT:
-                return js_keywords_trie;
+                return js_keywords_list;
             case HASKELL:
-                return hs_keywords_trie;
+                return hs_keywords_list;
             case ERLANG:
-                return er_keywords_trie;
+                return er_keywords_list;
             case TEXT:
             default:
-                return text_keywords_trie;
+                return new ArrayList<>();
         }
     }
 }

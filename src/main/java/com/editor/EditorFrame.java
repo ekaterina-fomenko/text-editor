@@ -20,6 +20,8 @@ public class EditorFrame extends JFrame {
     public TextArea textArea;
     public MenuBar menuBar;
 
+    private EditorSettings editorSettings = new EditorSettings();
+
     public EditorFrame() {
         super(TITLE);
 
@@ -27,11 +29,11 @@ public class EditorFrame extends JFrame {
         setResizable(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        textArea = new TextArea(this);
+        textArea = new TextArea(this, editorSettings);
 
         createContainerPane();
 
-        menuBar = new MenuBar(textArea);
+        menuBar = new MenuBar(textArea, editorSettings);
         setJMenuBar(menuBar.getMenuBar());
     }
 

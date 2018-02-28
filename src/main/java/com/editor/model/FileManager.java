@@ -1,7 +1,7 @@
 package com.editor.model;
 
+import com.editor.EditorSettings;
 import com.editor.model.undo.UndoRedoService;
-import com.editor.syntax.SyntaxSetter;
 import com.editor.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,36 +15,38 @@ import java.io.*;
  */
 
 public class FileManager {
-    private String fileName;
-    private String directory;
     private JFrame frame;
     private RopeTextEditorModel model;
+    private EditorSettings editorSettings;
     private UndoRedoService undoRedoService;
 
     public static Logger log = LoggerFactory.getLogger(FileManager.class);
 
-    public FileManager(JFrame frame, RopeTextEditorModel model, UndoRedoService undoRedoService) {
-        this.fileName = null;
-        this.directory = null;
+    public FileManager(JFrame frame, RopeTextEditorModel model, EditorSettings editorSettings) {
         this.frame = frame;
         this.model = model;
-        this.undoRedoService = undoRedoService;
+        this.editorSettings = editorSettings;
     }
 
-    public void openFile() {
+    public String openFile() {
         JFileChooser fileChooser = new JFileChooser();
-        if (directory != null) {
-            fileChooser.setCurrentDirectory(new File(directory));
+        String currentFile = editorSettings.getCurrentFilePath();
+        if (currentFile != null) {
+            fileChooser.setCurrentDirectory(new File(currentFile).getParentFile());
         }
+
         fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         if (fileChooser.showOpenDialog(frame) == JFileChooser.APPROVE_OPTION) {
             File file = fileChooser.getSelectedFile();
-            openFile(file);
+            return openFile(file);
+        } else {
+            return null;
         }
     }
 
-    public void openFile(File file) {
+    public String openFile(File file) {
         long openStart = System.currentTimeMillis();
+        String resultPath = null;
 
         model.reset();
         try {
@@ -57,21 +59,20 @@ public class FileManager {
                 model.append(charsRead);
             }
 
-            fileName = file.getName();
-            directory = file.getParentFile().getAbsolutePath();
-            setTitleAndSyntax();
-
+            resultPath = file.getAbsolutePath();
         } catch (FileNotFoundException e) {
-            log.error("Cannot find  file {}", fileName, e);
+            log.error("Cannot find  file {}", file.getAbsolutePath(), e);
         } catch (IOException e) {
-            log.error("Exception was occurred while trying to read file {} from buffer", fileName, e);
+            log.error("Exception was occurred while trying to read file {} from buffer", file.getAbsolutePath(), e);
         }
-        undoRedoService.reset();
+
         long openEnd = System.currentTimeMillis();
-        log.debug("File '{}' opened in {}ms", fileName, openEnd - openStart);
+        log.debug("File '{}' opened in {}ms", file.getName(), openEnd - openStart);
+
+        return resultPath;
     }
 
-    public void saveAsFile() {
+    public String saveAsFile() {
         JFileChooser chooser = new JFileChooser();
         chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         if (chooser.showSaveDialog(frame) == JFileChooser.APPROVE_OPTION) {
@@ -79,40 +80,34 @@ public class FileManager {
                 FileWriter writer = new FileWriter(chooser.getSelectedFile());
                 writer.write(model.getRope().toString());
                 writer.close();
-                fileName = chooser.getName(chooser.getSelectedFile());
-                directory = chooser.getCurrentDirectory().getPath();
-                setTitleAndSyntax();
+
                 log.info("File was saved successfully");
+
+                return chooser.getSelectedFile().getAbsolutePath();
             } catch (IOException e) {
-                log.error("Exception was occurred while trying to write into file {}", fileName, e);
+                log.error("Exception was occurred while trying to write into file {}", e);
+                return null;
             }
+        } else {
+            return null;
         }
     }
 
-    public void saveFile() {
-        if (fileName == null || directory == null) {
-            saveAsFile();
-            return;
+    public String saveFile() {
+        if (editorSettings.getCurrentFilePath() == null) {
+            return saveAsFile();
         }
+
         try {
-            FileWriter writer = new FileWriter(new File(directory + "/" + fileName));
+            FileWriter writer = new FileWriter(new File(editorSettings.getCurrentFilePath()));
             writer.write(model.getRope().toString());
             writer.close();
             log.info("File was saved successfully");
         } catch (IOException e) {
-            log.error("Exception was occurred while trying to write into file {}", fileName, e);
+            log.error("Exception was occurred while trying to write into file {}", e);
+            return null;
         }
-    }
 
-    /**
-     * Set file name as title to editor frame
-     */
-    private void setTitleAndSyntax() {
-        if (fileName != null) {
-            frame.setTitle(fileName);
-            int lastIndex = fileName.lastIndexOf(".");
-            String fileExtension = fileName.substring(lastIndex + 1);
-            SyntaxSetter.setCurrentSyntaxByFileExtension(fileExtension);
-        }
+        return editorSettings.getCurrentFilePath();
     }
 }

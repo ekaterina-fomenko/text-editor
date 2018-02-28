@@ -1,5 +1,6 @@
 package com.editor.menu;
 
+import com.editor.EditorSettings;
 import com.editor.TextArea;
 
 import javax.swing.*;
@@ -41,8 +42,8 @@ public class MenuBar {
 
     private MenuActions menuActions;
 
-    public MenuBar(TextArea textArea) {
-        menuActions = new MenuActions(textArea);
+    public MenuBar(TextArea textArea, EditorSettings editorSettings) {
+        menuActions = new MenuActions(textArea, editorSettings);
         menuBar = new JMenuBar();
 
         syntaxMenu = new JMenu(SYNTAX_MENU);
@@ -55,11 +56,11 @@ public class MenuBar {
 
         setHotKeysToFileItems();
 
-        addItemsToSyntaxMenu();
         addItemsToFileMenu();
+        addItemsToSyntaxMenu();
 
-        menuBar.add(syntaxMenu);
         menuBar.add(fileMenu);
+        menuBar.add(syntaxMenu);
     }
 
     public JMenuBar getMenuBar() {
@@ -96,9 +97,9 @@ public class MenuBar {
     }
 
     private void addItemsToSyntaxMenu() {
-        syntaxMenu.add(haskellSyntax);
         syntaxMenu.add(plainTextSyntax);
         syntaxMenu.add(javaScriptSyntax);
+        syntaxMenu.add(haskellSyntax);
         syntaxMenu.add(erlangSyntax);
     }
 
