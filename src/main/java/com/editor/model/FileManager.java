@@ -71,28 +71,6 @@ public class FileManager {
         log.debug("File '{}' opened in {}ms", fileName, openEnd - openStart);
     }
 
-    private char[] removeWindowsEndings(char[] charsRead) {
-        char illegalSymbol = '\r';
-        int counter = 0;
-        for (char c : charsRead) {
-            if (c == illegalSymbol) {
-                counter++;
-            }
-        }
-
-        char[] result = new char[charsRead.length - counter];
-
-        counter = 0;
-        for (char c : charsRead) {
-            if (c != illegalSymbol) {
-                result[counter] = c;
-                counter++;
-            }
-        }
-
-        return result;
-    }
-
     public void saveAsFile() {
         JFileChooser chooser = new JFileChooser();
         chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);

@@ -17,17 +17,7 @@ public class LineInfo {
         return length;
     }
 
-
     public int getEndIndex() {
         return getStartIndex() + getLength();
-    }
-
-    public int getIndex(int index) {
-        return Math.min(getEndIndex(), index);
-    }
-
-    @Override
-    public String toString() {
-        return String.format("LineInfo{startIndex=%d, length=%d}", startIndex, length);
     }
 }
