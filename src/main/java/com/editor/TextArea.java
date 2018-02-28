@@ -38,7 +38,7 @@ public class TextArea {
         undoRedoService = new UndoRedoService(ropeModel);
         ropeDrawComponent.setActionMap(new TextActionMap(ropeModel, this, undoRedoService));
         ropeDrawComponent.setInputMap(JComponent.WHEN_FOCUSED, new TextInputMap());
-        mouseListener = new DrawComponentMouseListener(this, ropeDrawComponent);
+        mouseListener = new DrawComponentMouseListener(this, ropeDrawComponent, ropeModel);
         createJScRollPane();
     }
 
