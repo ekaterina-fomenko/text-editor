@@ -1,7 +1,5 @@
 package com.editor;
 
-import com.editor.system.Constants;
-
 import java.util.Random;
 
 public class RandomTextBuilder {
@@ -17,7 +15,7 @@ public class RandomTextBuilder {
 
     public RandomTextBuilder addEnters(int entersCount) {
         for (int i = 0; i < entersCount; i++) {
-            text += Constants.NEW_LINE;
+            text += "\n";
         }
 
         return this;

@@ -1,7 +1,6 @@
 package com.editor;
 
 import com.editor.model.RopeTextEditorModel;
-import com.editor.model.rope.Rope;
 import com.editor.model.undo.UndoRedoService;
 
 import javax.swing.*;
@@ -9,10 +8,7 @@ import java.awt.*;
 
 public class TextArea {
     public JScrollPane jScrollPane;
-    //    public DrawComponent jComponent;
     public RopeDrawComponent ropeDrawComponent;
-
-    //    public TextEditorModel model;
     public RopeTextEditorModel ropeModel;
     public JFrame frame;
     private DrawComponentMouseListener mouseListener;

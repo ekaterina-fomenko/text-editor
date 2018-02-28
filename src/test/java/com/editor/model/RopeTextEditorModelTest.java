@@ -47,6 +47,6 @@ public class RopeTextEditorModelTest {
 
         model.setCursorPosition(8);
         model.movePointerUp(true);
-        assertEquals(2, model.getCursorPosition());
+        assertEquals(3, model.getCursorPosition());
     }
 }

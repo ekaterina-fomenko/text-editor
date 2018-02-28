@@ -1,12 +1,10 @@
 package com.editor.model.rope;
 
 import com.editor.RandomTextBuilder;
-import com.editor.system.Constants;
 import org.junit.Test;
 
 import java.util.Iterator;
 
-import static com.editor.system.Constants.*;
 import static java.lang.String.valueOf;
 import static java.text.MessageFormat.format;
 import static org.junit.Assert.assertArrayEquals;
@@ -126,15 +124,15 @@ public class RopeTest {
 
     @Test
     public void testLinesNumber() {
-        Rope rope = new Rope("1st_line" + NEW_LINE + "2nd_line");
+        Rope rope = new Rope("1st_line\n2nd_line");
         assertEquals(2, rope.getLinesNum());
 
         assertEquals(2, rope.substring(3, rope.toString().length()).getLinesNum());
         assertEquals(1, rope.substring(11, rope.toString().length()).getLinesNum());
 
-        rope = rope.append("3rd_line" + NEW_LINE + "!");
+        rope = rope.append("3rd_line\n!");
         assertEquals(3, rope.getLinesNum());
-        assertEquals(4, rope.append(NEW_LINE).getLinesNum());
+        assertEquals(4, rope.append("\n").getLinesNum());
     }
 
     @Test
@@ -157,9 +155,9 @@ public class RopeTest {
 
     @Test
     public void findCharIndexOfLine_depth2() {
-        RopeNode lChild = new RopeNode(format("A{0}B{1}C", NEW_LINE, NEW_LINE));
-        RopeNode rlChild = new RopeNode(format("D{1}E", NEW_LINE, NEW_LINE));
-        RopeNode rrChild = new RopeNode(format("F{1}G", NEW_LINE, NEW_LINE));
+        RopeNode lChild = new RopeNode("A\nB\nC");
+        RopeNode rlChild = new RopeNode("D\nE");
+        RopeNode rrChild = new RopeNode("F\nG");
         RopeNode rChild = new RopeNode(rlChild, rrChild);
         RopeNode root = new RopeNode(lChild, rChild);
         Rope rope = new Rope(root);
@@ -174,10 +172,10 @@ public class RopeTest {
 
     @Test
     public void findCharIndexOfLineWithEntersInCorners() {
-        RopeNode llChild = new RopeNode(format("{0}B{1}", NEW_LINE, NEW_LINE));
-        RopeNode lrChild = new RopeNode(format("{0}", NEW_LINE));
-        RopeNode rlChild = new RopeNode(format("D{0}E", NEW_LINE));
-        RopeNode rrChild = new RopeNode(format("{0}G", NEW_LINE));
+        RopeNode llChild = new RopeNode("\nB\n");
+        RopeNode lrChild = new RopeNode("\n");
+        RopeNode rlChild = new RopeNode("D\nE");
+        RopeNode rrChild = new RopeNode("\nG");
         RopeNode root = new RopeNode(new RopeNode(llChild, lrChild), new RopeNode(rlChild, rrChild));
         Rope rope = new Rope(root);
         /*
@@ -188,9 +186,9 @@ public class RopeTest {
 4        E
 5        G
          */
-        assertEquals(Constants.NEW_LINE.substring(0, 1), valueOf(rope.charAt(rope.charIndexOfLineStart(0))));
+        assertEquals("\n".substring(0, 1), valueOf(rope.charAt(rope.charIndexOfLineStart(0))));
         assertEquals("B", valueOf(rope.charAt(rope.charIndexOfLineStart(1))));
-        assertEquals(Constants.NEW_LINE.substring(0, 1), valueOf(rope.charAt(rope.charIndexOfLineStart(2))));
+        assertEquals("\n".substring(0, 1), valueOf(rope.charAt(rope.charIndexOfLineStart(2))));
         assertEquals("D", valueOf(rope.charAt(rope.charIndexOfLineStart(3))));
         assertEquals("E", valueOf(rope.charAt(rope.charIndexOfLineStart(4))));
         assertEquals("G", valueOf(rope.charAt(rope.charIndexOfLineStart(5))));
@@ -200,8 +198,7 @@ public class RopeTest {
     @Test
     public void testMultiLineMaxLineLen() {
         String secondLine = "+ Project technologies onboarding was very quick. Overall further development performan";
-        String text = "3) Overall" +
-                Constants.NEW_LINE +
+        String text = "3) Overall\n" +
                 secondLine;
 
         assertEquals(secondLine.length(), new Rope(text).getNode().getMaxLineLength());

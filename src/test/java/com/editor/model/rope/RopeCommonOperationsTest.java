@@ -1,6 +1,5 @@
 package com.editor.model.rope;
 
-import com.editor.system.Constants;
 import org.hamcrest.CoreMatchers;
 import org.junit.Test;
 
@@ -9,13 +8,11 @@ import java.util.List;
 import static org.junit.Assert.*;
 
 public class RopeCommonOperationsTest {
-    static final int NEW_LINE_LENGTH = Constants.NEW_LINE.length();
-
     @Test
     public void newLineShouldSplitStringToDifferentNodesOnCreate() {
         RopeCommonOperations ops = new RopeCommonOperations(4);
-        Rope rope = ops.create("Hi!" + Constants.NEW_LINE + "?");
-        assertThat(rope.printRopeNodes(), CoreMatchers.containsString("(Hi!" + Constants.NEW_LINE + ")"));
+        Rope rope = ops.create("Hi!\n?");
+        assertThat(rope.printRopeNodes(), CoreMatchers.containsString("(Hi!\n)"));
         assertThat(rope.printRopeNodes(), CoreMatchers.containsString("(?)"));
     }
 
