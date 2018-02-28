@@ -194,6 +194,18 @@ public class RopeTextEditorModel implements Resetable {
         return selectedRope.toString();
     }
 
+    public boolean isInSelection(int position) {
+        if (!isSelectionInProgress()) {
+            return false;
+        }
+
+        int selectionEnd = getSelectionEnd();
+        int cursorPosition = getCursorPosition();
+
+        return (selectionEnd <= position && position < cursorPosition) ||
+                (cursorPosition <= position && position < selectionEnd);
+    }
+
     public void resetCursorPosition() {
         cursorPosition = 0;
     }

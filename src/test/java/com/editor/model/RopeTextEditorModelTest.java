@@ -57,13 +57,16 @@ public class RopeTextEditorModelTest {
         RopeTextEditorModel model = new RopeTextEditorModel();
         model.onTextInput("abcde".toCharArray());
 
-        model.setCursorPosition(1);
+        model.setCursorPosition(2);
         model.setSelectionEnd(0);
 
-        assertEquals("a", model.getSelectedText());
+        assertEquals("ab", model.getSelectedText());
+
+        assertEquals(true, model.isInSelection(1));
+        assertEquals(false, model.isInSelection(3));
 
         model.onBackspace();
-        assertEquals("bcde", model.getRope().toString());
+        assertEquals("cde", model.getRope().toString());
     }
 
     @Test
@@ -72,12 +75,15 @@ public class RopeTextEditorModelTest {
         model.onTextInput("abcde".toCharArray());
 
         model.setCursorPosition(0);
-        model.setSelectionEnd(1);
+        model.setSelectionEnd(2);
 
-        assertEquals("a", model.getSelectedText());
+        assertEquals("ab", model.getSelectedText());
+
+        assertEquals(true, model.isInSelection(1));
+        assertEquals(false, model.isInSelection(3));
 
         model.onBackspace();
-        assertEquals("bcde", model.getRope().toString());
+        assertEquals("cde", model.getRope().toString());
     }
 
     @Test

@@ -166,7 +166,9 @@ public class RopeDrawComponent extends JComponent {
                     } else {
                         charColor = DEFAULT_CHAR_COLOR;
                     }
-                    drawChar(graphics2D, c, currentLinePixelLength, charColor, isInSelection(currentIndex) ? SELECTOR_COLOR : null);
+                    boolean inSelection = model.isInSelection(currentIndex);
+                    Color backgroundColor = inSelection ? SELECTOR_COLOR : null;
+                    drawChar(graphics2D, c, currentLinePixelLength, charColor, backgroundColor);
                 }
             }
 
@@ -252,18 +254,6 @@ public class RopeDrawComponent extends JComponent {
         }
 
         graphics2D.translate(charWidth, 0);
-    }
-
-    private boolean isInSelection(int position) {
-        if (!model.isSelectionInProgress()) {
-            return false;
-        }
-
-        int selectionEnd = model.getSelectionEnd();
-        int cursorPosition = model.getCursorPosition();
-
-        return (selectionEnd <= position && position < cursorPosition) ||
-                (cursorPosition <= position && position < selectionEnd);
     }
 
     public void setModel(RopeTextEditorModel model) {
