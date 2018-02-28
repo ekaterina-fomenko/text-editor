@@ -117,7 +117,7 @@ public class SyntaxScannerTrie {
         int startIndex = currentIndex;
         moveIterator();
         // Only for single line strings for now
-        while (currentChar != '"' && !isAtEndOfLine()) {
+        while (currentChar != '"' && !isAtEndOfLine() && !isAtEnd()) {
             moveIterator();
         }
         Map<Integer, TokenType> keywordIndexes = IntStream.rangeClosed(startIndex, currentIndex).boxed().collect(Collectors.toMap(Function.identity(), v -> TokenType.STRING));
@@ -167,9 +167,8 @@ public class SyntaxScannerTrie {
 
     private void scanSymbol() {
         switch (currentChar) {
+            //add highlighting
             case '(':
-                moveIterator();
-                break;
             case ')':
                 moveIterator();
                 break;
@@ -179,33 +178,6 @@ public class SyntaxScannerTrie {
                 break;
             case '}':
                 findOpenedPair();
-                moveIterator();
-                break;
-            case ',':
-                moveIterator();
-                break;
-            case '.':
-                moveIterator();
-                break;
-            case '+':
-                moveIterator();
-                break;
-            case ';':
-                moveIterator();
-                break;
-            case '*':
-                moveIterator();
-                break;
-            case '!':
-                moveIterator();
-                break;
-            case '=':
-                moveIterator();
-                break;
-            case '<':
-                moveIterator();
-                break;
-            case '>':
                 moveIterator();
                 break;
             case '/':
@@ -228,16 +200,6 @@ public class SyntaxScannerTrie {
                 } else {
                     moveIterator();
                 }
-                break;
-            case ' ':
-            case '\r':
-            case '\t':
-                // Ignore whitespace
-                moveIterator();
-                break;
-
-            case '\n':
-                moveIterator();
                 break;
             case '"':
                 string();
@@ -270,7 +232,7 @@ public class SyntaxScannerTrie {
     private void comment(int commentSymbolsNumber) {
         int startIndex = currentIndex - commentSymbolsNumber;
         // A comment goes until the end of the line
-        while (!isAtEndOfLine()) {
+        while (!isAtEndOfLine() && !isAtEnd()) {
             moveIterator();
         }
         Map<Integer, TokenType> keywordIndexes = IntStream.rangeClosed(startIndex, currentIndex).boxed().collect(Collectors.toMap(Function.identity(), v -> TokenType.COMMENT));
