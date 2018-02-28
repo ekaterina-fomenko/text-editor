@@ -24,22 +24,17 @@ import java.util.Map;
  */
 
 public class RopeDrawComponent extends JComponent {
-
-    private RopeTextEditorModel model;
+    public static Logger log = LoggerFactory.getLogger(RopeDrawComponent.class);
 
     public static final int CURSOR_WIDTH = 2;
-
     public static final Color DEFAULT_CHAR_COLOR = Color.black;
     public static final Color SELECTOR_COLOR = new Color(250, 128, 114, 100);
     public static final Color CURSOR_ROW_BACKGROUND_COLOR = new Color(255, 235, 205, 192);
-
     public static final int DEFAULT_Y_COORDINATE = 15;
 
-    public static Logger log = LoggerFactory.getLogger(RopeDrawComponent.class);
-
+    private RopeTextEditorModel model;
     private Rectangle visibleBounds = new Rectangle();
-
-    private Graphics2D latestGraphices = null;
+    private Graphics2D latestGraphices;
 
     private Pointer mouseCursorPointer;
     private boolean scrollToCursorOnceOnPaint;
