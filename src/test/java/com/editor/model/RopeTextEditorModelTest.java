@@ -12,11 +12,15 @@ public class RopeTextEditorModelTest {
     public void movePointerUp() throws Exception {
         RopeTextEditorModel model = new RopeTextEditorModel();
         model.append("aaaaaaaaaaaaaaaaaaaaaaaaaa".toCharArray());
-        model.setVisibleLinesInfo(new VisibleLinesInfo(newArrayList(
-                new LineInfo(0, 3),
-                new LineInfo(4, 5),
-                new LineInfo(10, 1),
-                new LineInfo(12, 100)), 'a'));
+        model.setVisibleLinesInfo(
+                new VisibleLinesInfo(
+                        newArrayList(
+                                new LineInfo(0, 3), // 0..2
+                                new LineInfo(4, 5), // 4..8
+                                new LineInfo(10, 1), // 10..10
+                                new LineInfo(12, 100)), // 12..111
+                        'a')
+        );
 
         // When
         model.movePointerDown(true);
@@ -39,7 +43,7 @@ public class RopeTextEditorModelTest {
 
         model.setCursorPosition(8);
         model.movePointerDown(true);
-        assertEquals(10, model.getCursorPosition());
+        assertEquals(11, model.getCursorPosition());
 
         model.setCursorPosition(8);
         model.movePointerUp(true);
