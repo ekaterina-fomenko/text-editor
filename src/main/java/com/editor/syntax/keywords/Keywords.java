@@ -12,7 +12,7 @@ import java.util.List;
  * Create trie for each list.
  */
 
-public class KeywordsTrie {
+public class Keywords {
     private static final List<String> js_keywords_list = Arrays.asList(
             "var",
             "new",
@@ -140,18 +140,12 @@ public class KeywordsTrie {
             "ignore"
     );
 
-    public static SyntaxScannerTrie js_keywords_trie = getKeyWordsTrie(js_keywords_list);
-    public static SyntaxScannerTrie er_keywords_trie = getKeyWordsTrie(er_keywords_list);
-    public static SyntaxScannerTrie hs_keywords_trie = getKeyWordsTrie(hs_keywords_list);
-    public static SyntaxScannerTrie text_keywords_trie = getKeyWordsTrie(new ArrayList<>());
+    public static SyntaxResolver js_keywords_trie = new SyntaxResolver(js_keywords_list);
+    public static SyntaxResolver er_keywords_trie = new SyntaxResolver(er_keywords_list);
+    public static SyntaxResolver hs_keywords_trie = new SyntaxResolver(hs_keywords_list);
+    public static SyntaxResolver text_keywords_trie = new SyntaxResolver(new ArrayList<>());
 
-    private static SyntaxScannerTrie getKeyWordsTrie(List<String> keyWords) {
-        SyntaxScannerTrie keywords_trie = new SyntaxScannerTrie();
-        keyWords.forEach(keywords_trie::registerReservedWord);
-        return keywords_trie;
-    }
-
-    public static SyntaxScannerTrie getCurrentSyntaxTrie() {
+    public static SyntaxResolver getCurrentSyntaxTrie() {
         SyntaxType syntax = SyntaxSetter.getCurrentSyntax();
         switch (syntax) {
             case JAVASCRIPT:

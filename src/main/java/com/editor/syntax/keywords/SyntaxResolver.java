@@ -5,10 +5,7 @@ import com.editor.syntax.SyntaxSetter;
 import com.editor.syntax.SyntaxType;
 import com.editor.system.Constants;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Stack;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -17,7 +14,7 @@ import java.util.stream.IntStream;
  * Prefix Tree for register list of keywords.
  * Also helps to find reserved words in rope.
  */
-public class SyntaxScannerTrie {
+public class SyntaxResolver {
     static class TrieNode {
 
         Map<Character, TrieNode> children = new TreeMap<>();
@@ -37,8 +34,10 @@ public class SyntaxScannerTrie {
     private Rope rope;
     private TrieNode root;
 
-    SyntaxScannerTrie() {
+    SyntaxResolver(List<String> keywords) {
         root = new TrieNode();
+        clearAll();
+        registerReservedWord(keywords);
     }
 
     private void clearAll() {
@@ -52,34 +51,41 @@ public class SyntaxScannerTrie {
         return bracketsIndexesMap;
     }
 
+    public Map<Integer, TokenType> getKeywordsIndexes() {
+        return keywordsIndexesMap;
+    }
+
     public boolean isEmpty() {
         return root.children.size() == 0;
     }
 
     // Using for register keywords of language
-    void registerReservedWord(String string) {
-        TrieNode node = root;
-        for (char ch : string.toLowerCase().toCharArray()) {
-            if (!node.children.containsKey(ch)) {
-                node.children.put(ch, new TrieNode());
+    private void registerReservedWord(List<String> keywords) {
+        for (String word : keywords) {
+            TrieNode node = root;
+            for (char ch : word.toLowerCase().toCharArray()) {
+                if (!node.children.containsKey(ch)) {
+                    node.children.put(ch, new TrieNode());
+                }
+                node = node.children.get(ch);
             }
-            node = node.children.get(ch);
+            node.isLeaf = true;
         }
-        node.isLeaf = true;
     }
 
-    public Map<Integer, TokenType> getKeywordsIndexes(Rope visibleRope, int currentRopeIndex) {
-        clearAll();
-        this.currentRopeIndex = currentRopeIndex;
-        rope = visibleRope;
-        while (currentIndex < rope.getLength()) {
-            currentChar = rope.charAt(currentIndex);
-            scanSymbol();
-            if (isAtEnd()) {
-                break;
+    public void calculateTokens(Rope visibleRope, int currentRopeIndex) {
+        if (!isEmpty()) {
+            clearAll();
+            this.currentRopeIndex = currentRopeIndex;
+            rope = visibleRope;
+            while (currentIndex < rope.getLength()) {
+                currentChar = rope.charAt(currentIndex);
+                scanSymbol();
+                if (isAtEnd()) {
+                    break;
+                }
             }
         }
-        return keywordsIndexesMap;
     }
 
     private char moveIterator() {

@@ -6,24 +6,21 @@ import com.editor.syntax.SyntaxType;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class SyntaxScannerTrieTest {
+public class SyntaxResolverTest {
 
-    private SyntaxScannerTrie trie;
+    private SyntaxResolver trie;
     public static final String COMMENTS_STRING = "oh, let's find our comment: //is it js? -- or hs % may be erl";
 
     @Before
     public void setup() {
-        trie = new SyntaxScannerTrie();
-
-        trie.registerReservedWord("i");
-        trie.registerReservedWord("am");
-        trie.registerReservedWord("happy");
+        trie = new SyntaxResolver(Arrays.asList("i","am","happy"));
     }
 
 
@@ -33,7 +30,8 @@ public class SyntaxScannerTrieTest {
         Rope rope = new Rope();
         rope = rope.append(ropeStr);
 
-        Map<Integer, TokenType> resultMap = trie.getKeywordsIndexes(rope, 0);
+        trie.calculateTokens(rope, 0);
+        Map<Integer, TokenType> resultMap = trie.getKeywordsIndexes();
 
         for (int i = 0; i < ropeStr.length(); i++) {
             if (ropeStr.charAt(i) == ' ') {
@@ -68,7 +66,8 @@ public class SyntaxScannerTrieTest {
         expectedResultMap.put(19, TokenType.STRING);
         expectedResultMap.put(20, TokenType.STRING);
 
-        Map<Integer, TokenType> resultMap = trie.getKeywordsIndexes(rope, 0);
+        trie.calculateTokens(rope, 0);
+        Map<Integer, TokenType> resultMap = trie.getKeywordsIndexes();
 
 
         for (Integer key : expectedResultMap.keySet()) {
@@ -87,7 +86,8 @@ public class SyntaxScannerTrieTest {
             expectedResultMap.put(i, TokenType.STRING);
         }
 
-        Map<Integer, TokenType> resultMap = trie.getKeywordsIndexes(rope, 0);
+        trie.calculateTokens(rope, 0);
+        Map<Integer, TokenType> resultMap = trie.getKeywordsIndexes();
 
 
         for (Integer key : expectedResultMap.keySet()) {
@@ -109,7 +109,8 @@ public class SyntaxScannerTrieTest {
         expectedResultMap.put(11, TokenType.RESERVED_WORD);
         expectedResultMap.put(12, TokenType.RESERVED_WORD);
 
-        Map<Integer, TokenType> resultMap = trie.getKeywordsIndexes(rope, 0);
+        trie.calculateTokens(rope, 0);
+        Map<Integer, TokenType> resultMap = trie.getKeywordsIndexes();
 
         for (Integer key : expectedResultMap.keySet()) {
             assertEquals(expectedResultMap.get(key), resultMap.get(key));
@@ -138,7 +139,8 @@ public class SyntaxScannerTrieTest {
         Rope rope = new Rope();
         rope = rope.append(ropeStr);
 
-        Map<Integer, TokenType> resultMap = trie.getKeywordsIndexes(rope, 0);
+        trie.calculateTokens(rope, 0);
+        Map<Integer, TokenType> resultMap = trie.getKeywordsIndexes();
         assertTrue(resultMap.isEmpty());
     }
 
@@ -149,7 +151,7 @@ public class SyntaxScannerTrieTest {
         Rope rope = new Rope();
         rope = rope.append(ropeStr);
 
-        Map<Integer, TokenType> keywordsIndexes = trie.getKeywordsIndexes(rope, 0);
+        trie.calculateTokens(rope, 0);
         Map<Integer, PairedBracketsInfo> bracketsMap = trie.getBracketsIndexesMap();
 
         assertEquals(2, bracketsMap.size());
@@ -163,12 +165,13 @@ public class SyntaxScannerTrieTest {
     @Test
     public void testSyntaxTest() {
         SyntaxSetter.setCurrentSyntax(SyntaxType.TEXT);
-        SyntaxScannerTrie keywordsTree = KeywordsTrie.getCurrentSyntaxTrie();
+        SyntaxResolver keywordsTree = Keywords.getCurrentSyntaxTrie();
         assertTrue(keywordsTree.isEmpty());
 
         Rope rope = new Rope();
         rope = rope.append(COMMENTS_STRING);
-        Map<Integer, TokenType> keywordsIndexes = trie.getKeywordsIndexes(rope, 0);
+        trie.calculateTokens(rope, 0);
+        Map<Integer, TokenType> keywordsIndexes = trie.getKeywordsIndexes();
 
         assertTrue(keywordsIndexes.isEmpty());
     }
@@ -185,7 +188,8 @@ public class SyntaxScannerTrieTest {
             expectedResultMap.put(indexOfComment, TokenType.COMMENT);
         }
 
-        Map<Integer, TokenType> resultMap = trie.getKeywordsIndexes(rope, 0);
+        trie.calculateTokens(rope, 0);
+        Map<Integer, TokenType> resultMap = trie.getKeywordsIndexes();
 
         for (Integer key : expectedResultMap.keySet()) {
             assertEquals(expectedResultMap.get(key), resultMap.get(key));

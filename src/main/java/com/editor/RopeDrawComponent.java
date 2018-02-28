@@ -5,10 +5,10 @@ import com.editor.model.Pointer;
 import com.editor.model.RopeTextEditorModel;
 import com.editor.model.buffer.VisibleLinesBufferBuilder;
 import com.editor.model.rope.Rope;
+import com.editor.syntax.keywords.Keywords;
 import com.editor.syntax.keywords.PairedBracketsInfo;
-import com.editor.syntax.keywords.KeywordsTrie;
+import com.editor.syntax.keywords.SyntaxResolver;
 import com.editor.syntax.keywords.TokenType;
-import com.editor.syntax.keywords.SyntaxScannerTrie;
 import com.editor.system.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,7 +16,6 @@ import org.slf4j.LoggerFactory;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -93,13 +92,14 @@ public class RopeDrawComponent extends JComponent {
                 : rope;
 
 
-        SyntaxScannerTrie keywordsTree = KeywordsTrie.getCurrentSyntaxTrie();
-        Map<Integer, TokenType> reservedWordsSet = keywordsTree.isEmpty() ? new HashMap<>() : keywordsTree.getKeywordsIndexes(visibleRope, currentIndex);
+        SyntaxResolver keywordsTree = Keywords.getCurrentSyntaxTrie();
+        keywordsTree.calculateTokens(visibleRope, currentIndex);
+        Map<Integer, TokenType> reservedWordsSet = keywordsTree.getKeywordsIndexes();
+        Map<Integer, PairedBracketsInfo> bracketMap = keywordsTree.getBracketsIndexesMap();
 
         int bracketStart = -1;
         int bracketEnd = -1;
         Color bracketColor = DEFAULT_CHAR_COLOR;
-        Map<Integer, PairedBracketsInfo> bracketMap = keywordsTree.isEmpty() ? new HashMap<>() : keywordsTree.getBracketsIndexesMap();
 
         if (bracketMap.containsKey(model.getCursorPosition()) || bracketMap.containsKey(model.getCursorPosition() - 1)) {
             bracketInfo = bracketMap.containsKey(model.getCursorPosition()) ? bracketMap.get(model.getCursorPosition()) : bracketMap.get(model.getCursorPosition() - 1);
