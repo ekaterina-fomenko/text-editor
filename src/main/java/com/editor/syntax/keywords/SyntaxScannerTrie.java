@@ -167,9 +167,8 @@ public class SyntaxScannerTrie {
 
     private void scanSymbol() {
         switch (currentChar) {
+            //add highlighting
             case '(':
-                moveIterator();
-                break;
             case ')':
                 moveIterator();
                 break;

@@ -133,13 +133,44 @@ public class SyntaxScannerTrieTest {
     }
 
     @Test
-    public void symbolsTest(){
-        String ropeStr = "< ii \r\n ooops \t + we are the champions ***";
+    public void symbolsTest() {
+        String ropeStr = "< ii \r\n ooops \t + (we are the champions) ***";
         Rope rope = new Rope();
         rope = rope.append(ropeStr);
 
-        Map<Integer, TokenType> resultMap = trie.getKeywordsIndexes(rope,0);
+        Map<Integer, TokenType> resultMap = trie.getKeywordsIndexes(rope, 0);
         assertTrue(resultMap.isEmpty());
+    }
+
+    @Test
+    public void pairedBracketsTest() {
+        String ropeStr = "In the {magic wood} lives} one {little-little girl...";
+
+        Rope rope = new Rope();
+        rope = rope.append(ropeStr);
+
+        Map<Integer, TokenType> keywordsIndexes = trie.getKeywordsIndexes(rope, 0);
+        Map<Integer, PairedBracketsInfo> bracketsMap = trie.getBracketsIndexesMap();
+
+        assertEquals(2, bracketsMap.size());
+        assertEquals(7, bracketsMap.get(7).getStartInd());
+        assertEquals(7, bracketsMap.get(18).getStartInd());
+        assertEquals(18, bracketsMap.get(7).getEndInd());
+        assertEquals(18, bracketsMap.get(18).getEndInd());
+
+    }
+
+    @Test
+    public void testSyntaxTest() {
+        SyntaxSetter.setCurrentSyntax(SyntaxType.TEXT);
+        SyntaxScannerTrie keywordsTree = KeywordsTrie.getCurrentSyntaxTrie();
+        assertTrue(keywordsTree.isEmpty());
+
+        Rope rope = new Rope();
+        rope = rope.append(COMMENTS_STRING);
+        Map<Integer, TokenType> keywordsIndexes = trie.getKeywordsIndexes(rope, 0);
+
+        assertTrue(keywordsIndexes.isEmpty());
     }
 
     private void checkCommentIndexes(String commentSymbol, SyntaxType syntaxType) {
