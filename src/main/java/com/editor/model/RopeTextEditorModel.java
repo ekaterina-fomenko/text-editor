@@ -17,7 +17,6 @@ import java.util.List;
  */
 
 public class RopeTextEditorModel implements Resetable {
-    public static final boolean IS_MULTI_SYMBOL_NEWLINE = System.lineSeparator().length() > 1;
     private int cursorPosition;
     private Rectangle cursorRect = new Rectangle();
     private int selectionEnd;
@@ -53,6 +52,7 @@ public class RopeTextEditorModel implements Resetable {
 
     public void onEnter() {
         char[] text = System.lineSeparator().toCharArray();
+
         onTextInput(text);
     }
 
@@ -87,8 +87,8 @@ public class RopeTextEditorModel implements Resetable {
 
         Rope ropeStart = rope.substring(0, start);
         Rope ropeEnd = rope.substring(end, rope.getLength());
-        Rope ropeResult = ropeStart.append(ropeEnd);
-        rope = ropeResult;
+
+        rope = ropeStart.append(ropeEnd);
         cursorPosition = start;
         dropSelection();
     }
@@ -111,10 +111,6 @@ public class RopeTextEditorModel implements Resetable {
         }
 
         decCursorPosition(1);
-
-        if (visibleLinesInfo.isEOL(cursorPosition) && IS_MULTI_SYMBOL_NEWLINE) {
-            decCursorPosition(1);
-        }
     }
 
     public boolean movePointerUp(boolean dropSelection) {
@@ -131,10 +127,6 @@ public class RopeTextEditorModel implements Resetable {
         } else {
             int prevLineIndex = currentLineBufferIndex - 1;
             int prevLineLen = linesInfo.get(prevLineIndex).getLength();
-            if (IS_MULTI_SYMBOL_NEWLINE) {
-                prevLineLen--;
-            }
-
             int lengthToLineStart = Math.min(cursorPosition - linesInfo.get(currentLineBufferIndex).getStartIndex(), prevLineLen);
             cursorPosition = linesInfo.get(prevLineIndex).getStartIndex() + lengthToLineStart;
         }
@@ -259,10 +251,6 @@ public class RopeTextEditorModel implements Resetable {
         this.visibleLinesInfo = visibleLinesInfo;
     }
 
-    public void insertToPointer(char[] chars) {
-        rope = rope.insert(cursorPosition, chars);
-    }
-
     public Rectangle getCursorRect() {
         return cursorRect;
     }
@@ -277,14 +265,6 @@ public class RopeTextEditorModel implements Resetable {
         }
 
         cursorRect = new Rectangle(cursorRect.x, y, cursorRect.width, cursorRect.height);
-    }
-
-    public void moveCursorRectTo(Point point) {
-        if (cursorRect == null) {
-            return;
-        }
-
-        cursorRect = new Rectangle(point.x, point.y, cursorRect.width, cursorRect.height);
     }
 
     public void setRope(Rope rope) {

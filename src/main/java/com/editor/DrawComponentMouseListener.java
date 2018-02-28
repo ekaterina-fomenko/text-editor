@@ -1,6 +1,7 @@
 package com.editor;
 
 import com.editor.model.Pointer;
+import com.editor.model.RopeTextEditorModel;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -13,13 +14,12 @@ import java.awt.event.MouseMotionListener;
 public class DrawComponentMouseListener implements MouseListener, MouseMotionListener {
     private final TextArea textArea;
     private final RopeDrawComponent drawComponent;
-//    todo: make mouse selection
-//    private final TextEditorModel model;
+    private final RopeTextEditorModel model;
 
-    public DrawComponentMouseListener(TextArea textArea, RopeDrawComponent drawComponent) {
+    public DrawComponentMouseListener(TextArea textArea, RopeDrawComponent drawComponent, RopeTextEditorModel model) {
         this.textArea = textArea;
         this.drawComponent = drawComponent;
-//        this.model = model;
+        this.model = model;
     }
 
     @Override
@@ -28,7 +28,7 @@ public class DrawComponentMouseListener implements MouseListener, MouseMotionLis
 
     @Override
     public void mousePressed(MouseEvent e) {
-//        model.dropSelection();
+        model.dropSelection();
         drawComponent.setMouseCursorPointer(new Pointer(e.getY(), e.getX()));
         textArea.render(false);
     }

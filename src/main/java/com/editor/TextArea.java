@@ -1,7 +1,6 @@
 package com.editor;
 
 import com.editor.model.RopeTextEditorModel;
-import com.editor.model.rope.Rope;
 import com.editor.model.undo.UndoRedoService;
 
 import javax.swing.*;
@@ -9,10 +8,7 @@ import java.awt.*;
 
 public class TextArea {
     public JScrollPane jScrollPane;
-    //    public DrawComponent jComponent;
     public RopeDrawComponent ropeDrawComponent;
-
-    //    public TextEditorModel model;
     public RopeTextEditorModel ropeModel;
     public JFrame frame;
     private DrawComponentMouseListener mouseListener;
@@ -38,7 +34,7 @@ public class TextArea {
         undoRedoService = new UndoRedoService(ropeModel);
         ropeDrawComponent.setActionMap(new TextActionMap(ropeModel, this, undoRedoService));
         ropeDrawComponent.setInputMap(JComponent.WHEN_FOCUSED, new TextInputMap());
-        mouseListener = new DrawComponentMouseListener(this, ropeDrawComponent);
+        mouseListener = new DrawComponentMouseListener(this, ropeDrawComponent, ropeModel);
         createJScRollPane();
     }
 

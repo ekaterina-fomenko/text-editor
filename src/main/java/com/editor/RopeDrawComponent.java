@@ -166,7 +166,7 @@ public class RopeDrawComponent extends JComponent {
                     } else {
                         charColor = DEFAULT_CHAR_COLOR;
                     }
-                    drawChar(graphics2D, c, charColor, isInSelection(currentIndex) ? SELECTOR_COLOR : null);
+                    drawChar(graphics2D, c, currentLinePixelLength, charColor, isInSelection(currentIndex) ? SELECTOR_COLOR : null);
                 }
             }
 
@@ -238,16 +238,20 @@ public class RopeDrawComponent extends JComponent {
         this.visibleBounds = visibleBounds;
     }
 
-    private void drawChar(Graphics2D graphics2D, char currentChar, Color color, Color backgroundColor) {
-        if (backgroundColor != null) {
-            graphics2D.setColor(backgroundColor);
-            graphics2D.fillRect(0, 3, graphics2D.getFontMetrics().charWidth(currentChar), graphics2D.getFontMetrics().getHeight());
+    private void drawChar(Graphics2D graphics2D, char currentChar, int currentLinePixelLength, Color color, Color backgroundColor) {
+        int charWidth = graphics2D.getFontMetrics().charWidth(currentChar);
+        if (currentLinePixelLength >= visibleBounds.x && currentLinePixelLength <= visibleBounds.x + visibleBounds.width) {
+            if (backgroundColor != null) {
+                graphics2D.setColor(backgroundColor);
+                graphics2D.fillRect(0, 3, charWidth, graphics2D.getFontMetrics().getHeight());
+            }
+
+            graphics2D.setColor(color);
+            // Not so fast for each char separately
+            graphics2D.drawString(Character.toString(currentChar), 0, DEFAULT_Y_COORDINATE);
         }
 
-        graphics2D.setColor(color);
-        //Not so fast for each char separately
-        graphics2D.drawString(Character.toString(currentChar), 0, DEFAULT_Y_COORDINATE);
-        graphics2D.translate(graphics2D.getFontMetrics().charWidth(currentChar), 0);
+        graphics2D.translate(charWidth, 0);
     }
 
     private boolean isInSelection(int position) {
