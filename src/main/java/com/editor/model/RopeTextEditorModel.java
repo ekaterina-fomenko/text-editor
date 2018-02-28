@@ -19,7 +19,7 @@ import java.util.List;
 public class RopeTextEditorModel implements Resetable {
     private int cursorPosition;
     private Rectangle cursorRect = new Rectangle();
-    private int selectionEnd;
+    private int selectionEnd = -1;
     private Rope rope;
     private VisibleLinesInfo visibleLinesInfo = new VisibleLinesInfo();
 
@@ -37,6 +37,10 @@ public class RopeTextEditorModel implements Resetable {
 
     public void setCursorPosition(int cursorPosition) {
         this.cursorPosition = cursorPosition;
+    }
+
+    public void setRope(Rope rope) {
+        this.rope = rope;
     }
 
     public Rope getRope() {
@@ -179,12 +183,12 @@ public class RopeTextEditorModel implements Resetable {
     }
 
     public String getSelectedText() {
-        int end = Math.max(selectionEnd, cursorPosition);
-        int start = Math.min(selectionEnd, cursorPosition);
-
-        if (start < 0 || end < 0) {
+        if (!isSelectionInProgress()) {
             return "";
         }
+
+        int end = Math.max(selectionEnd, cursorPosition);
+        int start = Math.min(selectionEnd, cursorPosition);
 
         Rope selectedRope = rope.substring(start, end);
         return selectedRope.toString();
@@ -260,14 +264,6 @@ public class RopeTextEditorModel implements Resetable {
     }
 
     public void moveCursorRectToY(int y) {
-        if (cursorRect == null) {
-            return;
-        }
-
         cursorRect = new Rectangle(cursorRect.x, y, cursorRect.width, cursorRect.height);
-    }
-
-    public void setRope(Rope rope) {
-        this.rope = rope;
     }
 }
