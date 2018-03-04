@@ -2,7 +2,6 @@ package com.editor.syntax.keywords;
 
 import com.editor.model.rope.Rope;
 import com.editor.syntax.SyntaxType;
-import com.editor.system.Constants;
 
 import java.util.*;
 import java.util.function.Function;
@@ -114,7 +113,7 @@ public class SyntaxResolver {
 
     private boolean match(char expected) {
         currentChar = moveIterator();
-        if (currentChar == Constants.NEW_LINE_CHAR) {
+        if (currentChar == '\n') {
             return false;
         }
         if (currentChar != expected) {
@@ -124,7 +123,7 @@ public class SyntaxResolver {
     }
 
     private boolean isAtEndOfLine() {
-        return currentChar == Constants.NEW_LINE_CHAR;
+        return currentChar == '\n';
     }
 
     private boolean isAtEnd() {

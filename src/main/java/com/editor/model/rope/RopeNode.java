@@ -1,6 +1,5 @@
 package com.editor.model.rope;
 
-import com.editor.system.Constants;
 import com.editor.utils.StringUtils;
 
 /**
@@ -63,7 +62,7 @@ public class RopeNode {
             linesNum = 1;
             maxLineLengthInfo = new MaxLineLengthInfo(0, 0, 0);
         } else {
-            final char NEW_LINE = Constants.NEW_LINE_CHAR;
+            final char NEW_LINE = '\n';
 
             int index = StringUtils.indexOf(value, NEW_LINE, 0);
             int lengthToFirstBoundary = index < 0 ? -1 : sizeProvider.getWidth(value, 0, index);

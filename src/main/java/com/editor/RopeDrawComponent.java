@@ -7,7 +7,6 @@ import com.editor.model.rope.Rope;
 import com.editor.syntax.keywords.PairedBracketsInfo;
 import com.editor.syntax.keywords.SyntaxResolver;
 import com.editor.syntax.keywords.TokenType;
-import com.editor.system.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -219,7 +218,7 @@ public class RopeDrawComponent extends JComponent {
         int height = graphics2D.getFontMetrics().getHeight();
         if (mouseCursorPointer != null
                 && currentLineIndex == mouseCursorPointer.y / height
-                && (distanceFromLineStart >= mouseCursorPointer.x || currentChar.equals(Constants.NEW_LINE_CHAR))) {
+                && (distanceFromLineStart >= mouseCursorPointer.x || currentChar.equals('\n'))) {
             model.setCursorPosition(currentCharIndex);
             mouseCursorPointer = null;
         }
