@@ -19,7 +19,8 @@ public class TextArea {
 
     public TextArea(JFrame frame, EditorSettings editorSettings) {
         this.frame = frame;
-        ropeDrawComponent = new RopeDrawComponent(editorSettings);
+        ropeModel = new RopeTextEditorModel();
+        ropeDrawComponent = new RopeDrawComponent(editorSettings, ropeModel);
         ClipboardAdapter clipboardAdapter = new ClipboardAdapterImpl(new ClipboardSystemApiImpl());
         TextActionMap actionMap = new TextActionMap(ropeModel, this, undoRedoService, clipboardAdapter);
 
@@ -34,8 +35,6 @@ public class TextArea {
             return result;
         });
 
-        ropeModel = new RopeTextEditorModel();
-        ropeDrawComponent.setModel(ropeModel);
         undoRedoService = new UndoRedoService(ropeModel);
         ropeDrawComponent.setActionMap(actionMap);
         ropeDrawComponent.setInputMap(JComponent.WHEN_FOCUSED, new TextInputMap());

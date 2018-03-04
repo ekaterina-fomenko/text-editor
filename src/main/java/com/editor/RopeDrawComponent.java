@@ -40,8 +40,9 @@ public class RopeDrawComponent extends JComponent {
 
     private final EditorSettings editorSettings;
 
-    public RopeDrawComponent(EditorSettings editorSettings) {
+    public RopeDrawComponent(EditorSettings editorSettings, RopeTextEditorModel model) {
         this.editorSettings = editorSettings;
+        this.model = model;
     }
 
     /**
@@ -97,7 +98,7 @@ public class RopeDrawComponent extends JComponent {
         SyntaxResolver syntaxResolver = new SyntaxResolver(editorSettings.getCurrentSyntax());
         syntaxResolver.calculateTokens(visibleRope, currentIndex);
 
-        Map<Integer, TokenType> reservedWordsSet = syntaxResolver.getKeywordsIndexes();
+        Map<Integer, TokenType> reservedWordsMap = syntaxResolver.getKeywordsIndexes();
         PairedBracketsInfo currentBracketsInfo = getVisibleBracketsInfo(syntaxResolver);
 
         int cursorLine = rope.lineAtChar(model.getCursorPosition());
@@ -142,7 +143,7 @@ public class RopeDrawComponent extends JComponent {
                     currentLineLength = 0;
                     currentLinePixelLength = 0;
                 } else {
-                    Color charColor = getCurrentCharColor(currentIndex, reservedWordsSet, currentBracketsInfo, i);
+                    Color charColor = getCurrentCharColor(currentIndex, reservedWordsMap, currentBracketsInfo, i);
                     Color backgroundColor = model.isInSelection(currentIndex) ? SELECTOR_COLOR : null;
                     drawChar(graphics2D, c, currentLinePixelLength, charColor, backgroundColor);
                 }
@@ -177,10 +178,10 @@ public class RopeDrawComponent extends JComponent {
         graphics2D.setTransform(transform);
     }
 
-    private Color getCurrentCharColor(int currentIndex, Map<Integer, TokenType> reservedWordsSet, PairedBracketsInfo currentBracketsInfo, int i) {
+    protected Color getCurrentCharColor(int currentIndex, Map<Integer, TokenType> reservedWordsMap, PairedBracketsInfo currentBracketsInfo, int currentIndexOfVisibleRope) {
         Color charColor;
-        if (reservedWordsSet.containsKey(i)) {
-            charColor = reservedWordsSet.get(i).getColor();
+        if (reservedWordsMap.containsKey(currentIndexOfVisibleRope)) {
+            charColor = reservedWordsMap.get(currentIndexOfVisibleRope).getColor();
         } else if (currentBracketsInfo.getStartInd() == currentIndex || currentBracketsInfo.getEndInd() == currentIndex) {
             charColor = currentBracketsInfo.getTokenType().getColor();
         } else {
@@ -260,10 +261,6 @@ public class RopeDrawComponent extends JComponent {
         graphics2D.translate(charWidth, 0);
     }
 
-    public void setModel(RopeTextEditorModel model) {
-        this.model = model;
-    }
-
     public void setMouseCursorPointer(Point mouseCursorPointer) {
         this.mouseCursorPointer = mouseCursorPointer;
     }
@@ -284,7 +281,7 @@ public class RopeDrawComponent extends JComponent {
         return latestGraphics.getFontMetrics().getHeight();
     }
 
-    private PairedBracketsInfo getVisibleBracketsInfo(SyntaxResolver syntaxResolver) {
+    protected PairedBracketsInfo getVisibleBracketsInfo(SyntaxResolver syntaxResolver) {
         Map<Integer, PairedBracketsInfo> bracketMap = syntaxResolver.getBracketsIndexesMap();
         PairedBracketsInfo currentBracketsInfo = new PairedBracketsInfo();
 
