@@ -45,7 +45,7 @@ public class TextInputMap extends InputMap {
 
     public static final String CTRL_Z = "CTRL+z";
 
-    public static final Object CTRL_A = "CTRL+a";
+    public static final String CTRL_A = "CTRL+a";
 
     {
         for (char i = ' '; i <= '~'; i++) {

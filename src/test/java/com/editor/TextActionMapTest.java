@@ -85,7 +85,7 @@ public class TextActionMapTest {
     }
 
     @Test
-    public void testVertNavigation() {
+    public void testVertShiftNavigation() {
         model.append("ABC\nABC".toCharArray());
         model.setCursorPosition(0);
 
@@ -101,6 +101,51 @@ public class TextActionMapTest {
         invokeAction(TextInputMap.DOWN_SHIFT, null);
 
         assertEquals("ABC\nAB", model.getSelectedText());
+    }
+
+    @Test
+    public void testVertNavigation() {
+        model.append("ABC\nABC".toCharArray());
+        model.setCursorPosition(0);
+
+        model.setVisibleLinesInfo(new VisibleLinesInfo(Lists.newArrayList(
+                new LineInfo(0, 3),
+                new LineInfo(4, 3)
+        ), 'A'));
+
+        invokeAction(TextInputMap.RIGHT, null);
+        invokeAction(TextInputMap.RIGHT, null);
+        invokeAction(TextInputMap.DOWN, null);
+        invokeAction(TextInputMap.UP, null);
+        invokeAction(TextInputMap.DOWN, null);
+
+        assertEquals(6, model.getCursorPosition());
+    }
+
+    @Test
+    public void testLineEndStart() {
+        model.append("ABC\nABC".toCharArray());
+        model.setCursorPosition(0);
+
+        model.setVisibleLinesInfo(new VisibleLinesInfo(Lists.newArrayList(
+                new LineInfo(0, 3),
+                new LineInfo(4, 3)
+        ), 'A'));
+
+        invokeAction(TextInputMap.LINE_END, null);
+        assertEquals(3, model.getCursorPosition());
+
+        invokeAction(TextInputMap.LINE_START, null);
+        assertEquals(0, model.getCursorPosition());
+    }
+
+    @Test
+    public void testCtrlA() {
+        model.append("ABC\nDE".toCharArray());
+
+        invokeAction(TextInputMap.CTRL_A, null);
+
+        assertEquals("ABC\nDE", model.getSelectedText());
     }
 
     @Test

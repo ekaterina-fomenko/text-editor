@@ -55,6 +55,10 @@ public class EditorFrame extends JFrame {
         menuBar = new MenuBar(textArea, editorSettings, fileManager, undoRedoService);
         mouseListener = new DrawComponentMouseListener(textArea, ropeDrawComponent, model);
 
+        ropeDrawComponent.addMouseListener(mouseListener);
+        ropeDrawComponent.addMouseMotionListener(mouseListener);
+        ropeDrawComponent.setCursor(new Cursor(Cursor.TEXT_CURSOR));
+
         setJMenuBar(menuBar.getMenuBar());
     }
 
@@ -74,10 +78,6 @@ public class EditorFrame extends JFrame {
 
             textArea.render(false);
         });
-
-        ropeDrawComponent.addMouseListener(mouseListener);
-        ropeDrawComponent.addMouseMotionListener(mouseListener);
-        ropeDrawComponent.setCursor(new Cursor(Cursor.TEXT_CURSOR));
 
         return jScrollPane;
     }
