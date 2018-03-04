@@ -38,7 +38,7 @@ public class TextActionMap extends ActionMap {
                     model.onTextInput(chars);
                     undoService.pushState();
 
-                    forceScrollToCursorAndRender();
+                    scrollToCursorPositionAndRender();
                 }
             });
         }
@@ -49,7 +49,7 @@ public class TextActionMap extends ActionMap {
                 model.onBackspace();
                 undoService.pushState();
 
-                forceScrollToCursorAndRender();
+                scrollToCursorPositionAndRender();
             }
         });
 
@@ -59,7 +59,7 @@ public class TextActionMap extends ActionMap {
                 model.onEnter();
                 undoService.pushState();
 
-                forceScrollToCursorAndRender();
+                scrollToCursorPositionAndRender();
             }
         });
 
@@ -67,7 +67,8 @@ public class TextActionMap extends ActionMap {
             @Override
             public void actionPerformed(ActionEvent e) {
                 model.movePointerRight(true);
-                textArea.render();
+
+                scrollToCursorPositionAndRender();
             }
         });
 
@@ -76,7 +77,8 @@ public class TextActionMap extends ActionMap {
             public void actionPerformed(ActionEvent e) {
                 model.startOrContinueSelection();
                 model.movePointerRight(false);
-                textArea.render();
+
+                scrollToCursorPositionAndRender();
             }
         });
 
@@ -84,7 +86,8 @@ public class TextActionMap extends ActionMap {
             @Override
             public void actionPerformed(ActionEvent e) {
                 model.movePointerLeft(true);
-                textArea.render();
+
+                scrollToCursorPositionAndRender();
             }
         });
 
@@ -93,7 +96,8 @@ public class TextActionMap extends ActionMap {
             public void actionPerformed(ActionEvent e) {
                 model.startOrContinueSelection();
                 model.movePointerLeft(false);
-                textArea.render();
+
+                scrollToCursorPositionAndRender();
             }
         });
 
@@ -105,7 +109,7 @@ public class TextActionMap extends ActionMap {
                     scrollOnLine(VerticalDirection.UP);
                 }
 
-                forceScrollToCursorAndRender();
+                scrollToCursorRectAndRender();
             }
         });
 
@@ -114,7 +118,8 @@ public class TextActionMap extends ActionMap {
             public void actionPerformed(ActionEvent e) {
                 model.startOrContinueSelection();
                 model.movePointerUp(false);
-                textArea.render();
+
+                scrollToCursorRectAndRender();
             }
         });
 
@@ -126,7 +131,7 @@ public class TextActionMap extends ActionMap {
                     scrollOnLine(VerticalDirection.DOWN);
                 }
 
-                textArea.render(true);
+                scrollToCursorRectAndRender();
             }
         });
 
@@ -135,7 +140,8 @@ public class TextActionMap extends ActionMap {
             public void actionPerformed(ActionEvent e) {
                 model.startOrContinueSelection();
                 model.movePointerDown(false);
-                textArea.render();
+
+                scrollToCursorRectAndRender();
             }
         });
 
@@ -150,7 +156,7 @@ public class TextActionMap extends ActionMap {
                 model.onTextInput(clipboardTextOpt.get().toCharArray());
                 undoService.pushState();
 
-                forceScrollToCursorAndRender();
+                scrollToCursorPositionAndRender();
             }
         });
 
@@ -159,7 +165,6 @@ public class TextActionMap extends ActionMap {
             public void actionPerformed(ActionEvent e) {
                 String selectedText = model.getSelectedText();
                 clipboardAdapter.setText(selectedText);
-                textArea.render();
             }
         });
 
@@ -168,7 +173,7 @@ public class TextActionMap extends ActionMap {
             public void actionPerformed(ActionEvent e) {
                 model.movePointerToInitPosition(true);
 
-                forceScrollToCursorAndRender();
+                scrollToCursorPositionAndRender();
             }
         });
 
@@ -177,7 +182,7 @@ public class TextActionMap extends ActionMap {
             public void actionPerformed(ActionEvent e) {
                 model.movePointerToLastPosition(true);
 
-                forceScrollToCursorAndRender();
+                scrollToCursorPositionAndRender();
             }
         });
 
@@ -186,7 +191,7 @@ public class TextActionMap extends ActionMap {
             public void actionPerformed(ActionEvent e) {
                 model.movePointerToTheEndOfLine(true);
 
-                forceScrollToCursorAndRender();
+                scrollToCursorPositionAndRender();
             }
         });
 
@@ -195,7 +200,7 @@ public class TextActionMap extends ActionMap {
             public void actionPerformed(ActionEvent e) {
                 model.movePointerToStartOfLine(true);
 
-                forceScrollToCursorAndRender();
+                scrollToCursorPositionAndRender();
             }
         });
 
@@ -204,7 +209,7 @@ public class TextActionMap extends ActionMap {
             public void actionPerformed(ActionEvent e) {
                 undoService.undo();
 
-                forceScrollToCursorAndRender();
+                scrollToCursorPositionAndRender();
             }
         });
 
@@ -213,7 +218,7 @@ public class TextActionMap extends ActionMap {
             public void actionPerformed(ActionEvent e) {
                 undoService.redo();
 
-                forceScrollToCursorAndRender();
+                scrollToCursorPositionAndRender();
             }
         });
 
@@ -223,9 +228,13 @@ public class TextActionMap extends ActionMap {
                 model.movePointerToLastPosition(true);
                 model.setSelectionEnd(0);
 
-                textArea.render();
+                scrollToCursorRectAndRender();
             }
         });
+    }
+
+    private void scrollToCursorRectAndRender() {
+        textArea.render();
     }
 
     private void scrollOnLine(VerticalDirection direction) {
@@ -246,7 +255,7 @@ public class TextActionMap extends ActionMap {
         ropeDrawComponent.scrollRectToVisible(model.getCursorRect());
     }
 
-    public void forceScrollToCursorAndRender() {
+    public void scrollToCursorPositionAndRender() {
         Rope rope = model.getRope();
         int cursorPosition = model.getCursorPosition();
         if (cursorPosition < 0) {
@@ -268,7 +277,7 @@ public class TextActionMap extends ActionMap {
         int y = lineCount * drawComponent.getLatestFontHeight();
 
         model.moveCursorRectToY(y);
-        textArea.render();
+        scrollToCursorRectAndRender();
 
         SwingUtilities.invokeLater(() -> textArea.render());
     }

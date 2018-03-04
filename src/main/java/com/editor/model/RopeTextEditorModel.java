@@ -103,6 +103,7 @@ public class RopeTextEditorModel implements Resetable {
         }
 
         if ('\r' == visibleLinesInfo.getCursorChar()) {
+            // For Windows
             incCursorPosition(1);
         }
 
@@ -112,6 +113,11 @@ public class RopeTextEditorModel implements Resetable {
     public void movePointerLeft(boolean dropSelection) {
         if (dropSelection) {
             dropSelection();
+        }
+
+        if ('\r' == visibleLinesInfo.getCursorChar()) {
+            // For Windows
+            decCursorPosition(1);
         }
 
         decCursorPosition(1);

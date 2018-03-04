@@ -20,13 +20,16 @@ import java.util.Map;
  */
 
 public class RopeDrawComponent extends JComponent {
-    public static Logger log = LoggerFactory.getLogger(RopeDrawComponent.class);
-
+    public static final int CURSOR_LEFT_OFFSET = 5;
+    public static final int CURSOR_RIGHT_OFFSET = 10;
     public static final int CURSOR_WIDTH = 2;
+
     public static final Color DEFAULT_CHAR_COLOR = Color.black;
     public static final Color SELECTOR_COLOR = new Color(250, 128, 114, 100);
     public static final Color CURSOR_ROW_BACKGROUND_COLOR = new Color(255, 235, 205, 192);
     public static final int DEFAULT_Y_COORDINATE = 15;
+
+    public static Logger log = LoggerFactory.getLogger(RopeDrawComponent.class);
 
     private RopeTextEditorModel model;
     private Rectangle visibleBounds = new Rectangle();
@@ -161,7 +164,7 @@ public class RopeDrawComponent extends JComponent {
 
         if (scrollToCursorOnceOnPaint) {
             revalidate();
-            scrollRectToVisible(model.getCursorRect());
+            scrollToCursorRect();
             scrollToCursorOnceOnPaint = false;
         }
 
@@ -180,6 +183,15 @@ public class RopeDrawComponent extends JComponent {
             charColor = DEFAULT_CHAR_COLOR;
         }
         return charColor;
+    }
+
+    private void scrollToCursorRect() {
+        Rectangle cursorRect = model.getCursorRect();
+        scrollRectToVisible(new Rectangle(
+                cursorRect.x - CURSOR_LEFT_OFFSET,
+                cursorRect.y,
+                cursorRect.width + CURSOR_RIGHT_OFFSET,
+                cursorRect.height));
     }
 
     private int getIndexOfVisibleEnd(Rope rope, int endRow) {
