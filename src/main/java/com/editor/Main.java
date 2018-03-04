@@ -19,15 +19,9 @@ public class Main {
         EditorFrame frame = new EditorFrame();
         frame.setVisible(true);
 
-        String fileArgPrefix = "--file:";
-        String fileArg = Stream.of(args)
-                .filter(i -> i.startsWith(fileArgPrefix))
-                .findAny()
-                .orElse(null);
+        String fileName = tryFetFileArg(args);
 
-        if (fileArg != null) {
-            String fileName = fileArg.substring(fileArgPrefix.length());
-
+        if (fileName != null) {
             EventQueue.invokeLater(() -> {
                 frame.getFileManager().openFile(new File(fileName));
                 frame.renderTextArea();
@@ -35,5 +29,18 @@ public class Main {
         }
 
         return frame;
+    }
+
+    static String tryFetFileArg(String[] args) {
+        String fileArgPrefix = "--file:";
+        String fileArg = Stream.of(args)
+                .filter(i -> i.startsWith(fileArgPrefix))
+                .findAny()
+                .orElse(null);
+
+        if (fileArg != null) {
+            return fileArg.substring(fileArgPrefix.length());
+        }
+        return null;
     }
 }

@@ -14,7 +14,7 @@ public class UndoRedoServiceTest {
     private static final String TEXT_2 = "What is the amazing snow behind the window.";
 
     @Test
-    public void undoOnBackspaceTest() {
+    public void testUndoOnBackspace() {
         ropeTextEditorModel = new RopeTextEditorModel();
         ropeTextEditorModel.onTextInput(TEXT_1.toCharArray());
         undoRedoService = new UndoRedoService(ropeTextEditorModel);
@@ -33,7 +33,7 @@ public class UndoRedoServiceTest {
     }
 
     @Test
-    public void undoOnInsertAndBackspaceTest() {
+    public void testUndoOnInsertAndBackspace() {
         ropeTextEditorModel = new RopeTextEditorModel();
         undoRedoService = new UndoRedoService(ropeTextEditorModel);
         ropeTextEditorModel.onTextInput(TEXT_2.toCharArray());
@@ -58,7 +58,7 @@ public class UndoRedoServiceTest {
     }
 
     @Test
-    public void redoTest() {
+    public void testRedo() {
         ropeTextEditorModel = new RopeTextEditorModel();
         undoRedoService = new UndoRedoService(ropeTextEditorModel);
         ropeTextEditorModel.onTextInput(TEXT_1.toCharArray());
@@ -93,7 +93,7 @@ public class UndoRedoServiceTest {
     }
 
     @Test
-    public void undoWithMaxStackSizeTest() {
+    public void testUndoWithMaxStackSize() {
         ropeTextEditorModel = new RopeTextEditorModel();
         ropeTextEditorModel.onTextInput(TEXT_2.toCharArray()); //"What is the amazing snow behind the window."
         undoRedoService = new UndoRedoService(ropeTextEditorModel);
