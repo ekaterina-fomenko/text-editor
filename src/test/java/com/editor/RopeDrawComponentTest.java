@@ -97,6 +97,22 @@ public class RopeDrawComponentTest {
         assertEquals(TokenType.DEFAULT, resultBracketsInfo.getTokenType());
     }
 
+    @Test
+    public void getIndexOfVisibleEndTest() {
+        String str = "Sunnyyy;)";
+        model.append(str.toCharArray());
+        int result = ropeDrawComponent.getIndexOfVisibleEnd(model.getRope(), 0);
+        assertEquals(str.length(), result);
+    }
+
+    @Test
+    public void getIndexOfVisibleEndTest2() {
+        String str = "Omg! \nIt is sunnyyy;)";
+        model.append(str.toCharArray());
+        int result = ropeDrawComponent.getIndexOfVisibleEnd(model.getRope(), 0);
+        assertEquals(str.indexOf('\n') + 1, result);
+    }
+
     private PairedBracketsInfo putPairedBracketsInfoToMap(Map<Integer, PairedBracketsInfo> bracketMap) {
         PairedBracketsInfo pairedBracketsInfo = new PairedBracketsInfo(1);
         pairedBracketsInfo.setEndInd(3);

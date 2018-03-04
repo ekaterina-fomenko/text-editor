@@ -199,7 +199,7 @@ public class RopeDrawComponent extends JComponent {
                 cursorRect.height));
     }
 
-    private int getIndexOfVisibleEnd(Rope rope, int endRow) {
+    protected int getIndexOfVisibleEnd(Rope rope, int endRow) {
         int indexOfLastPlusOneLineStart = rope.charIndexOfLineStart(endRow + 1);
         if (indexOfLastPlusOneLineStart == -1) {
             return rope.getLength();
