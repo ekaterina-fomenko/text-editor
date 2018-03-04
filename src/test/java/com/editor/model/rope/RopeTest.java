@@ -100,29 +100,6 @@ public class RopeTest {
     }
 
     @Test
-    public void iteratorTest() {
-        String value = "Ho_ho_ho!_New_year_is_not_finished;)";
-        Rope rope = new RopeCommonOperations(4).create(value);
-        Iterator<Character> iterator = rope.iterator(10);
-        String expectedResult = value.substring(10);
-        StringBuilder result = new StringBuilder();
-        while (iterator.hasNext()) {
-            result.append(iterator.next());
-        }
-        assertEquals(expectedResult, result.toString());
-    }
-
-    @Test
-    public void shouldBeAbleToIteraterThroughSingleNodeRope() {
-        Rope rope = new RopeCommonOperations(10).create("ABC");
-        Iterator<Character> iterator = rope.iterator(0);
-        assertEquals('A', (char) iterator.next());
-        assertEquals('B', (char) iterator.next());
-        assertEquals('C', (char) iterator.next());
-        assertEquals(false, iterator.hasNext());
-    }
-
-    @Test
     public void testLinesNumber() {
         Rope rope = new Rope("1st_line\n2nd_line");
         assertEquals(2, rope.getLinesNum());

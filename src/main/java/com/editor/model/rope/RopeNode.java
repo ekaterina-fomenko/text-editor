@@ -42,18 +42,6 @@ public class RopeNode {
         this.maxLineLengthInfo = MaxLineLengthInfo.fromChildNodes(left, right);
     }
 
-    public RopeIterator iterator(final int start) {
-        if (start < 0 || start > getLength())
-            throw new IndexOutOfBoundsException("Rope index out of range: " + start);
-
-        RopeNode leftChild = getLeft();
-        if (leftChild != null && start >= leftChild.getLength()) {
-            return getRight().iterator(start - getLeft().getLength());
-        } else {
-            return new RopeIterator(this, start);
-        }
-    }
-
     /*
     *Create leaf node
     */

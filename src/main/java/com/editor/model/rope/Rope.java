@@ -114,10 +114,6 @@ public class Rope {
         return node.toChars();
     }
 
-    public RopeIterator iterator(final int start) {
-        return node.iterator(start);
-    }
-
     public String printRopeNodes() {
         RopeNode localNode = node;
         StringBuilder stringBuilder = new StringBuilder();
