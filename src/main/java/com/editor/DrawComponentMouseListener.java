@@ -1,8 +1,8 @@
 package com.editor;
 
-import com.editor.model.Pointer;
 import com.editor.model.RopeTextEditorModel;
 
+import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -29,7 +29,7 @@ public class DrawComponentMouseListener implements MouseListener, MouseMotionLis
     @Override
     public void mousePressed(MouseEvent e) {
         model.dropSelection();
-        drawComponent.setMouseCursorPointer(new Pointer(e.getY(), e.getX()));
+        drawComponent.setMouseCursorPointer(new Point(e.getX(), e.getY()));
         textArea.render(false);
     }
 

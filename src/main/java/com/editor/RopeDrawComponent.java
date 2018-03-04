@@ -1,7 +1,6 @@
 package com.editor;
 
 import com.editor.model.LineInfo;
-import com.editor.model.Pointer;
 import com.editor.model.RopeTextEditorModel;
 import com.editor.model.buffer.VisibleLinesBufferBuilder;
 import com.editor.model.rope.Rope;
@@ -34,7 +33,7 @@ public class RopeDrawComponent extends JComponent {
     private Rectangle visibleBounds = new Rectangle();
     private Graphics2D latestGraphices;
 
-    private Pointer mouseCursorPointer;
+    private Point mouseCursorPointer;
     private boolean scrollToCursorOnceOnPaint;
 
     private final EditorSettings editorSettings;
@@ -215,8 +214,8 @@ public class RopeDrawComponent extends JComponent {
                                                      Character currentChar) {
         int height = graphics2D.getFontMetrics().getHeight();
         if (mouseCursorPointer != null
-                && currentLineIndex == mouseCursorPointer.row / height
-                && (distanceFromLineStart >= mouseCursorPointer.column || currentChar.equals(Constants.NEW_LINE_CHAR))) {
+                && currentLineIndex == mouseCursorPointer.y / height
+                && (distanceFromLineStart >= mouseCursorPointer.x || currentChar.equals(Constants.NEW_LINE_CHAR))) {
             model.setCursorPosition(currentCharIndex);
             mouseCursorPointer = null;
         }
@@ -260,7 +259,7 @@ public class RopeDrawComponent extends JComponent {
         this.model = model;
     }
 
-    public void setMouseCursorPointer(Pointer mouseCursorPointer) {
+    public void setMouseCursorPointer(Point mouseCursorPointer) {
         this.mouseCursorPointer = mouseCursorPointer;
     }
 
