@@ -4,6 +4,9 @@ import com.editor.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.StringWriter;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -193,6 +196,26 @@ public class Rope {
         }
 
         return -1;
+    }
+
+    public void writeTo(FileWriter writer) {
+        writeTo(writer, node);
+    }
+
+    private void writeTo(FileWriter writer, RopeNode ropeNode) {
+        if (ropeNode == null) {
+            return;
+        }
+        if (ropeNode.isLeaf()) {
+            try {
+                writer.write(ropeNode.getValue(), 0, ropeNode.getValue().length);
+            } catch (IOException e) {
+                log.error("Error while writing to file", e);
+            }
+            return;
+        }
+        writeTo(writer, ropeNode.getLeft());
+        writeTo(writer, ropeNode.getRight());
     }
 
     private void appendToBuilder(StringBuilder builder, RopeNode ropeNode) {

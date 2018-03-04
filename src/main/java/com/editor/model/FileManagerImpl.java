@@ -108,7 +108,7 @@ public class FileManagerImpl implements FileManager {
 
         try {
             FileWriter writer = new FileWriter(new File(editorSettings.getCurrentFilePath()));
-            writer.write(model.getRope().toString());
+            model.getRope().writeTo(writer);
             writer.close();
             log.info("File was saved successfully");
         } catch (IOException e) {
