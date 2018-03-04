@@ -101,10 +101,7 @@ public class RopeDrawComponent extends JComponent {
         PairedBracketsInfo currentBracketsInfo = getVisibleBracketsInfo(syntaxResolver);
 
         int cursorLine = rope.lineAtChar(model.getCursorPosition());
-        AffineTransform transform = graphics2D.getTransform();
-        graphics.translate(0, graphics2D.getFontMetrics().getHeight() * (cursorLine - startRow));
-        drawLineBackground(graphics2D, CURSOR_ROW_BACKGROUND_COLOR);
-        graphics2D.setTransform(transform);
+        drawBackground(graphics, graphics2D, cursorLine - startRow);
 
         int i = 0;
         while (i < visibleRope.getLength() && linesCountRendered < linesCountToRender) {
@@ -171,6 +168,13 @@ public class RopeDrawComponent extends JComponent {
 
         long paintEnd = System.currentTimeMillis();
         log.debug("Paint: {}ms", paintEnd - paintStart);
+    }
+
+    private void drawBackground(Graphics graphics, Graphics2D graphics2D, int index) {
+        AffineTransform transform = graphics2D.getTransform();
+        graphics.translate(0, graphics2D.getFontMetrics().getHeight() * index);
+        drawLineBackground(graphics2D, CURSOR_ROW_BACKGROUND_COLOR);
+        graphics2D.setTransform(transform);
     }
 
     private Color getCurrentCharColor(int currentIndex, Map<Integer, TokenType> reservedWordsSet, PairedBracketsInfo currentBracketsInfo, int i) {
