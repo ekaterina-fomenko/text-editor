@@ -26,14 +26,14 @@ public class RopeDrawComponentTest {
     SyntaxResolver syntaxResolver;
 
     @Before
-    public void setup(){
+    public void setup() {
         EditorSettings editorSettings = new EditorSettings();
         model = new RopeTextEditorModel();
         ropeDrawComponent = new RopeDrawComponent(editorSettings, model);
     }
 
     @Test
-    public void getReservedWordCharColorTest(){
+    public void getReservedWordCharColorTest() {
         int currentIndex = 3;
         int currentVisibleIndex = 2;
         Map<Integer, TokenType> reservedWordsMap = new HashMap<>();
@@ -41,11 +41,11 @@ public class RopeDrawComponentTest {
         PairedBracketsInfo pairedBracketsInfo = new PairedBracketsInfo(3);
 
         Color charColor = ropeDrawComponent.getCurrentCharColor(currentIndex, reservedWordsMap, pairedBracketsInfo, currentVisibleIndex);
-        assertEquals(charColor,TokenType.RESERVED_WORD.getColor());
+        assertEquals(charColor, TokenType.RESERVED_WORD.getColor());
     }
 
     @Test
-    public void getBracketCharColorTest(){
+    public void getBracketCharColorTest() {
         int currentIndex = 3;
         int currentVisibleIndex = 2;
         Map<Integer, TokenType> reservedWordsMap = new HashMap<>();
@@ -53,11 +53,11 @@ public class RopeDrawComponentTest {
         PairedBracketsInfo pairedBracketsInfo = new PairedBracketsInfo(3);
 
         Color charColor = ropeDrawComponent.getCurrentCharColor(currentIndex, reservedWordsMap, pairedBracketsInfo, currentVisibleIndex);
-        assertEquals(charColor,TokenType.BRACKET.getColor());
+        assertEquals(charColor, TokenType.BRACKET.getColor());
     }
 
     @Test
-    public void getDefaultCharColorTest(){
+    public void getDefaultCharColorTest() {
         int currentIndex = 3;
         int currentVisibleIndex = 2;
         Map<Integer, TokenType> reservedWordsMap = new HashMap<>();
@@ -65,23 +65,44 @@ public class RopeDrawComponentTest {
         PairedBracketsInfo pairedBracketsInfo = new PairedBracketsInfo(0);
 
         Color charColor = ropeDrawComponent.getCurrentCharColor(currentIndex, reservedWordsMap, pairedBracketsInfo, currentVisibleIndex);
-        assertEquals(charColor,TokenType.DEFAULT.getColor());
+        assertEquals(charColor, TokenType.DEFAULT.getColor());
     }
 
     @Test
-    public void getVisibleBracketsInfoTest(){
-        //getVisibleBracketsInfo(SyntaxResolver syntaxResolver) {
+    public void getVisibleBracketsInfoTest() {
         model.setCursorPosition(1);
         Map<Integer, PairedBracketsInfo> bracketMap = new HashMap<>();
+
+        PairedBracketsInfo pairedBracketsInfo = putPairedBracketsInfoToMap(bracketMap);
+
+        doReturn(bracketMap).when(syntaxResolver).getBracketsIndexesMap();
+
+        PairedBracketsInfo resultBracketsInfo = ropeDrawComponent.getVisibleBracketsInfo(syntaxResolver);
+
+        assertEquals(resultBracketsInfo, pairedBracketsInfo);
+    }
+
+    @Test
+    public void getVisibleBracketsEmptyInfoTest() {
+        model.setCursorPosition(5);
+        Map<Integer, PairedBracketsInfo> bracketMap = new HashMap<>();
+        putPairedBracketsInfoToMap(bracketMap);
+
+        doReturn(bracketMap).when(syntaxResolver).getBracketsIndexesMap();
+
+        PairedBracketsInfo resultBracketsInfo = ropeDrawComponent.getVisibleBracketsInfo(syntaxResolver);
+
+        assertEquals(-1, resultBracketsInfo.getStartInd());
+        assertEquals(-1, resultBracketsInfo.getEndInd());
+        assertEquals(TokenType.DEFAULT, resultBracketsInfo.getTokenType());
+    }
+
+    private PairedBracketsInfo putPairedBracketsInfoToMap(Map<Integer, PairedBracketsInfo> bracketMap) {
         PairedBracketsInfo pairedBracketsInfo = new PairedBracketsInfo(1);
         pairedBracketsInfo.setEndInd(3);
-        bracketMap.put(1,pairedBracketsInfo);
-        bracketMap.put(3,pairedBracketsInfo);
-        doReturn(bracketMap).when(syntaxResolver).getBracketsIndexesMap();
-        PairedBracketsInfo bracketsInfo = ropeDrawComponent.getVisibleBracketsInfo(syntaxResolver);
-
-        assertEquals(1,bracketsInfo.getStartInd());
-        assertEquals(3,bracketsInfo.getEndInd());
+        bracketMap.put(1, pairedBracketsInfo);
+        bracketMap.put(3, pairedBracketsInfo);
+        return pairedBracketsInfo;
     }
 
 }
