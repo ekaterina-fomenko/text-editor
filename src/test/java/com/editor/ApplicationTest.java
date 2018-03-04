@@ -38,7 +38,7 @@ public class ApplicationTest {
         EditorFrame frame = Main.openApplication(new String[]{"--file:" + tempFile.getAbsolutePath()});
 
         EventQueue.invokeLater(() -> {
-            assertEquals("text text text", frame.textArea.ropeModel.getRope().toString());
+            assertEquals("text text text", frame.getModel().getRope().toString());
         });
     }
 }

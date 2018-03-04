@@ -2,6 +2,8 @@ package com.editor.menu;
 
 import com.editor.EditorSettings;
 import com.editor.TextArea;
+import com.editor.model.FileManagerImpl;
+import com.editor.model.undo.UndoRedoService;
 
 import javax.swing.*;
 import java.awt.event.KeyEvent;
@@ -42,8 +44,8 @@ public class MenuBar {
 
     private MenuActions menuActions;
 
-    public MenuBar(TextArea textArea, EditorSettings editorSettings) {
-        menuActions = new MenuActions(textArea, editorSettings);
+    public MenuBar(TextArea textArea, EditorSettings editorSettings, FileManagerImpl fileManager, UndoRedoService undoRedoService) {
+        menuActions = new MenuActions(textArea, editorSettings, fileManager, undoRedoService);
         menuBar = new JMenuBar();
 
         syntaxMenu = new JMenu(SYNTAX_MENU);

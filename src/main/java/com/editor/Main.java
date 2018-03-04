@@ -29,8 +29,8 @@ public class Main {
             String fileName = fileArg.substring(fileArgPrefix.length());
 
             EventQueue.invokeLater(() -> {
-                frame.menuBar.getMenuActions().fileManager.openFile(new File(fileName));
-                frame.textArea.render();
+                frame.getFileManager().openFile(new File(fileName));
+                frame.renderTextArea();
             });
         }
 

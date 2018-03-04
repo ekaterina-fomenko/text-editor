@@ -1,8 +1,9 @@
 package com.editor.menu;
 
-import com.editor.EditorSettings;
-import com.editor.TextArea;
+import com.editor.*;
+import com.editor.Renderer;
 import com.editor.model.FileManager;
+import com.editor.model.FileManagerImpl;
 import com.editor.model.undo.UndoRedoService;
 import com.editor.syntax.SyntaxType;
 
@@ -14,25 +15,20 @@ import java.awt.event.ActionEvent;
  */
 
 public class MenuActions extends AbstractAction {
-
-    private final JFrame frame;
-    public JComponent jComponent;
-    public TextArea textArea;
-    private EditorSettings editorSettings;
-    public FileManager fileManager;
+    private final Renderer renderer;
+    private final EditorSettings editorSettings;
+    private final FileManager fileManager;
     private final UndoRedoService undoRedoService;
 
-    public MenuActions(TextArea textArea, EditorSettings editorSettings) {
-        this.textArea = textArea;
+    public MenuActions(Renderer renderer,
+                       EditorSettings editorSettings,
+                       FileManagerImpl fileManager,
+                       UndoRedoService undoRedoService) {
+        this.renderer = renderer;
         this.editorSettings = editorSettings;
-        this.jComponent = textArea.ropeDrawComponent;
-        undoRedoService = textArea.undoRedoService;
-        frame = textArea.frame;
+        this.undoRedoService = undoRedoService;
 
-        this.fileManager = new FileManager(
-                textArea.frame,
-                textArea.ropeModel,
-                editorSettings);
+        this.fileManager = fileManager;
     }
 
     @Override
@@ -70,7 +66,7 @@ public class MenuActions extends AbstractAction {
                 break;
         }
 
-        textArea.render();
+        renderer.render();
     }
 
     private void updateSyntaxAndFilePath(String currentFilePath) {
@@ -80,7 +76,7 @@ public class MenuActions extends AbstractAction {
             int lastIndex = currentFilePath.lastIndexOf(".");
             String fileExtension = currentFilePath.substring(lastIndex + 1);
             editorSettings.setCurrentSyntax(SyntaxType.getByExtension(fileExtension));
-            frame.setTitle(editorSettings.getFileName());
+            renderer.getFrame().setTitle(editorSettings.getFileName());
         }
     }
 }

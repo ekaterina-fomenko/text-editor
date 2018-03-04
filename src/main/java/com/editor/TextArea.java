@@ -9,23 +9,26 @@ import com.editor.system.ClipboardSystemApiImpl;
 import javax.swing.*;
 import java.awt.*;
 
-public class TextArea {
-    public JScrollPane jScrollPane;
-    public RopeDrawComponent ropeDrawComponent;
-    public RopeTextEditorModel ropeModel;
-    public JFrame frame;
-    private DrawComponentMouseListener mouseListener;
-    public UndoRedoService undoRedoService;
+public class TextArea implements Renderer {
+    private final RopeDrawComponent ropeDrawComponent;
+    private final RopeTextEditorModel ropeModel;
+    private final JFrame frame;
+    private final UndoRedoService undoRedoService;
+    private final JScrollPane jScrollPane;
 
-    public TextArea(JFrame frame, EditorSettings editorSettings) {
+    public TextArea(JFrame frame,
+                    RopeTextEditorModel ropeModel,
+                    UndoRedoService undoRedoService,
+                    JScrollPane jScrollPane,
+                    RopeDrawComponent ropeDrawComponent) {
         this.frame = frame;
-        ropeModel = new RopeTextEditorModel();
-        ropeDrawComponent = new RopeDrawComponent(editorSettings, ropeModel);
+        this.jScrollPane = jScrollPane;
+        this.ropeDrawComponent = ropeDrawComponent;
         ClipboardAdapter clipboardAdapter = new ClipboardAdapterImpl(new ClipboardSystemApiImpl());
-        TextActionMap actionMap = new TextActionMap(ropeModel, this, undoRedoService, clipboardAdapter);
+        TextActionMap actionMap = new TextActionMap(ropeModel, this, undoRedoService, clipboardAdapter, this.ropeDrawComponent);
 
         RopeTextEditorModel.setStringSizeProvider((text, offset, count) -> {
-            Graphics2D graphics = ropeDrawComponent.getLatestGraphics();
+            Graphics2D graphics = this.ropeDrawComponent.getLatestGraphics();
             if (graphics == null) {
                 return 0;
             }
@@ -36,33 +39,14 @@ public class TextArea {
         });
 
         undoRedoService = new UndoRedoService(ropeModel);
-        ropeDrawComponent.setActionMap(actionMap);
-        ropeDrawComponent.setInputMap(JComponent.WHEN_FOCUSED, new TextInputMap());
-        mouseListener = new DrawComponentMouseListener(this, ropeDrawComponent, ropeModel);
-        createJScRollPane();
+        this.ropeModel = ropeModel;
+        this.undoRedoService = undoRedoService;
+
+        this.ropeDrawComponent.setActionMap(actionMap);
+        this.ropeDrawComponent.setInputMap(JComponent.WHEN_FOCUSED, new TextInputMap());
     }
 
-    private void createJScRollPane() {
-
-        jScrollPane = new JScrollPane(ropeDrawComponent);
-        jScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        jScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-
-        jScrollPane.getHorizontalScrollBar().addAdjustmentListener(listener -> {
-            ropeDrawComponent.setVisibleBounds(jScrollPane.getViewport().getViewRect());
-            render(false);
-        });
-
-        jScrollPane.getVerticalScrollBar().addAdjustmentListener(listener -> {
-            ropeDrawComponent.setVisibleBounds(jScrollPane.getViewport().getViewRect());
-            render(false);
-        });
-
-        ropeDrawComponent.addMouseListener(mouseListener);
-        ropeDrawComponent.addMouseMotionListener(mouseListener);
-        ropeDrawComponent.setCursor(new Cursor(Cursor.TEXT_CURSOR));
-    }
-
+    @Override
     public void render() {
         render(true);
     }
@@ -74,16 +58,16 @@ public class TextArea {
      * @param forceScrollToCursor says if we need to move scroll to cursor position
      */
 
+    @Override
     public void render(boolean forceScrollToCursor) {
         this.ropeDrawComponent.revalidate();
         this.ropeDrawComponent.setVisibleBounds(jScrollPane.getViewport().getViewRect());
         this.ropeDrawComponent.repaint();
         this.ropeDrawComponent.setScrollToCursorOnceOnPaint(forceScrollToCursor);
+    }
 
-//todo: remove
-/*        if (!SyntaxParser.isTextSyntax()) {
-            ropeModel.updatePairedBrackets();
-        }*/
-
+    @Override
+    public JFrame getFrame() {
+        return frame;
     }
 }

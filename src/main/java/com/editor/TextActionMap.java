@@ -17,15 +17,21 @@ import java.util.Optional;
 
 public class TextActionMap extends ActionMap {
     private final ClipboardAdapter clipboardAdapter;
-    private RopeTextEditorModel model;
-    private TextArea textArea;
-    private UndoRedoService undoService;
+    private final RopeTextEditorModel model;
+    private final TextArea textArea;
+    private final UndoRedoService undoService;
+    private final RopeDrawComponent ropeDrawComponent;
 
-    public TextActionMap(RopeTextEditorModel model, TextArea area, UndoRedoService undoRedoService, ClipboardAdapter clipboardAdapter) {
+    public TextActionMap(RopeTextEditorModel model,
+                         TextArea area,
+                         UndoRedoService undoRedoService,
+                         ClipboardAdapter clipboardAdapter,
+                         RopeDrawComponent ropeDrawComponent) {
         this.model = model;
         this.textArea = area;
         this.clipboardAdapter = clipboardAdapter;
         this.undoService = undoRedoService;
+        this.ropeDrawComponent = ropeDrawComponent;
     }
 
     {
@@ -237,7 +243,6 @@ public class TextActionMap extends ActionMap {
     }
 
     private void scrollOnLine(VerticalDirection direction) {
-        RopeDrawComponent ropeDrawComponent = this.textArea.ropeDrawComponent;
         Rectangle cursorRect = model.getCursorRect();
         int charHeight = ropeDrawComponent.getLatestFontHeight();
 
@@ -270,10 +275,8 @@ public class TextActionMap extends ActionMap {
 
     private void forceScrollToCharIndexAndRender(int cursorPosition) {
         Rope rope = model.getRope();
-        RopeDrawComponent drawComponent = textArea.ropeDrawComponent;
-
         int lineCount = rope.lineAtChar(cursorPosition);
-        int y = lineCount * drawComponent.getLatestFontHeight();
+        int y = lineCount * ropeDrawComponent.getLatestFontHeight();
 
         model.moveCursorRectToY(y);
         scrollToCursorRectAndRender();

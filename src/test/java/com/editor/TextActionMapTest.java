@@ -5,7 +5,6 @@ import com.editor.model.RopeTextEditorModel;
 import com.editor.model.buffer.VisibleLinesInfo;
 import com.editor.model.undo.UndoRedoService;
 import com.editor.system.ClipboardAdapter;
-import com.editor.system.ClipboardAdapterImpl;
 import com.google.common.collect.Lists;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,11 +31,14 @@ public class TextActionMapTest {
         undoRedoService = Mockito.mock(UndoRedoService.class);
         clipboardAdapter = Mockito.mock(ClipboardAdapter.class);
 
-        textActionMap = new TextActionMap(model,
-                new TextArea(new JFrame(), new EditorSettings()),
+        final EditorSettings editorSettings = new EditorSettings();
+        final RopeTextEditorModel ropeModel = new RopeTextEditorModel();
+        textActionMap = new TextActionMap(
+                model,
+                new TextArea(new JFrame(), ropeModel, new UndoRedoService(model), new JScrollPane(), new RopeDrawComponent(editorSettings, ropeModel)),
                 undoRedoService,
-                clipboardAdapter
-        );
+                clipboardAdapter,
+                new RopeDrawComponent(new EditorSettings(), model));
 
     }
 
