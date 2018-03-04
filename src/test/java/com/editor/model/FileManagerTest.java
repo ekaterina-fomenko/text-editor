@@ -43,7 +43,7 @@ public class FileManagerTest {
     }
 
     @Test
-    public void openFileTest() throws IOException {
+    public void testOpenFile() throws IOException {
         model.append("Hello".toCharArray());
         String filePath = FILES_PATH + "test.txt";
         File file = new File(filePath);
@@ -60,7 +60,7 @@ public class FileManagerTest {
     }
 
     @Test
-    public void saveFileTest() throws IOException {
+    public void testSaveFile() throws IOException {
         String filePath = FILES_PATH + "testSave.txt";
         when(editorSettings.getCurrentFilePath()).thenReturn(filePath);
         String expectedText = "I want to save this...";

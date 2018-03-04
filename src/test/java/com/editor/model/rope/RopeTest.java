@@ -92,7 +92,7 @@ public class RopeTest {
     }
 
     @Test
-    public void subStringTest() throws Exception {
+    public void testSubString() throws Exception {
         RopeNode left = new RopeNode("HoHoHo!");
         RopeNode right = new RopeNode("Who is looking for Santa?");
         RopeNode node = new RopeNode(left, right);

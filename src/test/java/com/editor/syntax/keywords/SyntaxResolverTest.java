@@ -23,7 +23,7 @@ public class SyntaxResolverTest {
     }
 
     @Test
-    public void reservedWordsIndexesTest() {
+    public void testReservedWordsIndexes() {
         String ropeStr = "i am happy";
         Rope rope = new Rope();
         rope = rope.append(ropeStr);
@@ -44,7 +44,7 @@ public class SyntaxResolverTest {
     }
 
     @Test
-    public void stringLiteralTest() {
+    public void testStringLiteral() {
         String ropeStr = "hi, i am a \" miracle \".";
         Rope rope = new Rope();
         rope = rope.append(ropeStr);
@@ -74,7 +74,7 @@ public class SyntaxResolverTest {
     }
 
     @Test
-    public void openStringLiteralTest() {
+    public void testOpenStringLiteral() {
         String ropeStr = "o, \"so shanie today...";
         Rope rope = new Rope();
         rope = rope.append(ropeStr);
@@ -95,7 +95,7 @@ public class SyntaxResolverTest {
     }
 
     @Test
-    public void digitsTest() {
+    public void testDigits() {
         String ropeStr = "1, 2,3 - I am going to find you!";
         Rope rope = new Rope();
         rope = rope.append(ropeStr);
@@ -116,22 +116,22 @@ public class SyntaxResolverTest {
     }
 
     @Test
-    public void commentJsTest() {
+    public void testCommentJs() {
         checkCommentIndexes("//", SyntaxType.JAVASCRIPT);
     }
 
     @Test
-    public void commentHsTest() {
+    public void testCommentHs() {
         checkCommentIndexes("--", SyntaxType.HASKELL);
     }
 
     @Test
-    public void commentErTest() {
+    public void testCommentEr() {
         checkCommentIndexes("%", SyntaxType.ERLANG);
     }
 
     @Test
-    public void symbolsTest() {
+    public void testSymbols() {
         String ropeStr = "< ii \r\n ooops \t + (we are the champions) ***";
         Rope rope = new Rope();
         rope = rope.append(ropeStr);
@@ -142,7 +142,7 @@ public class SyntaxResolverTest {
     }
 
     @Test
-    public void pairedBracketsTest() {
+    public void testPairedBrackets() {
         String ropeStr = "In the {magic wood} lives} one {little-little girl...";
 
         Rope rope = new Rope();
@@ -160,7 +160,7 @@ public class SyntaxResolverTest {
     }
 
     @Test
-    public void testSyntaxTest() {
+    public void testSyntax() {
         SyntaxResolver keywordsTree = new SyntaxResolver(SyntaxType.TEXT);
         assertTrue(keywordsTree.isEmpty());
 

@@ -33,7 +33,7 @@ public class RopeDrawComponentTest {
     }
 
     @Test
-    public void getReservedWordCharColorTest() {
+    public void testGetReservedWordCharColor() {
         int currentIndex = 3;
         int currentVisibleIndex = 2;
         Map<Integer, TokenType> reservedWordsMap = new HashMap<>();
@@ -45,7 +45,7 @@ public class RopeDrawComponentTest {
     }
 
     @Test
-    public void getBracketCharColorTest() {
+    public void testGetBracketCharColor() {
         int currentIndex = 3;
         int currentVisibleIndex = 2;
         Map<Integer, TokenType> reservedWordsMap = new HashMap<>();
@@ -57,7 +57,7 @@ public class RopeDrawComponentTest {
     }
 
     @Test
-    public void getDefaultCharColorTest() {
+    public void testGetDefaultCharColor() {
         int currentIndex = 3;
         int currentVisibleIndex = 2;
         Map<Integer, TokenType> reservedWordsMap = new HashMap<>();
@@ -69,7 +69,7 @@ public class RopeDrawComponentTest {
     }
 
     @Test
-    public void getVisibleBracketsInfoTest() {
+    public void testGetVisibleBracketsInfo() {
         model.setCursorPosition(1);
         Map<Integer, PairedBracketsInfo> bracketMap = new HashMap<>();
 
@@ -83,7 +83,7 @@ public class RopeDrawComponentTest {
     }
 
     @Test
-    public void getVisibleBracketsEmptyInfoTest() {
+    public void testGetVisibleBracketsEmptyInfo() {
         model.setCursorPosition(5);
         Map<Integer, PairedBracketsInfo> bracketMap = new HashMap<>();
         putPairedBracketsInfoToMap(bracketMap);
