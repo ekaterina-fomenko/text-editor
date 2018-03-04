@@ -31,7 +31,7 @@ public class RopeDrawComponent extends JComponent {
 
     private RopeTextEditorModel model;
     private Rectangle visibleBounds = new Rectangle();
-    private Graphics2D latestGraphices;
+    private Graphics2D latestGraphics;
 
     private Point mouseCursorPointer;
     private boolean scrollToCursorOnceOnPaint;
@@ -60,7 +60,7 @@ public class RopeDrawComponent extends JComponent {
         Color charColor;
 
         Graphics2D graphics2D = (Graphics2D) graphics;
-        latestGraphices = graphics2D;
+        latestGraphics = graphics2D;
         graphics2D.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
 
         updatePreferredSize(graphics);
@@ -105,8 +105,12 @@ public class RopeDrawComponent extends JComponent {
         int bracketEnd = -1;
         Color bracketColor = DEFAULT_CHAR_COLOR;
 
-        if (bracketMap.containsKey(model.getCursorPosition()) || bracketMap.containsKey(model.getCursorPosition() - 1)) {
-            bracketInfo = bracketMap.containsKey(model.getCursorPosition()) ? bracketMap.get(model.getCursorPosition()) : bracketMap.get(model.getCursorPosition() - 1);
+        PairedBracketsInfo bracketIndex = bracketMap.get(model.getCursorPosition());
+        PairedBracketsInfo bracketPrevIndex = bracketMap.get(model.getCursorPosition() - 1);
+
+        if (bracketIndex == null || bracketPrevIndex == null) {
+
+            bracketInfo = bracketIndex != null ? bracketIndex : bracketPrevIndex;
 
             bracketStart = bracketInfo.getStartInd();
             bracketEnd = bracketInfo.getEndInd();
@@ -267,15 +271,15 @@ public class RopeDrawComponent extends JComponent {
         this.scrollToCursorOnceOnPaint = scrollToCursorOnceOnPaint;
     }
 
-    public Graphics2D getLatestGraphices() {
-        return latestGraphices;
+    public Graphics2D getLatestGraphics() {
+        return latestGraphics;
     }
 
     public int getLatestFontHeight() {
-        if (latestGraphices == null) {
+        if (latestGraphics == null) {
             return 0;
         }
 
-        return latestGraphices.getFontMetrics().getHeight();
+        return latestGraphics.getFontMetrics().getHeight();
     }
 }

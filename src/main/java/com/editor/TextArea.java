@@ -19,7 +19,7 @@ public class TextArea {
         ropeDrawComponent = new RopeDrawComponent(editorSettings);
 
         RopeTextEditorModel.setStringSizeProvider((text, offset, count) -> {
-            Graphics2D graphics = ropeDrawComponent.getLatestGraphices();
+            Graphics2D graphics = ropeDrawComponent.getLatestGraphics();
             if (graphics == null) {
                 return 0;
             }

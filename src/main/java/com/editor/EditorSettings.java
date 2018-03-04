@@ -4,6 +4,9 @@ import com.editor.syntax.SyntaxType;
 
 import java.io.File;
 
+/**
+ * Current user settings - what user choose in menu
+ */
 public class EditorSettings {
     private SyntaxType currentSyntax = SyntaxType.TEXT;
     private String currentFilePath;
