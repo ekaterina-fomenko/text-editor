@@ -13,7 +13,6 @@ import java.util.stream.IntStream;
  * Also helps to find reserved words in rope.
  */
 public class SyntaxResolver {
-    private List<String> keywords;
     private SyntaxType syntaxType;
 
     static class TrieNode {
@@ -44,7 +43,6 @@ public class SyntaxResolver {
     }
 
     SyntaxResolver(List<String> keywords) {
-        this.keywords = keywords;
         root = new TrieNode();
 
         resetAll();
@@ -112,7 +110,6 @@ public class SyntaxResolver {
     }
 
     private boolean match(char expected) {
-        currentChar = moveIterator();
         if (currentChar == '\n') {
             return false;
         }
@@ -198,22 +195,20 @@ public class SyntaxResolver {
                 moveIterator();
                 break;
             case '/':
-                if (syntaxType == SyntaxType.JAVASCRIPT && match('/')) {
-                    comment(2);
-                } else {
-                    moveIterator();
+                moveIterator();
+                if (match('/') && syntaxType == SyntaxType.JAVASCRIPT) {
+                    comment(1);
                 }
                 break;
             case '-':
-                if (syntaxType == SyntaxType.HASKELL && match('-')) {
-                    comment(2);
-                } else {
-                    moveIterator();
+                moveIterator();
+                if (match('-') && syntaxType == SyntaxType.HASKELL) {
+                    comment(1);
                 }
                 break;
             case '%':
                 if (syntaxType == SyntaxType.ERLANG) {
-                    comment(1);
+                    comment(0);
                 } else {
                     moveIterator();
                 }
