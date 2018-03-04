@@ -51,7 +51,7 @@ public class FileManager {
         model.reset();
         try {
             BufferedReader reader = new BufferedReader(new FileReader(file));
-            char[] buffer = new char[5000 * 1000];
+            char[] buffer = new char[50 * 1000 * 1000];
             int countRead;
 
             while ((countRead = reader.read(buffer)) != -1) {

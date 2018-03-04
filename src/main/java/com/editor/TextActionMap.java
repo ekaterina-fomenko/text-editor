@@ -4,11 +4,13 @@ import com.editor.model.RopeTextEditorModel;
 import com.editor.model.rope.Rope;
 import com.editor.model.undo.UndoRedoService;
 import com.editor.system.ClipboardAdapter;
+import com.editor.system.ClipboardSystemApiImpl;
 import javafx.geometry.VerticalDirection;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.util.Optional;
 
 /**
  * Process all external actions in tex area
@@ -23,7 +25,7 @@ public class TextActionMap extends ActionMap {
     public TextActionMap(RopeTextEditorModel model, TextArea area, UndoRedoService undoRedoService) {
         this.model = model;
         this.textArea = area;
-        this.clipboardAdapter = new ClipboardAdapter();
+        this.clipboardAdapter = new ClipboardAdapter(new ClipboardSystemApiImpl());
         this.undoService = undoRedoService;
     }
 
@@ -140,8 +142,12 @@ public class TextActionMap extends ActionMap {
         put(TextInputMap.CTRL_V, new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                model.onTextInput(clipboardAdapter.getText().toCharArray());
+                Optional<String> clipboardTextOpt = clipboardAdapter.getText();
+                if (!clipboardTextOpt.isPresent()) {
+                    return;
+                }
 
+                model.onTextInput(clipboardTextOpt.get().toCharArray());
                 undoService.pushState();
 
                 forceScrollToCursorAndRender();

@@ -1,43 +1,38 @@
 package com.editor.system;
 
-import java.awt.*;
-import java.awt.datatransfer.Clipboard;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.StringSelection;
-import java.awt.datatransfer.UnsupportedFlavorException;
-import java.io.IOException;
+import java.util.Optional;
 
 /**
- *  This class helps to insert text correctly
+ * This class helps to insert text correctly
  */
 public class ClipboardAdapter {
-    public String getText() {
-        Clipboard systemClipboard = getSystemClipboard();
-        DataFlavor dataFlavor = DataFlavor.stringFlavor;
+    private static Logger log = LoggerFactory.getLogger(ClipboardAdapter.class);
+    private ClipboardSystemApi clipboardSystemApi;
 
-        if (systemClipboard.isDataFlavorAvailable(dataFlavor)) {
+    public ClipboardAdapter(ClipboardSystemApi clipboardSystemApi) {
+        this.clipboardSystemApi = clipboardSystemApi;
+    }
+
+    public Optional<String> getText() {
+        if (clipboardSystemApi.isDataFlavorAvailable(DataFlavor.stringFlavor)) {
             Object text = null;
             try {
-                text = systemClipboard.getData(dataFlavor);
-            } catch (UnsupportedFlavorException | IOException e) {
-                e.printStackTrace();
+                text = clipboardSystemApi.getData(DataFlavor.stringFlavor);
+            } catch (Exception e) {
+                log.error("Could not read from clipboard", e);
             }
-            return (String) text;
+            return text instanceof String ? Optional.of((String) text) : Optional.empty();
         }
 
-        return null;
+        return Optional.empty();
     }
 
     public void setText(String text) {
-        getSystemClipboard().setContents(new StringSelection(text), null);
+        clipboardSystemApi.setContents(text);
     }
-
-    private static Clipboard getSystemClipboard() {
-        Toolkit defaultToolkit = Toolkit.getDefaultToolkit();
-        Clipboard systemClipboard = defaultToolkit.getSystemClipboard();
-
-        return systemClipboard;
-    }
-
 
 }
