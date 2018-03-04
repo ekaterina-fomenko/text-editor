@@ -51,7 +51,7 @@ public class EditorFrame extends JFrame {
         pane.setLayout(new BorderLayout());
         pane.add(jScrollPane, BorderLayout.CENTER);
 
-        fileManager = new FileManagerImpl(this, model, editorSettings);
+        fileManager = new FileManagerImpl(this, model, editorSettings, undoRedoService);
         menuBar = new MenuBar(textArea, editorSettings, fileManager, undoRedoService);
         mouseListener = new DrawComponentMouseListener(textArea, ropeDrawComponent, model);
 

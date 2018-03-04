@@ -15,17 +15,18 @@ import java.io.*;
  */
 
 public class FileManagerImpl implements FileManager {
-    private JFrame frame;
-    private RopeTextEditorModel model;
-    private EditorSettings editorSettings;
-    private UndoRedoService undoRedoService;
+    private final JFrame frame;
+    private final RopeTextEditorModel model;
+    private final EditorSettings editorSettings;
+    private final UndoRedoService undoRedoService;
 
     public static Logger log = LoggerFactory.getLogger(FileManagerImpl.class);
 
-    public FileManagerImpl(JFrame frame, RopeTextEditorModel model, EditorSettings editorSettings) {
+    public FileManagerImpl(JFrame frame, RopeTextEditorModel model, EditorSettings editorSettings, UndoRedoService undoRedoService) {
         this.frame = frame;
         this.model = model;
         this.editorSettings = editorSettings;
+        this.undoRedoService = undoRedoService;
     }
 
     @Override
@@ -51,6 +52,7 @@ public class FileManagerImpl implements FileManager {
         String resultPath = null;
 
         model.reset();
+
         try {
             BufferedReader reader = new BufferedReader(new FileReader(file));
             char[] buffer = new char[50 * 1000 * 1000];
@@ -67,6 +69,8 @@ public class FileManagerImpl implements FileManager {
         } catch (IOException e) {
             log.error("Exception was occurred while trying to read file {} from buffer", file.getAbsolutePath(), e);
         }
+
+        undoRedoService.reset();
 
         long openEnd = System.currentTimeMillis();
         log.debug("File '{}' opened in {}ms", file.getName(), openEnd - openStart);
