@@ -13,6 +13,13 @@ public class PairedBracketsInfo {
         this.tokenType = TokenType.BRACKET;
     }
 
+    //Create empty PairedBracketsInfo
+    public PairedBracketsInfo(){
+        this.startInd = -1;
+        this.endInd = -1;
+        this.tokenType = TokenType.DEFAULT;
+    }
+
     public int getStartInd() {
         return startInd;
     }

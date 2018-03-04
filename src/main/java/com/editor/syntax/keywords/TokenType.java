@@ -10,7 +10,8 @@ public enum TokenType {
     RESERVED_WORD(new Color(204, 0, 153)),
     BRACKET(new Color(210,105,30)),
     DIGIT(new Color(70,130,180)),
-    STRING(new Color(0,128,0));
+    STRING(new Color(0,128,0)),
+    DEFAULT(Color.black);
 
     private Color color;
 
