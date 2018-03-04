@@ -17,6 +17,7 @@ import java.util.Optional;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.times;
 
 public class TextActionMapTest {
@@ -28,8 +29,8 @@ public class TextActionMapTest {
     @Before
     public void before() {
         model = new RopeTextEditorModel();
-        undoRedoService = Mockito.mock(UndoRedoService.class);
-        clipboardAdapter = Mockito.mock(ClipboardAdapter.class);
+        undoRedoService = mock(UndoRedoService.class);
+        clipboardAdapter = mock(ClipboardAdapter.class);
 
         final EditorSettings editorSettings = new EditorSettings();
         final RopeTextEditorModel ropeModel = new RopeTextEditorModel();
@@ -161,7 +162,7 @@ public class TextActionMapTest {
 
     @Test
     public void testCliboard() {
-        Mockito.when(clipboardAdapter.getText()).thenReturn(Optional.of("ABC"));
+        when(clipboardAdapter.getText()).thenReturn(Optional.of("ABC"));
 
         invokeAction(TextInputMap.CTRL_V, null);
 
@@ -173,7 +174,16 @@ public class TextActionMapTest {
         invokeAction(TextInputMap.LEFT_SHIFT, null);
         invokeAction(TextInputMap.CTRL_C, null);
 
-        Mockito.verify(clipboardAdapter, times(1)).setText(eq("ABC"));
+        verify(clipboardAdapter, times(1)).setText(eq("ABC"));
+    }
+
+    @Test
+    public void testUndo() {
+        invokeAction(TextInputMap.CTRL_Z, null);
+        verify(undoRedoService, times(1)).undo();
+
+        invokeAction(TextInputMap.CTRL_K, null);
+        verify(undoRedoService, times(1)).redo();
     }
 
     private void invokeAction(String actionKey, String command) {
@@ -181,7 +191,7 @@ public class TextActionMapTest {
     }
 
     private void verifyStatePushedForUndo() {
-        Mockito.verify(undoRedoService, times(1)).pushState();
+        verify(undoRedoService, times(1)).pushState();
     }
 
 }
