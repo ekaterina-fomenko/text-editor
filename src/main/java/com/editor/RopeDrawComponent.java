@@ -56,7 +56,6 @@ public class RopeDrawComponent extends JComponent {
         long paintStart = System.currentTimeMillis();
 
         Rope rope = model.getRope();
-        Color charColor;
 
         Graphics2D graphics2D = (Graphics2D) graphics;
         latestGraphics = graphics2D;
@@ -96,7 +95,7 @@ public class RopeDrawComponent extends JComponent {
         syntaxResolver.calculateTokens(visibleRope, currentIndex);
 
         Map<Integer, TokenType> reservedWordsSet = syntaxResolver.getKeywordsIndexes();
-        PairedBracketsInfo currentBracketsInfo = getBracketsHighlightingInfo(syntaxResolver);
+        PairedBracketsInfo currentBracketsInfo = getVisibleBracketsInfo(syntaxResolver);
 
         int cursorLine = rope.lineAtChar(model.getCursorPosition());
         AffineTransform transform = graphics2D.getTransform();
@@ -143,15 +142,8 @@ public class RopeDrawComponent extends JComponent {
                     currentLineLength = 0;
                     currentLinePixelLength = 0;
                 } else {
-                    if (reservedWordsSet.containsKey(i)) {
-                        charColor = reservedWordsSet.get(i).getColor();
-                    } else if (currentBracketsInfo.getStartInd() == currentIndex || currentBracketsInfo.getEndInd() == currentIndex) {
-                        charColor = currentBracketsInfo.getTokenType().getColor();
-                    } else {
-                        charColor = DEFAULT_CHAR_COLOR;
-                    }
-                    boolean inSelection = model.isInSelection(currentIndex);
-                    Color backgroundColor = inSelection ? SELECTOR_COLOR : null;
+                    Color charColor = getCurrentCharColor(currentIndex, reservedWordsSet, currentBracketsInfo, i);
+                    Color backgroundColor = model.isInSelection(currentIndex) ? SELECTOR_COLOR : null;
                     drawChar(graphics2D, c, currentLinePixelLength, charColor, backgroundColor);
                 }
             }
@@ -176,6 +168,18 @@ public class RopeDrawComponent extends JComponent {
 
         long paintEnd = System.currentTimeMillis();
         log.debug("Paint: {}ms", paintEnd - paintStart);
+    }
+
+    private Color getCurrentCharColor(int currentIndex, Map<Integer, TokenType> reservedWordsSet, PairedBracketsInfo currentBracketsInfo, int i) {
+        Color charColor;
+        if (reservedWordsSet.containsKey(i)) {
+            charColor = reservedWordsSet.get(i).getColor();
+        } else if (currentBracketsInfo.getStartInd() == currentIndex || currentBracketsInfo.getEndInd() == currentIndex) {
+            charColor = currentBracketsInfo.getTokenType().getColor();
+        } else {
+            charColor = DEFAULT_CHAR_COLOR;
+        }
+        return charColor;
     }
 
     private int getIndexOfVisibleEnd(Rope rope, int endRow) {
@@ -264,7 +268,7 @@ public class RopeDrawComponent extends JComponent {
         return latestGraphics.getFontMetrics().getHeight();
     }
 
-    private PairedBracketsInfo getBracketsHighlightingInfo(SyntaxResolver syntaxResolver) {
+    private PairedBracketsInfo getVisibleBracketsInfo(SyntaxResolver syntaxResolver) {
         Map<Integer, PairedBracketsInfo> bracketMap = syntaxResolver.getBracketsIndexesMap();
         PairedBracketsInfo currentBracketsInfo = new PairedBracketsInfo();
 
