@@ -18,12 +18,15 @@ import java.util.List;
 
 public class RopeTextEditorModel implements Resetable {
     private int cursorPosition;
-    private Rectangle cursorRect = new Rectangle();
-    private int selectionEnd = -1;
+    private Rectangle cursorRect;
+    private int selectionEnd;
     private Rope rope;
-    private VisibleLinesInfo visibleLinesInfo = new VisibleLinesInfo();
+    private VisibleLinesInfo visibleLinesInfo;
 
     public RopeTextEditorModel() {
+        cursorRect = new Rectangle();
+        cursorRect = new Rectangle();
+        visibleLinesInfo = new VisibleLinesInfo.Builder().build();
         reset();
     }
 
