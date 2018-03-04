@@ -84,12 +84,7 @@ public class FileManagerImpl implements FileManager {
         chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         if (chooser.showSaveDialog(frame) == JFileChooser.APPROVE_OPTION) {
             try {
-                FileWriter writer = new FileWriter(chooser.getSelectedFile());
-                writer.write(model.getRope().toString());
-                writer.close();
-
-                log.info("File was saved successfully");
-
+                writeToFile(chooser.getSelectedFile());
                 return chooser.getSelectedFile().getAbsolutePath();
             } catch (IOException e) {
                 log.error("Exception was occurred while trying to write into file {}", e);
@@ -107,15 +102,19 @@ public class FileManagerImpl implements FileManager {
         }
 
         try {
-            FileWriter writer = new FileWriter(new File(editorSettings.getCurrentFilePath()));
-            model.getRope().writeTo(writer);
-            writer.close();
-            log.info("File was saved successfully");
+            writeToFile(new File(editorSettings.getCurrentFilePath()));
         } catch (IOException e) {
             log.error("Exception was occurred while trying to write into file {}", e);
             return null;
         }
 
         return editorSettings.getCurrentFilePath();
+    }
+
+    private void writeToFile(File file) throws IOException {
+        FileWriter writer = new FileWriter(file);
+        model.getRope().writeTo(writer);
+        writer.close();
+        log.info("File was saved successfully");
     }
 }
