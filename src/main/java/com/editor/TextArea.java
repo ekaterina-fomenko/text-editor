@@ -11,9 +11,7 @@ import java.awt.*;
 
 public class TextArea implements Renderer {
     private final RopeDrawComponent ropeDrawComponent;
-    private final RopeTextEditorModel ropeModel;
     private final JFrame frame;
-    private final UndoRedoService undoRedoService;
     private final JScrollPane jScrollPane;
 
     public TextArea(JFrame frame,
@@ -37,10 +35,6 @@ public class TextArea implements Renderer {
             int result = fontMetrics.charsWidth(text, offset, count);
             return result;
         });
-
-        undoRedoService = new UndoRedoService(ropeModel);
-        this.ropeModel = ropeModel;
-        this.undoRedoService = undoRedoService;
 
         this.ropeDrawComponent.setActionMap(actionMap);
         this.ropeDrawComponent.setInputMap(JComponent.WHEN_FOCUSED, new TextInputMap());

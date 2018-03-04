@@ -20,9 +20,6 @@ import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class FileManagerTest {
-
-    public static final String FILES_PATH = "src/test/resources/";
-
     RopeTextEditorModel model;
 
     FileManager fileManager;
@@ -45,7 +42,7 @@ public class FileManagerTest {
     @Test
     public void testOpenFile() throws IOException {
         model.append("Hello".toCharArray());
-        String filePath = FILES_PATH + "test.txt";
+        String filePath = getClass().getResource("/test.txt").getFile();
         File file = new File(filePath);
 
         String resultAbsolutePath = fileManager.openFile(file);
@@ -60,17 +57,19 @@ public class FileManagerTest {
     }
 
     @Test
-    public void testSaveFile() throws IOException {
-        String filePath = FILES_PATH + "testSave.txt";
-        when(editorSettings.getCurrentFilePath()).thenReturn(filePath);
+    public void saveFileTest() throws IOException {
+        File tempFile = File.createTempFile("testFile", ".tmp");
+        String path = tempFile.getAbsolutePath();
+
+        when(editorSettings.getCurrentFilePath()).thenReturn(path);
+
         String expectedText = "I want to save this...";
         model.append(expectedText.toCharArray());
         fileManager.saveFile();
 
-        byte[] bytes = Files.readAllBytes(Paths.get(filePath));
+        byte[] bytes = Files.readAllBytes(Paths.get(path));
         String resultText = new String(bytes, Charset.defaultCharset());
         assertEquals(expectedText, resultText);
-
     }
 
 }
