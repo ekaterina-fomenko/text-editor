@@ -2,7 +2,7 @@ package com.editor;
 
 import com.editor.model.LineInfo;
 import com.editor.model.RopeTextEditorModel;
-import com.editor.model.buffer.VisibleLinesBufferBuilder;
+import com.editor.model.buffer.VisibleLinesInfo;
 import com.editor.model.rope.Rope;
 import com.editor.syntax.keywords.PairedBracketsInfo;
 import com.editor.syntax.keywords.SyntaxResolver;
@@ -85,7 +85,7 @@ public class RopeDrawComponent extends JComponent {
         int currentLinePixelLength = 0;
         final int charHeight = graphics2D.getFontMetrics().getHeight();
 
-        VisibleLinesBufferBuilder visibleLinesBufferBuilder = new VisibleLinesBufferBuilder();
+        VisibleLinesInfo.Builder visibleLinesBufferBuilder = new VisibleLinesInfo.Builder();
 
         Rope visibleRope = charIndexOfVisibleStart < charIndexOfVisibleEnd && charIndexOfVisibleStart > -1
                 ? rope.substring(charIndexOfVisibleStart, charIndexOfVisibleEnd)

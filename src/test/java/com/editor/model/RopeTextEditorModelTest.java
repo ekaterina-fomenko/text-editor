@@ -1,13 +1,12 @@
 package com.editor.model;
 
-import com.editor.model.buffer.VisibleLinesBufferBuilder;
 import com.editor.model.buffer.VisibleLinesInfo;
 import org.junit.Test;
 
 import java.awt.*;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class RopeTextEditorModelTest {
 
@@ -92,7 +91,7 @@ public class RopeTextEditorModelTest {
         model.onTextInput("abc\ndef".toCharArray());
 
         model.setVisibleLinesInfo(
-                new VisibleLinesBufferBuilder()
+                new VisibleLinesInfo.Builder()
                         .addLine(new LineInfo(0, 3))
                         .addLine(new LineInfo(4, 3))
                         .withCursorChar('d')

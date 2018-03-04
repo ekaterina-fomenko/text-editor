@@ -5,16 +5,46 @@ import com.editor.model.LineInfo;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Info about visible area collected while painting for faster processing visible area
+ */
 public class VisibleLinesInfo {
-    private List<LineInfo> linesInfo = new ArrayList<>();
-    private Character cursorChar = Character.MIN_VALUE;
+
+    public static class Builder {
+        private List<LineInfo> linesInfo;
+        private Character cursorChar;
+
+        public Builder() {
+            linesInfo = new ArrayList<>();
+            cursorChar = Character.MIN_VALUE;
+        }
+
+        public Builder addLine(LineInfo lineInfo) {
+            linesInfo.add(lineInfo);
+            return this;
+        }
+
+        public Builder withCursorChar(Character c) {
+            cursorChar = c;
+            return this;
+        }
+
+        public VisibleLinesInfo build() {
+            return new VisibleLinesInfo(linesInfo, cursorChar);
+        }
+    }
+
+    private List<LineInfo> linesInfo;
+    private Character cursorChar;
 
     public VisibleLinesInfo(List<LineInfo> linesInfo, Character cursorChar) {
         this.linesInfo = linesInfo;
         this.cursorChar = cursorChar;
     }
 
-    public VisibleLinesInfo() {
+    public VisibleLinesInfo(Builder builder) {
+        this.linesInfo = builder.linesInfo;
+        this.cursorChar = builder.cursorChar;
     }
 
     public List<LineInfo> getLinesInfo() {
