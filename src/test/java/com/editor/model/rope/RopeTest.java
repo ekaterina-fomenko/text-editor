@@ -1,6 +1,7 @@
 package com.editor.model.rope;
 
 import com.editor.RandomTextBuilder;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Iterator;
@@ -11,6 +12,11 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
 public class RopeTest {
+
+    @Before
+    public void before() {
+        RopeNode.setSizeProvider(new CountingStringSizeProvider());
+    }
 
     @Test
     public void testGetLength() throws Exception {

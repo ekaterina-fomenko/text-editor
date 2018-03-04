@@ -4,7 +4,6 @@ import com.editor.model.RopeTextEditorModel;
 import com.editor.model.rope.Rope;
 import com.editor.model.undo.UndoRedoService;
 import com.editor.system.ClipboardAdapter;
-import com.editor.system.ClipboardSystemApiImpl;
 import javafx.geometry.VerticalDirection;
 
 import javax.swing.*;
@@ -22,10 +21,10 @@ public class TextActionMap extends ActionMap {
     private TextArea textArea;
     private UndoRedoService undoService;
 
-    public TextActionMap(RopeTextEditorModel model, TextArea area, UndoRedoService undoRedoService) {
+    public TextActionMap(RopeTextEditorModel model, TextArea area, UndoRedoService undoRedoService, ClipboardAdapter clipboardAdapter) {
         this.model = model;
         this.textArea = area;
-        this.clipboardAdapter = new ClipboardAdapter(new ClipboardSystemApiImpl());
+        this.clipboardAdapter = clipboardAdapter;
         this.undoService = undoRedoService;
     }
 

@@ -13,23 +13,23 @@ public class ClipboardAdapterTest {
     public void getText() throws Exception {
         assertEquals(
                 "text",
-                new ClipboardAdapter(new MockClipboardSystemApi(DataFlavor.stringFlavor, "text")).getText().get()
+                new ClipboardAdapterImpl(new MockClipboardSystemApi(DataFlavor.stringFlavor, "text")).getText().get()
         );
 
         assertEquals(
                 Optional.empty(),
-                new ClipboardAdapter(new MockClipboardSystemApi(DataFlavor.imageFlavor, null)).getText()
+                new ClipboardAdapterImpl(new MockClipboardSystemApi(DataFlavor.imageFlavor, null)).getText()
         );
 
         assertEquals(
                 Optional.empty(),
-                new ClipboardAdapter(new MockClipboardSystemApi(DataFlavor.stringFlavor, null)).getText()
+                new ClipboardAdapterImpl(new MockClipboardSystemApi(DataFlavor.stringFlavor, null)).getText()
         );
     }
 
     @Test
     public void getTextThrowing() {
-        Optional<String> result = new ClipboardAdapter(new MockClipboardSystemApi(DataFlavor.stringFlavor, "result") {
+        Optional<String> result = new ClipboardAdapterImpl(new MockClipboardSystemApi(DataFlavor.stringFlavor, "result") {
             @Override
             public Object getData(DataFlavor dataFlavor) throws Exception {
                 throw new Exception();
@@ -41,7 +41,7 @@ public class ClipboardAdapterTest {
 
     @Test
     public void testSetText() {
-        ClipboardAdapter clipboardAdapter = new ClipboardAdapter(new MockClipboardSystemApi(DataFlavor.stringFlavor, "result"));
+        ClipboardAdapter clipboardAdapter = new ClipboardAdapterImpl(new MockClipboardSystemApi(DataFlavor.stringFlavor, "result"));
 
         clipboardAdapter.setText("newText");
 

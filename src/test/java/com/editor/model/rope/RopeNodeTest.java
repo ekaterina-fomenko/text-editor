@@ -1,11 +1,16 @@
 package com.editor.model.rope;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import static java.text.MessageFormat.*;
 import static org.junit.Assert.assertEquals;
 
 public class RopeNodeTest {
+    @Before
+    public void before() {
+        RopeNode.setSizeProvider(new CountingStringSizeProvider());
+    }
 
     @Test
     public void testLinesNum() {

@@ -42,11 +42,6 @@ public class VisibleLinesInfo {
         this.cursorChar = cursorChar;
     }
 
-    public VisibleLinesInfo(Builder builder) {
-        this.linesInfo = builder.linesInfo;
-        this.cursorChar = builder.cursorChar;
-    }
-
     public List<LineInfo> getLinesInfo() {
         return linesInfo;
     }

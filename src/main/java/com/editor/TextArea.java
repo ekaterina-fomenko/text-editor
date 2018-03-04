@@ -2,6 +2,9 @@ package com.editor;
 
 import com.editor.model.RopeTextEditorModel;
 import com.editor.model.undo.UndoRedoService;
+import com.editor.system.ClipboardAdapterImpl;
+import com.editor.system.ClipboardAdapter;
+import com.editor.system.ClipboardSystemApiImpl;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,6 +20,8 @@ public class TextArea {
     public TextArea(JFrame frame, EditorSettings editorSettings) {
         this.frame = frame;
         ropeDrawComponent = new RopeDrawComponent(editorSettings);
+        ClipboardAdapter clipboardAdapter = new ClipboardAdapterImpl(new ClipboardSystemApiImpl());
+        TextActionMap actionMap = new TextActionMap(ropeModel, this, undoRedoService, clipboardAdapter);
 
         RopeTextEditorModel.setStringSizeProvider((text, offset, count) -> {
             Graphics2D graphics = ropeDrawComponent.getLatestGraphics();
@@ -32,7 +37,7 @@ public class TextArea {
         ropeModel = new RopeTextEditorModel();
         ropeDrawComponent.setModel(ropeModel);
         undoRedoService = new UndoRedoService(ropeModel);
-        ropeDrawComponent.setActionMap(new TextActionMap(ropeModel, this, undoRedoService));
+        ropeDrawComponent.setActionMap(actionMap);
         ropeDrawComponent.setInputMap(JComponent.WHEN_FOCUSED, new TextInputMap());
         mouseListener = new DrawComponentMouseListener(this, ropeDrawComponent, ropeModel);
         createJScRollPane();
