@@ -33,33 +33,7 @@ public class VisibleLinesInfo {
         return -1;
     }
 
-    public boolean isEOL(int charIndex) {
-        int lineIndex = getLineByCharIndex(charIndex);
-        if (lineIndex < 0) {
-            return false;
-        }
-
-        LineInfo lineInfo = linesInfo.get(lineIndex);
-        return lineInfo.getStartIndex() + lineInfo.getLength() == charIndex;
-    }
-
     public Character getCursorChar() {
         return cursorChar;
-    }
-
-    public int getBufferStartIndex() {
-        if (linesInfo.size() == 0) {
-            return -1;
-        }
-
-        return linesInfo.get(0).getStartIndex();
-    }
-
-    public int getBufferEndIndex() {
-        if (linesInfo.size() == 0) {
-            return -1;
-        }
-
-        return linesInfo.get(linesInfo.size() - 1).getEndIndex();
     }
 }
