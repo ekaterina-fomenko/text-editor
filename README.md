@@ -12,7 +12,7 @@ Requires: Maven and Java
 mvn install
 
 2) Run
-java -cp target/text-editor-1.0-SNAPSHOT.jar com.editor.Main
+mvn exec:java
 
 **Hot Keys**:
 
