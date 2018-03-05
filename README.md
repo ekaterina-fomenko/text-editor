@@ -28,6 +28,8 @@ java -cp target/text-editor-1.0-SNAPSHOT.jar com.editor.Main
 * Select: Shift + Up/Down/Right/Left
 * Line start: Alt + Left
 * Line end: Alt + Right
+* CTRL+Z, CTRL+K - undo, redo
+* CTRL+A - select all
 
 **Done**:
 
@@ -62,13 +64,13 @@ java -cp target/text-editor-1.0-SNAPSHOT.jar com.editor.Main
 
 * Multi-lines comments
 * Dialog box with asking if user wants to save file before exit
-* More tests : UndoRedoService, TextEditorModel, Syntax highlighting
 * Line numbers
 * Multi-line literal string highlighting
 * Parentheses highlighting
 * Mouse selection
-
-*Improvements*:
-
 * For biggest files can read from file by parts and construct rope only for part of the file,
 then using Sparks save rope into whole file
+
+*Known issues*
+
+* For big files cannot make CTRL+A -> CTRL+C -> CTRL+V(OutOfMemory) - need to make it partially(like as 'save' file)
