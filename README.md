@@ -4,15 +4,13 @@ This text editor based on rope data structures.
 Provide syntax highlighting for Javascript, Haskell and Erlang.
 Tested on 120Mb text.
 
-**Compile and run**
+**Compile and run**:
 
-Requires: Maven and Java 1.8
+Requires: Maven and Java (1.8)
 
-1) Compile
-mvn install
+1) *Compile:* mvn install
 
-2) Run
-mvn exec:java
+2) *Run:* mvn exec:java
 
 **Hot Keys**:
 
