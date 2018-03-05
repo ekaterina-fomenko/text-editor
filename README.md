@@ -6,7 +6,7 @@ Tested on 120Mb text.
 
 **Compile and run**
 
-Requires: Maven and Java
+Requires: Maven and Java 1.8
 
 1) Compile
 mvn install
