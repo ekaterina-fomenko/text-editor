@@ -1,7 +1,5 @@
 package com.editor;
 
-import com.sun.deploy.uitoolkit.ui.ConsoleWindow;
-
 import javax.swing.*;
 
 public interface Renderer {
