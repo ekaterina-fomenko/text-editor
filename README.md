@@ -4,6 +4,8 @@ This text editor based on rope data structures.
 Provide syntax highlighting for Javascript, Haskell and Erlang.
 Tested on 120Mb text.
 
+All text editing components written from scratch.
+
 **Compile and run**:
 
 Requires: Maven and Java (1.8)
@@ -11,6 +13,8 @@ Requires: Maven and Java (1.8)
 1) *Compile:* mvn install
 
 2) *Run:* mvn exec:java
+
+3) *Run with file:* mvn exec:java -Dexec.args=--file[path to your file]
 
 **Hot Keys**:
 
@@ -60,6 +64,7 @@ Requires: Maven and Java (1.8)
 
 *Optional* (not yet implemented):
 
+* Add "New file" option in drop down menu
 * Multi-lines comments
 * Dialog box with asking if user wants to save file before exit
 * Line numbers
@@ -72,3 +77,4 @@ then using Sparks save rope into whole file
 *Known issues*
 
 * For big files cannot make CTRL+A -> CTRL+C -> CTRL+V(OutOfMemory) - need to make it partially(like as 'save' file)
+* Open files only in english
