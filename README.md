@@ -14,7 +14,7 @@ Requires: Maven and Java (1.8)
 
 2) *Run:* mvn exec:java
 
-3) *Run with file:* mvn exec:java -Dexec.args=--file[path to your file]
+3) *Run with file:* mvn exec:java -Dexec.args=--file:[path to your file]
 
 **Hot Keys**:
 

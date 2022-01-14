@@ -18,7 +18,7 @@ public class RopeCommonOperations {
 
     private final int maxLengthInRope;
 
-    private Logger log = LoggerFactory.getLogger(RopeCommonOperations.class);
+    private final Logger log = LoggerFactory.getLogger(RopeCommonOperations.class);
 
     public RopeCommonOperations(int maxLengthInRope) {
         this.maxLengthInRope = maxLengthInRope;
@@ -38,7 +38,7 @@ public class RopeCommonOperations {
             return new Rope(StringUtils.concat(left.toChars(), right.toChars()));
         }
 
-        /* If right node has no children and left has children then try to analyze next level of left node over right node*/
+        // If right node has no children and left has children then try to analyze next level of left node over right node*/
         if (!left.isFlat() && right.isFlat()) {
             RopeNode leftNode = left.getNode();
 

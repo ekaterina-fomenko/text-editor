@@ -25,7 +25,6 @@ public class RopeTextEditorModel implements Resetable {
 
     public RopeTextEditorModel() {
         cursorRect = new Rectangle();
-        cursorRect = new Rectangle();
         visibleLinesInfo = new VisibleLinesInfo.Builder().build();
         reset();
     }

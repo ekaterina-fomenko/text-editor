@@ -35,7 +35,6 @@ public class DrawComponentMouseListener implements MouseListener, MouseMotionLis
 
     @Override
     public void mouseReleased(MouseEvent e) {
-//        drawComponent.setMouseSelectionEndPointer(new Pointer(e.getY(), e.getX()));
         textArea.render(false);
     }
 
@@ -51,7 +50,6 @@ public class DrawComponentMouseListener implements MouseListener, MouseMotionLis
 
     @Override
     public void mouseDragged(MouseEvent e) {
-//        drawComponent.setMouseSelectionEndPointer(new Pointer(e.getY(), e.getX()));
         textArea.render(false);
     }
 

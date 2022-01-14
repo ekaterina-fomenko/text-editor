@@ -10,7 +10,7 @@ import java.util.Optional;
  * This class helps to insert text correctly
  */
 public class ClipboardAdapterImpl implements ClipboardAdapter {
-    private static Logger log = LoggerFactory.getLogger(ClipboardAdapterImpl.class);
+    private static final Logger log = LoggerFactory.getLogger(ClipboardAdapterImpl.class);
     private ClipboardSystemApi clipboardSystemApi;
 
     public ClipboardAdapterImpl(ClipboardSystemApi clipboardSystemApi) {

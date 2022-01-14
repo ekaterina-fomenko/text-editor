@@ -34,7 +34,7 @@ public class SyntaxResolver {
     private int currentIndex;
     private int currentRopeIndex;
     private Rope rope;
-    private TrieNode root;
+    private final TrieNode root;
 
     public SyntaxResolver(SyntaxType syntaxType) {
         this(Keywords.getSyntaxKeywords(syntaxType));

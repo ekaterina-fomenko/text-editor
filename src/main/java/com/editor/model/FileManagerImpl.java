@@ -87,7 +87,7 @@ public class FileManagerImpl implements FileManager {
                 writeToFile(chooser.getSelectedFile());
                 return chooser.getSelectedFile().getAbsolutePath();
             } catch (IOException e) {
-                log.error("Exception was occurred while trying to write into file {}", e);
+                log.error("Exception was occurred while trying to write into file", e);
                 return null;
             }
         } else {
@@ -104,7 +104,7 @@ public class FileManagerImpl implements FileManager {
         try {
             writeToFile(new File(editorSettings.getCurrentFilePath()));
         } catch (IOException e) {
-            log.error("Exception was occurred while trying to write into file {}", e);
+            log.error("Exception was occurred while trying to write into file", e);
             return null;
         }
 

@@ -1,8 +1,8 @@
 package com.editor.model;
 
 public class LineInfo {
-    private int startIndex;
-    private int length;
+    private final int startIndex;
+    private final int length;
 
     public LineInfo(int startIndex, int length) {
         this.startIndex = startIndex;

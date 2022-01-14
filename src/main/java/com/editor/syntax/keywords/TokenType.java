@@ -13,7 +13,7 @@ public enum TokenType {
     STRING(new Color(0,128,0)),
     DEFAULT(Color.black);
 
-    private Color color;
+    private final Color color;
 
     TokenType(Color color) {
         this.color = color;
