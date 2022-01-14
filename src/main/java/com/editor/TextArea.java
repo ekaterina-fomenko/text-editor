@@ -32,8 +32,7 @@ public class TextArea implements Renderer {
             }
 
             FontMetrics fontMetrics = graphics.getFontMetrics();
-            int result = fontMetrics.charsWidth(text, offset, count);
-            return result;
+            return fontMetrics.charsWidth(text, offset, count);
         });
 
         this.ropeDrawComponent.setActionMap(actionMap);

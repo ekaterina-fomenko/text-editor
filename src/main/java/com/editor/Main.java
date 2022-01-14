@@ -5,12 +5,14 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.stream.Stream;
 
+/**
+ * Main class for text-editor module
+ *
+ */
 public class Main {
-    /**
-     * Main class for text-editor module
-     *
-     * @param args
-     */
+
+    public static final String FILE_PREFIX = "--file";
+
     public static void main(String[] args) throws Exception {
         openApplication(args);
     }
@@ -19,7 +21,7 @@ public class Main {
         EditorFrame frame = new EditorFrame();
         frame.setVisible(true);
 
-        String fileName = tryFetFileArg(args);
+        String fileName = tryFetchFileArg(args);
 
         if (fileName != null) {
             EventQueue.invokeLater(() -> {
@@ -31,15 +33,14 @@ public class Main {
         return frame;
     }
 
-    static String tryFetFileArg(String[] args) {
-        String fileArgPrefix = "--file:";
+    static String tryFetchFileArg(String[] args) {
         String fileArg = Stream.of(args)
-                .filter(i -> i.startsWith(fileArgPrefix))
+                .filter(i -> i.startsWith(FILE_PREFIX))
                 .findAny()
                 .orElse(null);
 
         if (fileArg != null) {
-            return fileArg.substring(fileArgPrefix.length());
+            return fileArg.substring(FILE_PREFIX.length());
         }
         return null;
     }
