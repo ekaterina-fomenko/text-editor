@@ -1,10 +1,12 @@
 # Text editor
 
-This text editor based on rope data structures.
+This text editor based on rope data structures(https://iq.opengenus.org/rope-data-structure/).
 Provide syntax highlighting for Javascript, Haskell and Erlang.
 Tested on 120Mb text.
 
 All text editing components written from scratch.
+
+All rights reserved with MIT LICENSE.
 
 **Compile and run**:
 
